@@ -1,5 +1,5 @@
 <?php 
-    $transactions = $d->getall("transactions", "userID = ?", [$userID], fetch: "moredetails");
+    $transactions = $d->getall("transactions", "userID = ? order by date DESC", [$userID], fetch: "moredetails");
     if($transactions->rowCount() < 1) {
         echo $c->empty_page("No Transcation made on account.");
     }else{ ?>

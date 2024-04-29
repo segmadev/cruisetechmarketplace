@@ -8,7 +8,11 @@ if (isset($_GET['path'])) {
 
 if (isset($_GET['url'])) {
     $path = $_GET['url'];
-    echo "<iframe src='$path' alt='' class='w-100' style='height: 600px'>";
+    echo "
+    No showing? <a target='_BLANK' href='$path' class='btn btn-sm btn-danger'>Click here to view</a> <hr>
+    <iframe src='$path' alt='' class='w-100' style='height: 600px'>
+    
+    ";
 }
 
 

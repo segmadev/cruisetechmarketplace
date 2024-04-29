@@ -32,7 +32,7 @@
             "seo_description" => ["is_required"=>false],
             "seo_tags" => ["is_required"=>false],
         ];
-
+        
         $settings_seo['input_data'] = $s->getdata($settings_seo);
    
     // var_dump($settings_form);

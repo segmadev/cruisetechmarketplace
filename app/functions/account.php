@@ -168,19 +168,9 @@ class Account extends user
                     data-url='".PATH."modal?p=account&action=details&id=".$account['ID']."' 
                     data-title='Account Details' 
                     onclick='modalcontent(this.id)'
-                    class='link me-1 btn btn-sm btn-outline-primary'>
-                      <i class='ti ti-eye fs-4 favourite-note'></i>
+                    class='link me-1 btn btn-sm btn-outline-success'>
+                      <i class='ti ti-eye fs-4 favourite-note'></i> View Account details
                     </a>
-
-
-                    <form action='' id='foo'>
-            <input type='hidden' name='ID' value='$accountID'>
-            <input type='hidden' name='buy' value='yes'>
-            <input type='hidden' name='page' value='account'>
-            <input type='hidden' name='confirm' value='".$this->money_format($account['amount'])." will be decducted from your balance for ". $account['title'] ."'>
-            <div id='custommessage'></div>
-            <button type='submit' class=' d-flex align-items-center gap-3 btn btn-sm btn-success' href='#'><i class='fs-4 ti ti-check'></i>Buy</button>
-        </form>
 
         ";
       }
@@ -192,6 +182,12 @@ class Account extends user
     }
 }
 
-
-
+// <form action='' id='foo'>
+//             <input type='hidden' name='ID' value='$accountID'>
+//             <input type='hidden' name='buy' value='yes'>
+//             <input type='hidden' name='page' value='account'>
+//             <input type='hidden' name='confirm' value='".$this->money_format($account['amount'])." will be decducted from your balance for ". $account['title'] ."'>
+//             <div id='custommessage'></div>
+//             <button type='submit' class=' d-flex align-items-center gap-3 btn btn-sm btn-success' href='#'><i class='fs-4 ti ti-check'></i>Buy</button>
+// </form>
 ?>

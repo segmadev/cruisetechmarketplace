@@ -12,13 +12,14 @@ if (!$account || $account == "") {
                 <p class="h5">Amount: <?= $d->money_format($account['amount']) ?></p>
             </div>
         </div>
+        <hr>
         <form action="" id="foo">
             <input type="hidden" name="ID" value="<?= $account['ID'] ?>">
             <input type="hidden" name="buy" value="yes">
             <input type="hidden" name="page" value='account'>
             <input type="hidden" name="confirm" value="<?= $d->money_format($account['amount']).' will be decducted from your balance for '. $account['title'] ?>">
             <div id="custommessage"></div>
-            <button type="submit" class=" d-flex align-items-center gap-3 btn btn-sm btn-success" href="#"><i class="fs-4 ti ti-check"></i>Buy</button>
+            <button type="submit" class=" d-flex align-items-center gap-3 btn btn-success" href="#"><i class="fs-4 ti ti-check"></i>Buy Account</button>
         </form>
         <hr>
         <p class='text-mute'><?= $account['description'] ?></p>
