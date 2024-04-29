@@ -1,0 +1,1 @@
+<?php require_once "../pages/chat/messages.php"; ?>

@@ -1,0 +1,1 @@
+<img src="../assets/images/deposit/<?= $details['prove_image'] ?>" style="width: 100%;" alt="">

@@ -1,0 +1,20 @@
+div.center {
+    text-align: center;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    justify-self: center;
+    justify-items: center;
+    justify-tracks: center;
+    text-justify: center;
+    place-items: center;
+    place-self: center;
+    padding-left: center;
+    vertical-align: middle;
+    line-height: 100%;
+    margin: auto;
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -1,0 +1,2 @@
+<!-- <h1>YES</h1> -->
+<?= $c->empty_page("We have made a request for your withdraw. <br> It might take some time  before reflection.", "<a href='index?p=withdraw&action=new' class='btn btn-primary'>Make New Withdrawal</a>", "Success", "<i class='ti ti-check text-success p-3 fs-100'></i>") ?>

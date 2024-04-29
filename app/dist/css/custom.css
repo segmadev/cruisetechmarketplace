@@ -1,0 +1,159 @@
+[role="alert"] {
+  color: #ffaa5fb4 !important;
+  font-size: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.qr-image img {
+  width: 100%;
+}
+
+.middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.zoom {
+  transition: transform 0.3s ease;
+}
+
+.zoom:hover,
+.zoom:active {
+  transform: scale(1.1);
+  z-index: 100;
+  border: 1px solid rgba(103, 103, 103, 0.372);
+}
+
+.text-sell {
+  color: #ca2002a9;
+  text-transform: capitalize;
+}
+
+.text-buy {
+  text-transform: capitalize;
+  color: rgb(19, 222, 185);
+}
+
+
+
+.input-simple :where(input, select),
+[name="amount"] {
+  border: none;
+  padding: 16px;
+  margin: 0;
+  font-size: 20px;
+  padding-left: 0px;
+}
+
+
+.card {
+  animation: rightsidemovement 1s ease 0s 1 normal forwards;
+}
+
+@keyframes rightsidemovement {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+.card.buttommovement,
+.buttommovement {
+  animation: buttommovement 1s ease 0s 1 normal forwards;
+}
+
+@keyframes buttommovement {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.offcanvas.offcanvas-end {
+  width: 350px!important;
+}
+
+.chat-users, .chat-box, .chat-media-list {
+  height: calc(100vh - 280px);
+}
+@media only screen and (max-width: 600px) {
+  .chat-users, .chat-box, .chat-media-list {
+    height: calc(100vh - 330px);
+  }
+  .app-chat-right {
+    visibility: hidden!important;
+    margin-top: 15vh;
+  }
+
+  .offcanvas.offcanvas-end {
+    width: calc(100vw - 90px);
+  }
+
+}
+
+/* .chat-background .text-light {
+  color: white!important;
+} */
+
+
+
+.gradient-border {
+  --borderWidth: 3px;
+  background: #1D1F20;
+  position: relative;
+  border-radius: var(--borderWidth);
+}
+.gradient-border:after {
+  content: '';
+  position: absolute;
+  top: calc(-1 * var(--borderWidth));
+  left: calc(-1 * var(--borderWidth));
+  height: calc(100% + var(--borderWidth) * 2);
+  width: calc(100% + var(--borderWidth) * 2);
+  background: linear-gradient(60deg, #d4ffd7e4, #e0ffe2, #ffffff);
+  border-radius: calc(2 * var(--borderWidth));
+  z-index: -1;
+  animation: animatedgradient 3s ease alternate infinite;
+  background-size: 300% 300%;
+}
+
+
+@keyframes animatedgradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+
+.chat-background {
+  background-image: url('https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/pattern-1.svg');
+  background-size: contain;
+  /* background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; */
+ 
+}
+
+.displayChat {
+  max-width: 80%!important;
+}
