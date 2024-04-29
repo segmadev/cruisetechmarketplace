@@ -363,7 +363,7 @@ class content extends database
     }
     function terms_message()
     {
-        return "<b>By proceeding you agree to our <a href='https://proloomtrading.com/page.php?t=terms_and_conditions' target='_blank'>team and conditions</a> and <a target='_blank' href='https://proloomtrading.com/page.php?t=policy'> privacy policy</a>.</b>";
+        return "<b>By proceeding you agree to our <a href='#' target='_blank'>team and conditions</a> and <a target='_blank' href='#'> privacy policy</a>.</b>";
     }
 
     function arrow_percentage($percent, $word = "profit")
