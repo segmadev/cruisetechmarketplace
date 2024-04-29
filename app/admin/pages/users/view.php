@@ -42,9 +42,9 @@
 
         <div class="col-lg-4 d-flex align-items-strech card bg-light-success">
             <div class="card-body">
-                <div class="text-success bg-light-success card p-3 d-flex m-0"><b>Total Credit: <?= $d->money_format($u->total_transaction_type("credit")['total']) ?> </b></div>
+                <div class="text-success bg-light-success card p-3 d-flex m-0"><b>Total Credit: <?= $d->money_format($u->total_transaction_type($userID, "credit")['total']) ?> </b></div>
                 <hr>
-                <div class="text-danger card p-3 d-flex m-0 bg-light-danger"><b>Total Debit: <?= $d->money_format($u->total_transaction_type("debit")['total']) ?> </b></div>
+                <div class="text-danger card p-3 d-flex m-0 bg-light-danger"><b>Total Debit: <?= $d->money_format($u->total_transaction_type($userID, "debit")['total']) ?> </b></div>
                 <hr>
                 <a href="index?p=account&userID=<?= $userID; ?>" class="text-primary card p-3 d-flex m-0 bg-light-primary"><b>No Account Bought: <br> <?= number_format($no_account_bought) ?> | View </b></a>
               

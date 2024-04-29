@@ -10,8 +10,8 @@ class users extends user
         }
     }
 
-    function total_transaction_type($type) {
-        return $this->getall("transactions", "amount > ? and action_type = ?", [0, $type], "SUM(amount) as total", );
+    function total_transaction_type($userID, $type) {
+        return $this->getall("transactions", "userID = ? and amount > ? and action_type = ?", [$userID, 0, $type], "SUM(amount) as total", );
     }
     // approve or reject deposit 
     function update_deposit_status() {
