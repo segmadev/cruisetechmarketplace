@@ -387,10 +387,10 @@ require_once "../include/ini-session.php";
                         </li>
                     </ul>
 
-                    <div class="d-block d-lg-none">
+                    <!-- <div class="d-block d-lg-none">
                         <img src="http://demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/dist/images/logos/dark-logo.svg" class="dark-logo" width="180" alt="" />
                         <img src="http://demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/dist/images/logos/light-logo.svg" class="light-logo" width="180" alt="" />
-                    </div>
+                    </div> -->
 
                 </nav>
             </header>

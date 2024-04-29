@@ -37,6 +37,8 @@
    
     // var_dump($settings_form);
     $settings_deposit_form = [
+        "flutterwave_public_key"=>["input_type"=>"text"],
+        "flutterwave_secret_key"=>["input_type"=>"text"],
         "min_deposit"=>["input_type"=>"number"],
         "max_deposit"=>["input_type"=>"number", "is_required"=>false],
         "send_email_on_user_deposit"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
