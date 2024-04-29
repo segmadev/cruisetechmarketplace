@@ -15,9 +15,9 @@ $script[] = "fetcher";
                 <a href="index?p=deposit&action=transactions" class="btn btn-sm btn-dark w-100 m-0">View All Transactions</a>
                <hr>
                
-                <h5 class="card-title fw-semibold">Deposit</h5>
+                <!-- <h5 class="card-title fw-semibold">Deposit</h5>
                 <p class="card-subtitle mb-2">All your Deposit</p>
-                <div id="deport-chart" class="mb-4 ms-0 p-0"></div>
+                <div id="deport-chart" class="mb-4 ms-0 p-0"></div> -->
             </div>
         </div>
     </div>
