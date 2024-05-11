@@ -28,7 +28,7 @@ class Account extends user
         $data = [""];
         if(isset($_GET['s']) && $_GET['s'] != "") {
           $s = htmlspecialchars($_GET['s']);
-          $where .= "and title  LIKE CONCAT( '%',?,'%') or description  LIKE CONCAT( '%',?,'%')";
+          $where .= "and account.title  LIKE CONCAT( '%',?,'%') or account.description  LIKE CONCAT( '%',?,'%')";
           $data[] = $s;
           $data[] = $s;
         }
@@ -37,18 +37,18 @@ class Account extends user
         }
 
         if ($platform != "") {
-          $where .= " and platformID = ?";
+          $where .= " and account.platformID = ?";
           $data[] = $platform;   
         }
         if (isset($_GET['userID']) && $_GET['userID'] != "") {
-          $where .= " and sold_to = ?";
+          $where .= " and account.sold_to = ?";
           $data[] = htmlspecialchars($_GET['userID']);   
         }
         if($status != ""){
-          $where .= " and status = ?";
+          $where .= " and account.status = ?";
           $data[] = $status;
         }
-        return $this->getall("account", "id != ? $where LIMIT $start, $limit", $data, fetch: "moredetails");
+        return $this->getall("account as account left join logininfo as login on account.id = login.accountID", "account.id != ? $where and login.accountID is null order by login.sold_to desc LIMIT $start, $limit", $data, fetch: "moredetails");
     }
 
     function get_account($id, $status = "1") {
@@ -74,35 +74,58 @@ class Account extends user
       return $this->getall("logininfo", "accountID = ? and sold_to = ?", [$accountID, ""], fetch: "");
     }
 
-    function buy_account($userID, $accountID) {
+    function buy_account($userID, $accountID, $qty) {
         $account = $this->getall("account", "ID = ?", [$accountID]);
-        if ($account['status'] != 1 || $account['sold_to'] != "") {
+        if ($this->get_num_of_login($accountID) < 1) {
             return $this->message("Account not avilable or sold out.", "error");
         }
+        $amount = (float)$account['amount'] * (int)$qty;
+        $orderID = uniqid("order-");
         // debit user account
-        $debit = $this->credit_debit($userID, $account['amount'], "balance", "debit", "account", $account['ID']);
+        $debit = $this->credit_debit($userID, $amount, "balance", "debit", "orders", $orderID);
         if (!$debit) {
             return "";
         }
-
+        // get all logins with accoutID based on qty
+        $logins = $this->getall("logininfo", "accountID = ? and sold_to = ? LIMIT $qty", [$accountID, ""], fetch:"all");
+        if ($logins->rowCount() < $qty) {
+            $this->credit_debit($userID, $account, "balance", "credit", "order - refund", $orderID);
+            return $this->message("only ".$logins->rowCount()." available left", "error");
+        }
+        // loop throught logins and and upate sold_out with userID, 
         // update account
-        $update = $this->update("account", ["status" => 3, "sold_to" => $userID], "ID = '$accountID'");
-        if (!$update) {
-            $this->message("An error occurred while purchasing your account please contact " + $this->get_settings("support_email") + " for help.", "error");
-        } 
+        $bought_logins = [];
+        foreach ($logins as $login) {
+            $this->update("logininfo", ["sold_to" => $userID], "ID = '$login[ID]'");
+            // pass all login ID to bought_logins
+            $bought_logins[] = $login['ID'];
+        }
+        // create an order for the account
+        $order = [
+          "ID"=>$orderID,
+          "userID"=>$userID,
+          "accountID"=>$accountID,
+          "loginIDs"=>implode(',', $bought_logins),
+          "amount"=>$amount,
+          "no_of_orders"=>$qty,
+        ];
+        $this->quick_insert("orders", $order);
         // redirect to account info page
         $return = [
             "message"=> ["Success", "Account Purchased", "success"],
-            "function"=>["loadpage", "data"=>["index?p=account&action=view&id=$accountID", "null"]]
+            "function"=>["loadpage", "data"=>["index?p=orders&action=view&id=$orderID", "null"]]
         ];
         return json_encode($return);
     }
-    function display_account($account, $userID = null){
-        $platform = $this->get_platform($account['platformID']);
-        return "<div class='col single-note-item all-category note-favourite' id='displayaccount-".$account['ID']."'>
-                <div class='card card-body bg-light p-0 p-2 border-1'>
-                  
-                  <div class='d-flex'>
+
+
+    function display_account_name($account) {
+      if(!is_array($account)) {
+        $account = $this->getall("account", "ID = ?", [$account]);
+      }
+      $platform = $this->get_platform($account['platformID']);
+      return "
+      <div class='d-flex'>
                     <div>
                         <img src='".PATH."assets/images/icons/".$platform['icon']."' class='img-fluid rounded-circle' width='20' />
                     </div>
@@ -111,7 +134,13 @@ class Account extends user
                     <p class='note-date fs-2'>".$platform['name']. "</p>
                     </div>
                   </div>
-                  
+      ";
+    }
+    function display_account($account, $userID = null){
+        $platform = $this->get_platform($account['platformID']);
+        return "<div class='col single-note-item all-category note-favourite' id='displayaccount-".$account['ID']."'>
+                <div class='card card-body bg-light p-0 p-2 border-1'>
+                  ".$this->display_account_name($account)."
                   <div class='d-flex align-items-center justify-content-between'>
                 <div class=''>
                   <p class='h6'><b>" . $this->money_format($account['amount'], currency) . "</b></p>
@@ -151,18 +180,23 @@ class Account extends user
     }
     return $btn;
       }
-      if($userID == null || $account['sold_to'] == "" || $account['sold_to'] != $userID) {
+      if($this->get_num_of_login($account['ID']) > 0) {
+        return "
+        <a 
+                    href='index?p=account&action=details&id=".$account['ID']."' 
+                    
+                    class='link me-1 btn btn-sm btn-outline-success'>
+                      <i class='ti ti-plus fs-4 favourite-note'></i> buy
+                    </a>
+
+        ";
+      }else{
         return "
         <a 
                     href='#' 
-                    data-bs-toggle='modal' 
-                    data-bs-target='#bs-example-modal-md' 
-                    id='modal-".$account['ID']."' 
-                    data-url='".PATH."modal?p=account&action=details&id=".$account['ID']."' 
-                    data-title='Account Details' 
-                    onclick='modalcontent(this.id)'
-                    class='link me-1 btn btn-sm btn-outline-success'>
-                      <i class='ti ti-plus fs-4 favourite-note'></i> buy
+                    
+                    class='link me-1 btn btn-sm btn-dart'>
+                      Sold Out.
                     </a>
 
         ";

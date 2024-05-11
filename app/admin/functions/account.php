@@ -1,4 +1,5 @@
 <?php
+require_once "../functions/account.php";
 class accounts extends Account
 {
     function manage_account($account_from, $action = "insert")

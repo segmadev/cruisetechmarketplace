@@ -27,6 +27,10 @@
     <script src="dist/libs/owl.carousel/dist/owl.carousel.min.js"></script>
     <script src="dist/js/dashboard3.js?n=45"></script>
 <?php } ?>
+<!-- productdetails -->
+<?php if (in_array("productlist", $script)) { ?>
+    <script src="dist/js/productDetail.js"></script>
+<?php } ?>
 <!-- qr code js -->
 <?php if (in_array("qrcode", $script)) { ?>
     <script src="qrcodejs/qrcode.min.js"></script>

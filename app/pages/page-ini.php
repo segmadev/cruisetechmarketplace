@@ -1,6 +1,6 @@
 <?php
 $action = "list";
-$accepted_actions = ["new","generate", "access", "home", "prove", 'list', "view", "edit", "overview", "rejected", "transfer", "transactions"];
+$accepted_actions = [ "details","new","generate", "access", "home", "prove", 'list', "view", "edit", "overview", "rejected", "transfer", "transactions"];
 if (isset($_GET['action'])) {
     $action = htmlspecialchars($_GET['action']);
 }
@@ -12,22 +12,13 @@ if (file_exists("pages/" . $page . "/config.php")) {
     require_once "pages/" . $page . "/config.php";
 }
 
-if (file_exists("pages/" . $page . "/ini.php")) {
-    require_once "pages/" . $page . "/ini.php";
-}
 
-if (file_exists("consts/$page" . ".php")) {
-    require_once "consts/$page" . ".php";
-}
-
-
-// echo $page;
 if (!class_exists($page) && file_exists("pages/" . $page . "/$page"."_function.php")) {
     require_once "pages/" . $page . "/$page"."_function.php";
-    exit();
 }
 if (!class_exists($page) && file_exists("functions/" . $page . ".php")) {
     require_once "functions/$page.php";
+    // exit();
 }
 
 if(class_exists($page)) {
@@ -37,6 +28,16 @@ if(class_exists($page)) {
         ${substr($page, 0, 2)} = new $page;
     }
 }
+
+if (file_exists("pages/" . $page . "/ini.php")) {
+    require_once "pages/" . $page . "/ini.php";
+}
+
+if (file_exists("consts/$page" . ".php")) {
+    require_once "consts/$page" . ".php";
+}
+
+
 
 if (file_exists("functions/" . $page . ".php") && !class_exists($page)) {
     require_once "functions/$page.php";
