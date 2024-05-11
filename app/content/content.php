@@ -103,6 +103,7 @@ class content extends database
 
             $main_code .= str_replace($this->placeholder, $this->$type(), $this->get_header());
         }
+        
         return $main_code;
     }
 
@@ -258,18 +259,7 @@ class content extends database
         return null;
     }
 
-    function get_users_option_data()
-    {
-        $info = [];
-        $users = $this->getall("users", "status != ?", [""], "ID, first_name, last_name", "moredetails");
-        if ($users->rowCount() == 0) {
-            return $info;
-        }
-        foreach ($users as $row) {
-            $info[$row['ID']] = $row['first_name'] . ' ' . $row['last_name'];
-        }
-        return $info;
-    }
+
     function badge($data)
     {
         $data = ucfirst($data);
@@ -303,51 +293,9 @@ class content extends database
     }
     
 
-    function get_compound_profits_btn($investID, $data, $upgrade = false) {
-        if($data == false) {
-            echo "<a class='btn btn-success rounded-pill' href='index?p=compound_profits&action=new&investID=$investID#newcompound'>Activate compound profits</a>";
-            return null;
-        }
-        $id = $data['ID'];
-        $status = $data['status'];
-        $acheck = "";
-        $dcheck = "";
-        if($status == "active") {
-            $acheck = "checked";
-        }else{
-            $dcheck = "checked";
-        }
-        if($upgrade) $upgrade = '<a href="index?p=compound_profits&action=new&investID='.$investID.'#newcompound" class="btn btn-primary rounded-pill font-medium ms-2">Upgrade</a>';
-        else $upgrade = "";
-        echo '
-        <div class="d-flex">
-        <input type="radio" class="btn-check" name="options" id="option1"value="active" onclick="update_compound_profits(this.value, \''.$id.'\')" autocomplete="off" '.$acheck.'>
-        <label class="btn btn-outline-success rounded-pill font-medium" for="option1">Active</label>
-        
-        <input type="radio" class="btn-check" name="options" value="deactive" id="option4" onclick="update_compound_profits(this.value, \''.$id.'\')" autocomplete="off" '.$dcheck.'>
-        <label class="btn btn-outline-danger rounded-pill font-medium ms-2" for="option4">Deactive</label>
-
-        '.$upgrade.'
-        </div>
-        ';
-    }
+   
 
 
-    function plan_list($data, $class = "")
-    {
-        $min = '';
-        if ($data['plan_name'] != "") {
-            $min = $data['plan_name'] . ": ";
-        }
-        $min .= currency . number_format((float)$data['min_amount'], 2,);
-        $max = currency . number_format((float)$data['max_amount'], 2,);
-        $retrun = $data['return_range_to'] . "%";
-        $retrun_interval = $data['retrun_interval'];
-        return "<a href='?p=investment&action=new&planid=" . $data['ID'] . "' class='card shadow-md p-3 col-12 col-md-5 m-1 zoom $class'>
-                <h6 class='mr-auto p-2 m-0'>$min - $max</h6>
-                <div class='ps-2 ml-auto text-right '>Retun up to <b class='text-success'>$retrun $retrun_interval</b></div>
-            </a>";
-    }
 
     function referral_list($data, $link, $class = "")
     {
@@ -398,5 +346,20 @@ class content extends database
         }
         return "primary";
 
+    }
+
+    function modal_attributes($url, $title = "Modal", $id = null) {
+        if($id == null) $id = uniqid("modal-viewer-");
+        return "href='javascript:void(0)' 
+        data-bs-toggle='modal' 
+        data-bs-target='#bs-example-modal-md' 
+        id='$id' 
+        data-url='$url' 
+        data-title='$title' 
+        onclick='modalcontent(this.id)'";
+    }
+
+    function copy_text($text, $class = "") {
+        return "<a href='javascript:void(0)' onclick='copy_text(\"$text\")' class='btn btn-sm $class'><i class='ti ti-copy'></i></a>";
     }
 }

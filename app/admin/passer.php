@@ -26,8 +26,6 @@ session_start();
     //        ""=>null,
     //     };
     // }
-
-
     if(file_exists("pages/$page/passer.php")) {
         require_once "pages/$page/passer.php";
     }
@@ -149,7 +147,4 @@ session_start();
         }
        }
     }
-
-    
-
 ?>

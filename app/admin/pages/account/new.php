@@ -6,6 +6,7 @@
         <form action="" id="foo">
             <div class="row">
                 <?= $c->create_form($account_from); ?>
+                <?php require_once "pages/account/logins.php"; ?>
             </div>
             <input type="hidden" name="page" value="account">
             <input type="hidden" name="new_account" value="account">

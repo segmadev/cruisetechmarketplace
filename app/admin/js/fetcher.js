@@ -20,15 +20,20 @@ function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer"
   });
 
   request.done(function (response) {
-    if (response == null || response == "null" || response == "") {
-        start = 0;
+    if (response == null || response == "null" || response == "  " || response.replace(/ /g, '') == "", response.replace(/ /g, '') == " ") {
+      start = 0;
         return null;
     }
-    let placeID = Math.floor(Math.random() * 50);
+    if (checkJSON(response)) {
+      obj = JSON.parse(response);
+      if(obj['status'] != "ok") return null;
+      response = obj['data'];
+    }
+    document.getElementById(displayId).innerHTML += response;
     display = document.getElementById(displayId);
-    display.innerHTML += response;
     let elements = display.querySelectorAll("#foo");
     $i = 0;
+    // console.log(elements.length);
     if (typeof iniForm === "function") {
       elements.forEach((element) => {
         iniForm(element);
@@ -38,6 +43,26 @@ function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer"
     start = start + limit;
     fetchData(what, displayId, page, limit, start, path);
   });
+
+  // request.done(function (response) {
+  //   if (response == null || response == "null" || response == "") {
+  //       start = 0;
+  //       return null;
+  //   }
+  //   let placeID = Math.floor(Math.random() * 50);
+  //   display = document.getElementById(displayId);
+  //   display.innerHTML += response;
+  //   let elements = display.querySelectorAll("#foo");
+  //   $i = 0;
+  //   if (typeof iniForm === "function") {
+  //     elements.forEach((element) => {
+  //       iniForm(element);
+  //       $i++;
+  //     });
+  //   }
+  //   start = start + limit;
+  //   fetchData(what, displayId, page, limit, start, path);
+  // });
 }
 
 function get_user_info(userID) {
@@ -85,4 +110,16 @@ function fetchUserData(displayId, id) {
         document.getElementById("content"+id).style.visibility = "visible";
         document.getElementById("content"+id).style.display = "block";
       });
+}
+
+function checkJSON(text) {
+  if (typeof text !== "string") {
+      return false;
+  }
+  try {
+      JSON.parse(text);
+      return true;
+  } catch (error) {
+      return false;
+  }
 }

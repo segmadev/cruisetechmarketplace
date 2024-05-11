@@ -1,5 +1,5 @@
 <?php  
-    class Notifications extends database {
+    class Notifications extends content {
 
 
         function get_pending_all_notification(string $userID, $for = "", $type = "sn.notificationID IS NULL and sn.userID") {

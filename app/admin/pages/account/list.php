@@ -16,7 +16,7 @@
                 <div class="col-7">
                     <div class="dropdown flex d-flex">
                         <select name="platform" class="form-control" style="width: 30%;" id="">
-                            <option value="All">All</option>
+                            <option value="">All</option>
                             <?php if ($platforms->rowCount() > 0) {
                                  foreach ($platforms as $row) {?>
                                     <option value="<?php echo $row['ID'];?>" <?php if(isset($_GET['platform']) && $_GET['platform'] == $row['ID']) { echo "selected"; } ?>><?php echo $row['name'];?></option>

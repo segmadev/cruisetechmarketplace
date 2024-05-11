@@ -135,6 +135,33 @@ require_once "../include/ini-session.php";
                                 </li>
                             </ul>
                         </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
+                                <span class="d-flex">
+                                    <i class="ti ti-layout-grid"></i>
+                                </span>
+                                <span class="hide-menu">Categories</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse first-level">
+                                <li class="sidebar-item">
+                                    <a href="index?p=category&action=new" class="sidebar-link">
+                                        <div class="round-16 d-flex align-items-center justify-content-center">
+                                            <i class="ti ti-circle"></i>
+                                        </div>
+                                        <span class="hide-menu">Create Category</span>
+                                    </a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a href="index?p=category" class="sidebar-link">
+                                        <div class="round-16 d-flex align-items-center justify-content-center">
+                                            <i class="ti ti-circle"></i>
+                                        </div>
+                                        <span class="hide-menu">List of Categories</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <!-- Users start here -->
                         <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>

@@ -235,19 +235,13 @@ class database
 
     private function getmethod($q, $fetch)
     {
-        switch ($fetch) {
-            case 'details':
-                $data = $q->fetch(PDO::FETCH_ASSOC);
-                break;
-            case 'moredetails':
-                $data = $q;
-                break;
-
-            default:
-                $data = $q->rowCount();
-                break;
+        if($fetch == "details" || $fetch == "single" || $fetch == "s") {
+            return $q->fetch(PDO::FETCH_ASSOC);
         }
-        return $data;
+        if($fetch == "moredetails" || $fetch == "all" || $fetch == "a") {
+            return $q;
+        }
+        return $q->rowCount();
     }
 
     function create_table($name, array $data)
@@ -276,6 +270,7 @@ class database
     {
         $info = "";
         foreach ($datas as $key => $data) {
+            $key = str_replace('[]', '', $key);
             $type = "VARCHAR(250)";
             $default_value = "";
             $isNull = "NOT NULL";

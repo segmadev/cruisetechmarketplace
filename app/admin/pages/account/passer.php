@@ -1,23 +1,35 @@
-<?php 
-    if(isset($_POST['new_account'])) echo $a->manage_account($account_from);
-    if(isset($_POST['upadate_account'])) echo $a->manage_account($account_from, "update");
-    if(isset($_POST['delete_account'])) echo $a->delete_account(htmlspecialchars($_POST['ID'] ?? ""));
-    if(isset($_POST['what']) && $_POST['what'] == "get") {
-        $start = htmlspecialchars($_POST['start']);
-        $limit = htmlspecialchars($_POST['limit']);
-       try {
+<?php
+if (isset($_POST['new_account'])) echo $a->manage_account($account_from);
+if (isset($_POST['upadate_account'])) echo $a->manage_account($account_from, "update");
+if (isset($_POST['delete_account'])) echo $a->delete_account(htmlspecialchars($_POST['ID'] ?? ""));
+if (isset($_POST['edit_login_details']) && isset($_POST['ID'])) {
+    $loginID = htmlspecialchars($_POST['ID']);
+    $value = htmlspecialchars($_POST['login_details']);
+    $accountID = htmlspecialchars($_POST['accountID']);
+    echo $a->update_login_info($loginID, $value, $accountID);
+}
+if (isset($_POST['delete_login'])) {
+    $id = htmlspecialchars($_POST['ID'] ?? "");
+    echo $a->delete_login_details($id);
+}
+if (isset($_POST['what']) && $_POST['what'] == "get") {
+    $start = htmlspecialchars($_POST['start']);
+    $limit = htmlspecialchars($_POST['limit']);
+    try {
         $data = $a->fetch_account(start: $start, limit: $limit, status: "");
-        if($data->rowCount() > 0 ) {
-            $body = "";
+        $body = "";
+        if ($data->rowCount() > 0) {
             foreach ($data as $value) {
                 $body .= $a->display_account($value);
             }
-            echo $body;
+            $return = ["status"=>"ok", "data"=>"$body"];
+            echo json_encode($return);
+            return ;
+            // echo $body;
         }
-       } catch (\Throwable $th) {
-        // var_dump($th);
-        //throw $th;
-       }
-        
+        $return = ["status"=>"null", "data"=>""];
+        echo json_encode($return);
+        return ;
+    } catch (\Throwable $th) {
     }
-?>
+}
