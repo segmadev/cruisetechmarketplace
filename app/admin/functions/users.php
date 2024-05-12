@@ -129,9 +129,9 @@ class users extends user
         $info = [];
         $user = $this->getall("users",  select: "COUNT(*)  as users_no, SUM(balance) as balance");
         $account = $this->getall("account",  select: "COUNT(*)  as no_account_added");
-        $account_sold = $this->getall("account", "sold_to != ?", [""],  select: "COUNT(*)  as no_account_sold, SUM(amount) as total_amount_sold");
+        $no_orders = $this->getall("orders", "ID != ?", [""],  select: "COUNT(*)  as no_orders, SUM(amount) as total_amount_sold");
         $payment = $this->getall("payment", "status = ? or status = ?", ["success", "successful"],  select: "COUNT(*)  as no_of_success_payment, SUM(amount) as total_success_payment");
-        $info = array_merge($info, $user, $account, $account_sold, $payment);
+        $info = array_merge($info, $user, $account, $no_orders, $payment);
         return $info;
     }
 

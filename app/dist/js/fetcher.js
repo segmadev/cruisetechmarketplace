@@ -24,12 +24,16 @@ function searchMarket() {
     var fetchID = searchM.getAttribute("data-id");
     fetchDiv = document.querySelector(fetchID);
     var platform = "";
+    var category = "all";
     if (document.querySelector("#searchMarketPlaform")) {
       platform = document.querySelector("#searchMarketPlaform").value;
     }
+    if (document.querySelector("#searchMarketcategory")) {
+      category = document.querySelector("#searchMarketcategory").value;
+    }
     fetchDiv.setAttribute(
       "data-path",
-      "passer?a=account&s=" + searchM.value + "&platform=" + platform
+      "passer?a=account&s=" + searchM.value + "&platform=" + platform +"&category=" + category
     );
     if (loadFetchData(fetchDiv)) searchIsSave = true;
 }

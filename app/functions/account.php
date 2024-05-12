@@ -21,34 +21,43 @@ class Account extends user
     return json_encode($return);
       
     }
-    function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1)
+    function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1, $category = "all")
     {
      
         $where = "";
         $data = [""];
         if(isset($_GET['s']) && $_GET['s'] != "") {
           $s = htmlspecialchars($_GET['s']);
-          $where .= "and account.title  LIKE CONCAT( '%',?,'%') or account.description  LIKE CONCAT( '%',?,'%')";
+          $where .= "and title  LIKE CONCAT( '%',?,'%') or description  LIKE CONCAT( '%',?,'%')";
           $data[] = $s;
           $data[] = $s;
         }
         if($platform == "" && isset($_GET['platform']) && $_GET['platform'] != "") {
            $platform = htmlspecialchars($_GET['platform']);
         }
+        if(isset($_GET['category']) && $_GET['category'] != "all") {
+           $category = htmlspecialchars($_GET['category']);
+        }
 
         if ($platform != "") {
-          $where .= " and account.platformID = ?";
+          $where .= " and platformID = ?";
           $data[] = $platform;   
         }
+        if ($category != "all") {
+          $where .= " and categoryID = ?";
+          $data[] = $category;   
+        }
+
+
         if (isset($_GET['userID']) && $_GET['userID'] != "") {
-          $where .= " and account.sold_to = ?";
+          $where .= " and sold_to = ?";
           $data[] = htmlspecialchars($_GET['userID']);   
         }
         if($status != ""){
-          $where .= " and account.status = ?";
+          $where .= " and status = ?";
           $data[] = $status;
         }
-        return $this->getall("account as account left join logininfo as login on account.id = login.accountID", "account.id != ? $where and login.accountID is null order by login.sold_to desc LIMIT $start, $limit", $data, fetch: "moredetails");
+        return $this->getall("account", "id != ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
     }
 
     function get_account($id, $status = "1") {

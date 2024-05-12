@@ -2,6 +2,10 @@
 if (!$account || $account == "") {
     echo $c->empty_page("Account not found or not sold to you.", h1: "Not Found");
 } else { ?>
+<div class="p-2 fixed m-0">
+    <h1 class="h5">Market Place</h1>
+    <p>Buy last longing account from us.</p>
+</div>
     <div class="card p-3">
         <div class="flex d-flex">
             <div>

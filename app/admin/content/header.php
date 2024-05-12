@@ -108,6 +108,8 @@ require_once "../include/ini-session.php";
                             </ul>
                         </li>
 
+                        
+
 
                         <li class="sidebar-item">
                             <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
@@ -161,6 +163,15 @@ require_once "../include/ini-session.php";
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" href="index?p=orders" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-list"></i>
+                                </span>
+                                <span class="hide-menu">Orders</span>
+                            </a>
                         </li>
                         <!-- Users start here -->
                         <li class="nav-small-cap">

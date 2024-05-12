@@ -31,5 +31,7 @@ if (isset($_POST['what']) && $_POST['what'] == "get") {
         echo json_encode($return);
         return ;
     } catch (\Throwable $th) {
+        $return = ["status"=>"null", "data"=>""];
+        echo json_encode($return);
     }
 }

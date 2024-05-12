@@ -3,7 +3,7 @@
     $account_from = [
         "ID"=>["input_type"=>"hidden", "is_required"=>false],
         "platformID"=>["title"=>"Select Platfrom","type"=>"select", "options"=>$d->options_list("platform"), "description"=>"<a href='index?p=platform&action=new'>Click here</a> to Create New Platfrom"],
-        "categoryID"=>["title"=>"Select Platfrom","type"=>"select", "options"=>$d->options_list("category"), "description"=>"<a href='index?p=category&action=new'>Click here</a> to Create New Category"],
+        "categoryID"=>["title"=>"Select Category","type"=>"select", "options"=>$d->options_list("category"), "description"=>"<a href='index?p=category&action=new'>Click here</a> to Create New Category"],
         "title"=>["description"=>"Name or title of the account"],
         "description"=>["type"=>"textarea", "title"=>"Description (optional)", "is_required"=>false, "description"=>"Tell buyers more about the account"],
         "amount"=>["input_type"=>"number", "description"=>"What is the amount you selling the account for"],

@@ -21,9 +21,15 @@
             foreach ($data as $value) {
                 $body .= $ca->display_category($value);
             }
-            echo $body;
+            $return = ["status"=>"ok", "data"=>"$body"];
+            echo json_encode($return);
+            return ;
         }
+        $return = ["status"=>"null", "data"=>""];
+        echo json_encode($return);
        } catch (\Throwable $th) {
+        $return = ["status"=>"null", "data"=>""];
+        echo json_encode($return);
         // print($th);
         //throw $th;
        }

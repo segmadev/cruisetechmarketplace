@@ -5,7 +5,7 @@ if (!$order || $order == "") {
     <div class="card p-3">
         <div class="flex d-flex">
             <div>
-                <img class="img-fluid rounded-circle" width="60" src="<?= $a->get_platfrom_img_url($account['platformID'])  ?>" alt="">
+                <img class="img-fluid rounded-circle" width="40" src="<?= $a->get_platfrom_img_url($account['platformID'])  ?>" alt="">
             </div>
             <div class="ms-3">
                 <h2><?= $account['title'] ?></h2>

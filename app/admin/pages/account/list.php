@@ -3,18 +3,18 @@
     $script[] = "sweetalert";
 ?>
 <div class="card">
-    <div class="card-body" data-load="get" data-path="passer?s=<?= htmlspecialchars($_GET['s'] ?? "") ?>&platform=<?= htmlspecialchars($_GET['platform'] ?? "") ?>&userID=<?= htmlspecialchars($_GET['userID'] ?? "") ?>" data-page="account" data-displayId="displayAccounts">
+    <div class="card-body" data-load="get" data-path="passer?s=<?= htmlspecialchars($_GET['s'] ?? "") ?>&platform=<?= htmlspecialchars($_GET['platform'] ?? "") ?>&userID=<?= htmlspecialchars($_GET['userID'] ?? "") ?>&category=<?= htmlspecialchars($_GET['category'] ?? "all") ?>" data-page="account" data-displayId="displayAccounts">
         <div class="card-title">
             <h1>Accounts Added</h1>
         </div>
         <div class="card-header">
             <form action="" method="get" class="row flex d-flex">
                 <input type="hidden" name="p" value="account">
-                <div class="col-5">
+                <div class="col-12 col-md-5">
                     <input type="search" value="<?php if(isset($_GET['s'])) { echo $_GET['s']; } ?>" name="s" class="form-control" placeholder="Search Account" data-id="#accountList" id="searchMarket">
                 </div>
-                <div class="col-7">
-                    <div class="dropdown flex d-flex">
+                <div class="col-12 col-md-7">
+                    <div class="dropdown flex d-flex g-2 w-100">
                         <select name="platform" class="form-control" style="width: 30%;" id="">
                             <option value="">All</option>
                             <?php if ($platforms->rowCount() > 0) {
@@ -22,6 +22,15 @@
                                     <option value="<?php echo $row['ID'];?>" <?php if(isset($_GET['platform']) && $_GET['platform'] == $row['ID']) { echo "selected"; } ?>><?php echo $row['name'];?></option>
                                 <?php }
                             }?>
+                        </select>
+                        <select name="category" class="form-control" style="width: 30%;" id="">
+                            <option value="all">All Categories</option>
+                            <?php if ($categories->rowCount() > 0) {
+                                foreach ($categories as $row) {?>
+                                    <option value="<?php echo $row['ID'];?>" <?php if(isset($_GET['category']) && $_GET['category'] == $row['ID']) { echo "selected"; } ?>><?php echo $row['name'];?></option>
+                                    <?php }
+                            }?>
+                            
                         </select>
                         <button type="submit" class="btn btn-sm btn-primary">Fliter</button>
                         

@@ -34,9 +34,9 @@
                  <div class="text-center">
                      <img src="https://www.svgrepo.com/show/530375/calendar.svg" width="50" height="50" class="mb-3" alt="" />
                      <!-- <img src="http://demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/dist/images/svgs/icon-favorites.svg" width="50" height="50" class="mb-3" alt="" /> -->
-                     <p class="fw-semibold fs-3 text-danger mb-1 w-100">Sold Account</p>
-                     <h5 class="fw-semibold text-danger  mb-0"><?= number_format($users_data['no_account_sold']) ?></h5>
-                     <a href="index?p=account" class='btn btn-sm btn-outline-danger'>View Account</a>
+                     <p class="fw-semibold fs-3 text-danger mb-1 w-100">Orders</p>
+                     <h5 class="fw-semibold text-danger  mb-0"><?= number_format($users_data['no_orders']) ?></h5>
+                     <a href="index?p=orders" class='btn btn-sm btn-outline-danger'>View orders</a>
                  </div>
              </div>
          </div>

@@ -1,5 +1,4 @@
 <?php
-
 require_once "content/header.php";
 
 if ($page != "") {

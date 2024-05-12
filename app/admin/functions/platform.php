@@ -30,7 +30,7 @@ class platform extends database
     }
     function get_platforms($start, $limit)
     {
-        $data = $this->getall("platform", "ID != ? LIMIT $start, $limit", data: [""], fetch: "moredetails");
+        $data = $this->getall("platform", "ID != ? order by date DESC LIMIT $start, $limit", data: [""], fetch: "moredetails");
         return $data;
     }
 

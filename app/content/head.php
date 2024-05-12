@@ -12,7 +12,6 @@ if (isset($_SESSION['browser_theme'])) {
             $theme_btn = '<a href="index?theme=light" class=" btn btn-light text-dark rounded-pill font-medium me-2 mb-2" style="background-color: white"> <i class="ti ti-sun"></i> Change to Light Theme</a>';
             # code...
             break;
-
         default:
             $logo = $dark_logo;
             // echo  '<link id="themeColors" rel="stylesheet" href="dist/css/style.min.css?n=409" />';

@@ -26,7 +26,7 @@ class Category extends database
     }
     function get_categories($start, $limit)
     {
-        $data = $this->getall("category", "ID != ? LIMIT $start, $limit", data: [""], fetch: "moredetails");
+        $data = $this->getall("category", "ID != ? order by date DESC LIMIT $start, $limit", data: [""], fetch: "moredetails");
         return $data;
     }
 

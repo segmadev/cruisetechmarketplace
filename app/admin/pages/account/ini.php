@@ -4,6 +4,7 @@ require_once "../functions/account.php";
 require_once "functions/account.php";
 $a = new accounts;
 $platforms = $d->getall("platform", fetch:"moredetails");
+$categories  = $d->getall("category", fetch:"moredetails");
 $account = [];
 if($action == "edit") {
     $id = htmlspecialchars($_GET['id'] ?? "");

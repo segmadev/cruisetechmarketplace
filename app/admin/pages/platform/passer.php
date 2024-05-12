@@ -22,9 +22,17 @@
             foreach ($data as $value) {
                 $body .= $p->display_platform($value);
             }
-            echo $body;
+            $return = ["status"=>"ok", "data"=>$body];
+            echo json_encode($return);
+           return ;
         }
+        $return = ["status"=>"null", "data"=>""];
+        echo json_encode($return);
+        return ;
        } catch (\Throwable $th) {
+        $return = ["status"=>"null", "data"=>""];
+        echo json_encode($return);
+        return ;
         //throw $th;
        }
         
