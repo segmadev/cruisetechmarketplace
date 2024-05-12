@@ -2,7 +2,7 @@
 $script[] = "modal";
 $script[] = "sweetalert";
 $script[] = "fetcher";
-$categoryID = htmlspecialchars($_GET['categoryID'] ?? "all");
+$categoryID = htmlspecialchars($_GET['category'] ?? "all");
 ?>
 <input type="hidden" value="" id="searchMarketPlaform">
 <div class="w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0" 
