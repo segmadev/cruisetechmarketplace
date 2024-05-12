@@ -21,9 +21,9 @@ class accounts extends Account
         if(!isset($_POST['login_details'])) return $count;
         foreach ($_POST['login_details'] as $key => $value) {
             if($value == "" || $value == " ") continue;
-            $check = $this->getall("loginInfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
+            $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
             if($check > 0) continue;
-            $this->quick_insert("loginInfo", [
+            $this->quick_insert("logininfo", [
                 "accountID" => $accountID,
                 "login_details" => $value
             ]);
@@ -35,13 +35,13 @@ class accounts extends Account
 
     function update_login_info($ID, $value, $accountID) {
         $ID = htmlspecialchars($ID);
-        $check = $this->getall("loginInfo", "ID = ? and accountID = ? and login_details = ?", [$ID, $accountID, $value]);
+        $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details = ?", [$ID, $accountID, $value]);
         if(is_array($check) && $check['login_details'] != $value) {
            return $this->message("Account with this details already exits for this account", "error");
         }
 
          $this->update(
-            "loginInfo",
+            "logininfo",
             [
                 "login_details" => $value
             ],
@@ -55,7 +55,7 @@ class accounts extends Account
         $login = $this->getall("logininfo", "ID = ?", [$id]);
         if(!is_array($login)) return ;
         if($login['sold_to'] != "") return $this->message("This account can not be deleted it is sold out.", "error", "json");
-        $delete = $this->delete("loginInfo", "ID = ?", [$id]);
+        $delete = $this->delete("logininfo", "ID = ?", [$id]);
         if(!$delete) $this->message("Having issue deleting account", "error", "json");
         $return = [
             "message" => ["Success", "Login Details Deleted", "success"],

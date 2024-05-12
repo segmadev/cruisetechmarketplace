@@ -11,14 +11,14 @@
         "input_data"=>$account
     ];
 
-    $loginInfo = [
+    $logininfo = [
         "ID"=>["type"=>"placeholder"],
         "accountID"=>["type"=>"placeholder"],
         "login_details[]"=>["type"=>"textarea", "placeholder"=>"Login Details", "title"=>"Login Details", "is_required"=>false],
         "status"=>["type"=>"placeholder"],
         "sold_to"=>["type"=>"placeholder"],
     ];
-    $d->create_table("loginInfo", $loginInfo);
+    $d->create_table("logininfo", $logininfo);
 
     if(!isset($account['status']) || $account['status'] != 3)  {
         $account_from['status'] =  ["type"=>"select", "options"=>["1"=>"Active", "0"=>"Draft"], "is_required"=>false];
