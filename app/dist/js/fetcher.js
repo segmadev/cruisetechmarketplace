@@ -128,7 +128,7 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer") {
     //   displayHere.innerHTML += response;
     // }
     document.getElementById(displayId).innerHTML += response;
-    start = start + limit;
+    start =  parseInt(start) + parseInt(limit);
     fetchData(what, displayId, limit, start, path);
   });
 }

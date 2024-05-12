@@ -40,7 +40,7 @@ function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer"
         $i++;
       });
     }
-    start = start + limit;
+    start =  parseInt(start) + parseInt(limit);
     fetchData(what, displayId, page, limit, start, path);
   });
 
