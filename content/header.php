@@ -14,7 +14,7 @@
     <meta name="description" content="<?= $d->get_settings("seo_description") ?>" />
     <link rel="icon" href="app/assets/images/logos/<?= $d->get_settings("favicon") ?>" />
     <link rel="sitemap" href="sitemap-index.xml">
-    <meta name="theme-color" content="#facc15">
+    <meta name="theme-color" content="#D97007">
     <title><?= $d->get_settings("company_name") ?></title>
     <script>
     "dark" === localStorage.getItem("hs_theme") || !("hs_theme" in localStorage) && window.matchMedia(

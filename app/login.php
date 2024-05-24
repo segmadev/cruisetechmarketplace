@@ -19,7 +19,7 @@ require_once "include/auth-ini.php"; ?>
     <!--  Favicon -->
     <link rel="shortcut icon" type="image/png" href="<?= $favicon ?>" />
     <!-- Core Css -->
-    <link  id="themeColors"  rel="stylesheet" href="dist/css/style-dark.min.css" />
+    <link  id="themeColors"  rel="stylesheet" href="dist/css/style-orange.min.css" />
   </head>
   <body>
     <!-- Preloader -->
@@ -72,7 +72,7 @@ require_once "include/auth-ini.php"; ?>
                           Remeber this Device
                         </label>
                       </div>
-                      <a class="text-primary fw-medium" href="forget-password">Forgot Password ?</a>
+                      <!-- <a class="text-primary fw-medium" href="forget-password">Forgot Password ?</a> -->
                     </div>
                     <div id="custommessage"></div>
                     <button type="submit"  class="btn btn-primary w-100 py-8 mb-4 rounded-2">Sign In</button>

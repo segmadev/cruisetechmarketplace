@@ -21,7 +21,7 @@ require_once "include/auth-ini.php"
   <!--  Favicon -->
   <link rel="shortcut icon" type="image/png" href="<?= $favicon ?>" />
   <!-- Core Css -->
-  <link  id="themeColors"  rel="stylesheet" href="dist/css/style-dark.min.css" />
+  <link  id="themeColors"  rel="stylesheet" href="dist/css/style-orange.min.css" />
 </head>
 
 <body>
