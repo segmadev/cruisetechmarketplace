@@ -3,9 +3,11 @@
 <!-- Core Css -->
 
 <?php
+$mode = "light";
 if (isset($_SESSION['browser_theme'])) {
     switch ($_SESSION['browser_theme']) {
         case 'dark':
+            $mode = "dark";
             $logo = $light_logo;
             echo '<link  id="themeColors"  rel="stylesheet" href="dist/css/style-dark.min.css?n=5543" />';
             // echo '<link id="themeColors" rel="stylesheet" href="dist/css/style-orange.min.css?n=89" />';
@@ -46,6 +48,17 @@ if (isset($_SESSION['browser_theme'])) {
     aside {
         z-index: 110 !important;
     }
+
+    .bg-blue {
+        background-color: #0B5266;
+        color: white;
+    }
+    <?php if($mode == "dark") { ?>
+        .bg-blue {
+            background-color: white;
+            color: #0B5266;
+        }
+    <?php } ?>
 
 </style>
 

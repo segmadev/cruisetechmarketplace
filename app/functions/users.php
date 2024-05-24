@@ -304,7 +304,7 @@ class user extends Notifications {
         if(is_array($data)) {
             $balance = $this->money_format($data['balance'], currency);
             return "<div class='card bg-primary p-3 text-white'><b>Balance: </b><p class='h2 text-white'><b>$balance</b></p> <p>
-            <a href='#' data-bs-toggle='modal' data-bs-target='#bs-example-modal-md' id='modal-viewer-funaccount' data-url='modal?p=deposit&action=new' data-title='Fund Account' onclick='modalcontent(this.id)' class='btn btn-sm btn-success'>+ Fund Account</a>
+            <a href='#' data-bs-toggle='modal' data-bs-target='#bs-example-modal-md' id='modal-viewer-funaccount' data-url='modal?p=deposit&action=new' data-title='Fund Account' onclick='modalcontent(this.id)' class='btn btn-sm bg-blue'>+ Fund Account</a>
           </div> ";
         }
         return null;

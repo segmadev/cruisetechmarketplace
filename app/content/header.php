@@ -60,7 +60,7 @@ require_once "include/ini-session.php";
     <aside class="left-sidebar">
       <!-- Sidebar scroll-->
       <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between">
+        <div class="brand-logo d-flex align-items-center justify-content-between bg-white">
           <a href="../" class="text-nowrap logo-img">
             <img src="<?= $logo ?>" class="dark-logo" width="140" alt="" />
           </a>
@@ -199,7 +199,7 @@ require_once "include/ini-session.php";
     <div class="body-wrapper">
       <!--  Header Start -->
       <header class="app-header">
-        <nav class="navbar navbar-expand-lg navbar-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white p-1 rounded">
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link sidebartoggler nav-icon-hover ms-n3 " id="headerCollapse" href="javascript:void(0)">

@@ -134,31 +134,35 @@ class Account extends user
       }
       $platform = $this->get_platform($account['platformID']);
       return "
-      <div class='d-flex'>
+      <div class='d-flex m-0 justify-content-between'>
+                    <div class='d-flex m-0'>
                     <div>
-                        <img src='".PATH."assets/images/icons/".$platform['icon']."' class='img-fluid rounded-circle' width='20' />
+                    <img src='".PATH."assets/images/icons/".$platform['icon']."' class='img-fluid rounded-circle' width='20' />
+                </div>
+                <div class='ms-2'>
+                <h6 class='note-title w-100 mb-0'> ".$this->short_text($account['title'], 27)." </h6>
+                <p class='note-date fs-2 m-0'>".$platform['name']. "</p>
+                </div>
                     </div>
-                    <div class='ms-2'>
-                    <h6 class='note-title w-100 mb-0'> ".$account['title']." </h6>
-                    <p class='note-date fs-2'>".$platform['name']. "</p>
-                    </div>
+
+                    <div class=''>
+                  <p class='h6 p-0'><b>" . $this->money_format($account['amount'], currency) . "</b></p>
+                  </div>
                   </div>
       ";
     }
     function display_account($account, $userID = null){
         $platform = $this->get_platform($account['platformID']);
-        return "<div class='col single-note-item all-category note-favourite' id='displayaccount-".$account['ID']."'>
-                <div class='card card-body bg-light p-0 p-2 border-1'>
+        return "<div class='col single-note-item all-category p-0 m-0' id='displayaccount-".$account['ID']."'>
+                <div class='card card-body bg-light p-0 p-2 border-1 mb-1'>
                   ".$this->display_account_name($account)."
-                  <div class='d-flex align-items-center justify-content-between'>
-                <div class=''>
-                  <p class='h6'><b>" . $this->money_format($account['amount'], currency) . "</b></p>
-                  </div>
+                  <div class='d-flex align-items-center justify-content-between p-0 m-0'>
+                  <div class='w-80 text-end'><small><b>".$this->get_num_of_login($account['ID'])." pcs available</b></small></div>
                   <div>   
                   " . $this->account_btn($account, $userID) . "
                   </div>
                   </div>
-                  <div class='w-100 text-end'><small><b>".$this->get_num_of_login($account['ID'])." pcs available</b></small></div>
+                  
             </div>
           </div>
             ";
@@ -189,12 +193,12 @@ class Account extends user
     }
     return $btn;
       }
-      if($this->get_num_of_login($account['ID']) > 0) {
+      if($this->get_num_of_login($account['ID']) == 0) {
         return "
         <a 
                     href='index?p=account&action=details&id=".$account['ID']."' 
                     
-                    class='link me-1 btn btn-sm btn-outline-success'>
+                    class='link me-1 btn btn-sm bg-blue'>
                       <i class='ti ti-plus fs-4 favourite-note'></i> buy
                     </a>
 
