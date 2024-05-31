@@ -140,7 +140,7 @@ function iniForm(element, action = "passer") {
 
 function runjax(request, event, $inputs, fd, action = "passer") {
     if(event.srcElement.children.custommessage) {
-        event.srcElement.children.custommessage.innerHTML = "<div class='flex bg-light-warning text-warning rounded ps-2' style='width: 160px'><b>Please Wait...</b> <img src='https://proloomtrading.com/images/w-loading.gif' style='width:30px'/></div>";
+        event.srcElement.children.custommessage.innerHTML = "<div class='flex bg-light-warning text-warning rounded ps-2' style='width: 160px'><b>Please Wait...</b></div>";
     }
     // return ;
     request = $.ajax({
