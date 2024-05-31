@@ -22913,7 +22913,7 @@
     --bs-success-rgb: 19, 222, 185;
     --bs-info-rgb: 83, 155, 255;
     --bs-warning-rgb: 255, 174, 31;
-    --bs-danger-rgb: 217, 112, 7;
+    --bs-danger-rgb: 250, 137, 107;
     --bs-light-rgb: 246, 249, 252;
     --bs-dark-rgb: 42, 53, 71;
     --bs-muted-rgb: 90, 106, 133;
@@ -26953,7 +26953,7 @@ fieldset:disabled .btn {
     --bs-btn-hover-color: #fff;
     --bs-btn-hover-bg: #FA896B;
     --bs-btn-hover-border-color: #FA896B;
-    --bs-btn-focus-shadow-rgb: 217, 112, 7;
+    --bs-btn-focus-shadow-rgb: 250, 137, 107;
     --bs-btn-active-color: #fff;
     --bs-btn-active-bg: #FA896B;
     --bs-btn-active-border-color: #FA896B;
@@ -31496,7 +31496,7 @@ fieldset:disabled .btn {
 
 .text-bg-danger {
     color: #fff !important;
-    background-color: RGBA(217, 112, 7, var(--bs-bg-opacity, 1)) !important
+    background-color: RGBA(250, 137, 107, var(--bs-bg-opacity, 1)) !important
 }
 
 .text-bg-light {
@@ -54607,7 +54607,7 @@ table.footable thead tr.footable-filtering th ul.dropdown-menu li .checkbox labe
 }
 
 .note-has-grid .single-note-item .category .category-important {
-    background-color: rgba(217, 112, 7, .5);
+    background-color: rgba(250, 137, 107, .5);
     border: 2px solid #fa896b
 }
 
@@ -54644,11 +54644,11 @@ table.footable thead tr.footable-filtering th ul.dropdown-menu li .checkbox labe
 }
 
 .note-has-grid .single-note-item.note-important .point {
-    color: rgba(217, 112, 7, .5)
+    color: rgba(250, 137, 107, .5)
 }
 
 .note-has-grid .single-note-item.note-important .side-stick {
-    background-color: rgba(217, 112, 7, .5)
+    background-color: rgba(250, 137, 107, .5)
 }
 
 .note-has-grid .single-note-item.note-important .category .category-important {

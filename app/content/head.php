@@ -6,7 +6,7 @@
 $mode = "light";
 if (isset($_SESSION['browser_theme'])) {
     switch ($_SESSION['browser_theme']) {
-        case 'dark':
+        case 'dark2':
             $mode = "dark";
             $logo = $light_logo;
             echo '<link  id="themeColors"  rel="stylesheet" href="dist/css/style-dark.min.css?n=5543" />';

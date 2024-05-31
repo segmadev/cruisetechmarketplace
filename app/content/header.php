@@ -74,11 +74,11 @@ require_once "include/ini-session.php";
             <!-- ============================= -->
             <!-- Home -->
             <!-- ============================= -->
-            <li class="nav-small-cap">
+            <!-- <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Theme</span>
             </li>
-            <?= $theme_btn ?>
+           -->
             <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
               <span class="hide-menu">Dashboard</span>
