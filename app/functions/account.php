@@ -193,7 +193,7 @@ class Account extends user
     }
     return $btn;
       }
-      if($this->get_num_of_login($account['ID']) == 0) {
+      if($this->get_num_of_login($account['ID']) > 0) {
         return "
         <a 
                     href='index?p=account&action=details&id=".$account['ID']."' 
