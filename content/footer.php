@@ -1,3 +1,11 @@
+<script>
+    function showall(id) {
+        // Get the element by its ID
+        var pElement = document.getElementById(id);
+        // Replace the innerHTML with the data-fulltext attribute's value
+        pElement.innerHTML = pElement.getAttribute('data-fulltext');
+    }
+</script>
 <?php
 $facebook_link = $d->get_settings('facebook_link');
 $instagram_link = $d->get_settings('instagram_link');
