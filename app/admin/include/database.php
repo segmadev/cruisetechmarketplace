@@ -1233,7 +1233,7 @@ class database
                 $short = substr($text, 0, $maxCharacters)."...";
                 $isLong = true;
                 $id = uniqid();
-                $function = "<small><a onclick=\"showall('$id')\" class='text-gray'>more</a></small>";
+                $function = "<small><a href=\"javascript:void(0)\" onclick=\"showall('$id')\" class='text-gray'>more</a></small>";
                 $data = "data-fulltext='$text'";
             } 
         $shortenedText = "<p id='$id' $data >$short $function</p>";
