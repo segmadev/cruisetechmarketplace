@@ -129,10 +129,12 @@ class Account extends user
 
 
     function display_account_name($account) {
+      $string_short_length = 30;
+      
       if(!is_array($account)) {
         $account = $this->getall("account", "ID = ?", [$account]);
       }
-      $platform = $this->get_platform($account['platformID']);
+      $platform = $this->get_platform($account['platformID']);      
       return "
       <div class='d-flex m-0 justify-content-between'>
                     <div class='d-flex m-0'>

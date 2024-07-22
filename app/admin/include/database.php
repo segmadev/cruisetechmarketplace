@@ -1224,14 +1224,20 @@ class database
 
     // short a text
 
-    function short_text($text, $maxCharacters = 30) {
-        if (strlen($text) > $maxCharacters) {
-            $shortenedText = substr($text, 0, $maxCharacters) . "...";
-        } else {
-            $shortenedText = $text;
-        }
-
-        return $shortenedText;
+    function short_text($text, $maxCharacters = 30, $justText = false) {
+            $short = $text;
+            $id = "";
+            $data = "";
+            $function = "";
+            if(strlen($text) > $maxCharacters) {
+                $short = substr($text, 0, $maxCharacters)."...";
+                $isLong = true;
+                $id = uniqid();
+                $function = "<small><a onclick=\"showall('$id')\" class='text-gray'>more</a></small>";
+                $data = "data-fulltext='$text'";
+            } 
+        $shortenedText = "<p id='$id' $data >$short $function</p>";
+        return !$justText  ?  $shortenedText : $short;
     }
 
     function short_no( $no, $maxno = 99) {
