@@ -1,3 +1,11 @@
+<script>
+    function showall(id) {
+        // Get the element by its ID
+        var pElement = document.getElementById(id);
+        // Replace the innerHTML with the data-fulltext attribute's value
+        pElement.innerHTML = pElement.getAttribute('data-fulltext');
+    }
+</script>
 <!--  Import Js Files -->
 <script src="dist/libs/jquery/dist/jquery.min.js"></script>
 <script src="dist/libs/simplebar/dist/simplebar.min.js"></script>
