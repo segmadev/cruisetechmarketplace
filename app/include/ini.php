@@ -27,6 +27,11 @@ require_once "consts/main.php";
 require_once "consts/Regex.php";
 require_once "admin/include/database.php"; 
 $d = new database;
+$user = $d->getall("users", "token = ?", [$userToken]);
+if(!is_array($user)) {
+    $d->message("Unable to identify user", "error");
+}
+$userID = $user['ID'];
 require_once "consts/general.php";
 require_once "content/content.php"; 
 require_once "functions/notifications.php"; 

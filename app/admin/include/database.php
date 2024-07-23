@@ -244,17 +244,27 @@ class database
         return $q->rowCount();
     }
 
-    function create_table($name, array $data)
+    function create_table($name, array $data, $isCreate = true)
     {
         if (!is_array($data)) {
             return null;
         }
-        if ($this->check_table($name)) {
+        if ($isCreate == true && $this->check_table($name)) {
             return true;
         }
-        $info = $this->get_table_para($data);
-        $query = $this->db->prepare("CREATE TABLE $name($info)");
-        $update = $query->execute();
+        $info = $this->get_table_para($data, $isCreate);
+        $action = !$isCreate  ? "ALTER" : "CREATE";
+        $name = !$isCreate  ? $name." ADD" : $name;
+        $query = $this->db->prepare("$action  TABLE $name ($info)");
+        try {
+            $update = $query->execute();
+        } catch (\Throwable $th) {
+            if(str_contains($th, "Column already exists")) {
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
     function check_table($name)
     {
@@ -266,7 +276,7 @@ class database
             return false;
         }
     }
-    function get_table_para(array $datas)
+    function get_table_para(array $datas, $isCreate = true)
     {
         $info = "";
         foreach ($datas as $key => $data) {
@@ -292,12 +302,12 @@ class database
 
             $info .= "$key $type $isNull $default_value,";
         }
+        if(!$isCreate) return rtrim($info, ',');
         $info .= "`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,";
         if (isset($datas['ID'])) {
             $info  .= "PRIMARY KEY(ID),";
             
         }
-
         return rtrim($info, ',');
     }
     function insert_data($into, $data)

@@ -1,7 +1,7 @@
 <?php
 class autorize extends database
 {
-  
+
 
     public function signin()
     {
@@ -25,14 +25,16 @@ class autorize extends database
                             unset($_SESSION['urlgoto']);
                         }
                         $urlgoto = "index";
-                        
+
                         // reson here
-                       session_unset();
+                        session_unset();
                         session_start();
                         // $d->updateadmintoken($value['ID'], "users");
-                        $_SESSION['adminSession'] = htmlspecialchars($value['ID']);
-                        
-                        
+                        if(!$this->set_token(htmlspecialchars($value['ID']))) {
+                            $this->message("Unable to set token", "error");
+                            return ;
+                        }
+                        // $_SESSION['adminSession'] = ;
                         // $d->message("Account logged in Sucessfully <a href='index.php'>Click here to proceed.</a>", "error");
                         $return = [
                             "message" => ["Success", "Account Logged in", "success"],
@@ -52,6 +54,16 @@ class autorize extends database
     }
 
 
-
+    private function set_token($userID)
+    {
+        $token = $this->randcar(rand(20, 40));
+        if (!$this->create_table("admins", ["token" => []], isCreate: false))
+            return false;
+        $where = "ID ='$userID'";
+        if (!$this->update("admins", ["token" => $token], $where))
+            return false;
+        $_SESSION['adminSession'] = $token;
+        return true;
+    }
 
 }

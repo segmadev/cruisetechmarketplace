@@ -23,7 +23,7 @@ $redirect= "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     }
     
     if(isset($_SESSION['adminSession'])){
-        $adminID = $_SESSION['adminSession'];
+        $adminToken = $_SESSION['adminSession'];
     }else{
         session_destroy();
         echo '<script>window.location.href = "login";</script>';

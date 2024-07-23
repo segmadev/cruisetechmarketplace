@@ -103,11 +103,10 @@ class autorize extends database
                         session_start();
                         session_unset();
                         // $d->updateadmintoken($value['ID'], "users");
-                        if(!$this->set_cookies("userSession", htmlspecialchars($value['ID']), time() + 60 * 60 * 24 * 30)){
+                        if(!$this->set_token(htmlspecialchars($value['ID']))){
                             echo $this->message("Sorry we are having issues logging you in. Please try again", "error");
                             return ;
                         }
-                        $_SESSION['userSession'] = htmlspecialchars($value['ID']);
                         $actInfo = ["userID" => $value['ID'],  "date_time" => date("Y-m-d H:i:s"),"action_name" => "Login", "description" => "Account login access."];
                         $this->new_activity($actInfo);
                         // $d->message("Account logged in Sucessfully <a href='index.php'>Click here to proceed.</a>", "error");
@@ -129,6 +128,15 @@ class autorize extends database
     }
 
 
+    private function set_token($userID) {
+        $token = $this->randcar(rand(20, 40));
+        if(!$this->create_table("users", ["token"=>[]], isCreate: false)) return false;
+        $where = "ID ='$userID'";
+        if(!$this->update("users", ["token"=>$token], $where)) return false;
+        if(!$this->set_cookies("userTK", $token, time() + 60 * 60 * 24 * 30)) return false;
+        $_SESSION['userSession'] = htmlspecialchars($userID);
+        return true;
+    }
 
     public function sendotp()
     {

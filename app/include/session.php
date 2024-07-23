@@ -6,19 +6,19 @@
  $redirect= "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 // header("Location:$redirect");
 // }
-// if (!isset($_SESSION['userSession'])) {
+// if (!isset($_SESSION['userTK'])) {
 //     $_SESSION['urlgoto'] = $redirect;
 //     header("location: login?urlgoto=$redirect");
 // }
 
-    if(isset($_GET['logout']) && isset($_COOKIE['userSession'])) {
+    if(isset($_GET['logout']) && isset($_COOKIE['userTK'])) {
        logout();
        echo '<script>window.location.href = "login.php";</script>';
        exit();
     }
     
-    if(isset($_COOKIE['userSession'])){
-        $userID = $_COOKIE['userSession'];
+    if(isset($_COOKIE['userTK']) && $_COOKIE['userTK'] != ""){
+        $userToken = $_COOKIE['userTK'];
         // exit();
 
     }else{
@@ -31,8 +31,8 @@
     }
 
    function logout() {
-    unset($_COOKIE['userSession']);
-    setcookie('userSession', null, time() - 3600, '/');
+    unset($_COOKIE['userTK']);
+    setcookie('userTK', null, time() - 3600, '/');
    }
 ?>
 
