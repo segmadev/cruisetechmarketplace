@@ -24,13 +24,13 @@ class validate_payment extends database {
    
     function storeResult($data) {
         $filename = "results.db";
-        $newData = "\n" . json_encode($data); 
-        // Open the temporary file for writing
-        $tempFile = fopen($filename, "w") or die("Unable to open temporary file!");
-        // Write the new data to the temporary file
-        fwrite($tempFile, $newData);
-        // Check if the original file exists
-        fclose($tempFile);
+        $newData = "\n new data" . json_encode($data); 
+        // Open the file in append mode for writing
+        $file = fopen($filename, "a") or die("Unable to open file!");
+        // Write the new data to the file
+        fwrite($file, $newData);
+        // Close the file
+        fclose($file);
         return true;
     }
     function apiMessage($message, int $code = 400, $data = null) {
@@ -40,3 +40,4 @@ class validate_payment extends database {
 }
 $vaildate = new validate_payment();
 echo $vaildate->getAndStoreResult();
+// 7630df8267191722771419
