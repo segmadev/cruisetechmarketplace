@@ -5,8 +5,7 @@ $script[] = "fetcher";
 if(!isset($_GET['new_account']) && $d->getall("user_accounts", "userID = ?", [$userID], fetch: "") == 0)  {
     echo "Creating account for you. This can take a moment...";
     $d->loadpage("index?p=deposit&new_account=true");
-    exit();
-}
+}else{
 $account_details = $de->get_account_details($userID);
 ?>
 <div class="row col-12">
@@ -46,3 +45,4 @@ $account_details = $de->get_account_details($userID);
     </div>
     <?php } ?>
 </div>
+<?php } ?>
