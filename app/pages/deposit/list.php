@@ -10,9 +10,7 @@ if(!isset($_GET['new_account']) && $d->getall("user_accounts", "userID = ?", [$u
 $account_details = $de->get_account_details($userID);
 ?>
 <div class="row col-12">
-    <?php if(!isset($deposit) || $deposit->rowCount() <= 0) {
-        echo $c->empty_page("You haven't made any deposit yet.", "<a href='?p=deposit&action=new' class='btn btn-primary'> <b>Make A Deposit Now</b></a>");
-     } else { ?>
+    
     <div class="col col-12 col-md-4">
         <div class="card w-100">
             <div class="card-body bg-light p-3">
@@ -39,6 +37,9 @@ $account_details = $de->get_account_details($userID);
             </div>
         </div>
     </div>
+    <?php if(!isset($deposit) || $deposit->rowCount() <= 0) {
+        //echo $c->empty_page("You haven't made any deposit yet.", "<a href='?p=deposit&action=new' class='btn btn-primary'> <b>Make A Deposit Now</b></a>");
+     } else { ?>
     <div class="col col-12 col-lg-8 p-3">
     <a href="index?p=deposit&action=transactions" class="btn btn-sm btn-outline-dark m-0">View All Transactions</a>
         <?php require_once "pages/deposit/table.php"; ?>
