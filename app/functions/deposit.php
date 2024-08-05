@@ -20,12 +20,12 @@ class deposit extends user
         $user = $this->getall("users", "ID =?", [$userID]);
         if (!is_array($user)) return null;
         $account = $this->getall("user_accounts", "userID = ?", [$userID]);
-        if(!is_array($account)) $account = $this->create_account_details($user);
         if(!is_array($account)) return null;
         return $account;
     }
-    function create_account_details($user) {
+    function create_account_details(array $user) {
         if($this->get_settings("bvn") == "") return false;
+        if($this->getall("user_accounts", "userID = ?", [$user['ID']], fetch: "") > 0) return false;
         $myConfig = Config::setUp(
             $this->get_settings("flutterwave_secret_key"),
             $this->get_settings("flutterwave_public_key"),
@@ -43,14 +43,13 @@ class deposit extends user
             "is_permanent" => true
         ];
         $response = $service->create($payload);
-        var_dump($response);
         if(!isset($response->status) || $response->status != "success" || !isset($response->data)) return false;
         $data = (array)$response->data;
         $account = [
             "userID"=>$user['ID'],
             "tx_ref"=>$tx_ref,
             "order_ref"=>$data['order_ref'],
-            "account_number"=>$data['account_number'],
+            "account_number"=>(int)$data['account_number'],
             "bank_name"=>$data['bank_name'],
             "note"=>$data['note'],
             "expiry_date"=>$data['expiry_date'],

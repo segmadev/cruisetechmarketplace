@@ -9,6 +9,11 @@
     if(isset($_GET['tx_ref']) && isset($_GET['transaction_id']) && !isset($_POST['start'])) {
             $de->validate_payment(htmlspecialchars($_GET['tx_ref']), htmlspecialchars($_GET['transaction_id']), $userID);
     }
-
-    $account_details = $de->get_account_details($userID);
+    if(isset($_GET['new_account'])) {
+        
+        if($de->create_account_details($user)){
+            $d->loadpage("index?p=deposit");
+        }
+    }
+    // $account_details = $de->get_account_details($userID);
 ?>
