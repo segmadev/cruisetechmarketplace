@@ -360,6 +360,6 @@ class content extends database
     }
 
     function copy_text($text, $class = "") {
-        return "<a href='javascript:void(0)' onclick='copy_text(\"$text\")' class='btn btn-sm $class'><i class='ti ti-copy'></i></a>";
+        return "<a href='javascript:void(0)' onclick='copy_text(`$text`)' class='btn btn-sm $class'><i class='ti ti-copy'></i></a>";
     }
 }

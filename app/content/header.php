@@ -115,36 +115,16 @@ require_once "include/ini-session.php";
               <span class="hide-menu">Transactions</span>
             </li>
 
-
+            
             <li class="sidebar-item">
-              <a class="sidebar-link has-arrow" href="#" aria-expanded="false">
-                <span class="d-flex">
+              <a class="sidebar-link" href="index?p=deposit" aria-expanded="false">
+                <span>
                   <i class="ti ti-currency-dollar"></i>
                 </span>
                 <span class="hide-menu">Wallet</span>
               </a>
-              <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
-                  <a href="index?p=deposit&action=new" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                      <i class="ti ti-circle"></i>
-                    </div>
-                    <span class="hide-menu">Make deposit</span>
-                  </a>
-                </li>
-                <li class="sidebar-item">
-                  <a href="index?p=deposit" class="sidebar-link">
-                    <div class="round-16 d-flex align-items-center justify-content-center">
-                      <i class="ti ti-circle"></i>
-                    </div>
-                    <span class="hide-menu">Manage Wallet</span>
-                  </a>
-                </li>
-              </ul>
             </li>
 
-
-           
             <li class="sidebar-item">
               <a class="sidebar-link" href="index?p=deposit&action=transactions" aria-expanded="false">
                 <span>
@@ -178,7 +158,7 @@ require_once "include/ini-session.php";
                   <img src="<?= $u->get_profile_icon_link($userID) ?>" class="rounded-circle" width="40" height="40" alt="">
                 </div>
                 <div class="john-title">
-                  <h6 class="mb-0 fs-3 fw-semibold"><?= $d->short_text($u->get_name($userID), 8) ?></h6>
+                  <h6 class="mb-0 fs-3 fw-semibold"><?= $d->short_text($u->get_name($userID), 8, true) ?></h6>
 
                 </div>
                 <button class="border-0 p-2 rounded-1 text-danger bg-light-danger ms-auto" tabindex="0" type="submit" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">

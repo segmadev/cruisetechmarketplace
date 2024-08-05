@@ -35,10 +35,9 @@
         function update_settings($data, $what =  "settings") {
             if($data  == ""){ return null; }
             $info = $this->validate_form($data);
-            // var_dump($info);
             if(!is_array($info) || $info == null || $info == false) { return null;}
             foreach ($info as $key => $value) {
-                
+                if($value == "--placeholder" || $value == "00000000000") continue;
                 if($this->getall("$what", "meta_name = ?", [$key], fetch: "") == 0) { continue; }
                 $update = $this->update("$what", ["meta_value"=>$value], "meta_name = '$key'");
             }

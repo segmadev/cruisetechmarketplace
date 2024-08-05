@@ -61,7 +61,7 @@
 <?php } ?>
 <!-- fetch data -->
 <?php if (in_array("fetcher", $script)) { ?>
-   <script src="dist/js/fetcher.js?n=<?= random_int(0, 100); ?>"></script>
+   <script src="dist/js/fetcher.js?n=765654545"></script>
 <?php } ?>
 <!-- sweetalert -->
 <?php if (in_array("sweetalert", $script)) { ?>

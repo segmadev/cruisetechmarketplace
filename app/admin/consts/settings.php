@@ -15,7 +15,6 @@
         "company_address"=>["type"=>"textarea"],
         "default_currency"=>[],
         "welcome_note"=>["type"=>"textarea", "description"=>"Welcome note will display to new users who login to dashboard for the first time.", "global_class"=>"w-100"],
-        "default_support_welcome_message"=>["type"=>"textarea", "global_class"=>"w-100"],
         "live_chat_widget"=>["type"=>"textarea", "global_class"=>"w-100"],
        ];
        $settings_form['input_data'] = $s->getdata($settings_form);
@@ -37,30 +36,15 @@
    
     // var_dump($settings_form);
     $settings_deposit_form = [
-        "flutterwave_public_key"=>["input_type"=>"text"],
-        "flutterwave_secret_key"=>["input_type"=>"text"],
+        "flutterwave_public_key"=>["input_type"=>"password", "is_required"=>false],
+        "flutterwave_secret_key"=>["input_type"=>"password", "is_required"=>false],
+        "flutterwave_encyption_key"=>["input_type"=>"password", "is_required"=>false],
+        "bvn"=>["input_type"=>"number", "is_required"=>false],
         "min_deposit"=>["input_type"=>"number"],
         "max_deposit"=>["input_type"=>"number", "is_required"=>false],
-        "send_email_on_user_deposit"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-        
+        "input_data"=>array_merge(["flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["min_deposit"=>[], "max_deposit"=>[]])),
     ];
-    $settings_deposit_form['input_data'] = $s->getdata($settings_deposit_form);
 
-    // $settings_withdraw_form = [
-    //     "min_withdraw"=>["input_type"=>"number"],
-    //     "max_withdraw"=>["input_type"=>"number", "is_required"=>false],
-    //     "send_email_on_user_withdraw"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-    //     "send_email_to_user_withdraw_approval"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-    //     "send_email_to_user_withdraw_rejection"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-    //     "user_withdraw_live_notification"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-    //     "robot_withdraw_live_notification"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-    //     "contact_suuport_on_first_withdraw"=>["options"=>["yes"=>"Yes", "no"=>"No"],"type"=>"select"],
-    //     "first_withdraw_after"=>["description"=>"value in <b class='text-primary'>days</b>"],
-    //     "subsequent_withdraw_after"=>["description"=>"value in <b class='text-primary'>days</b>"]
-    // ];
-    
-    // $settings_withdraw_form['input_data'] = $s->getdata($settings_withdraw_form);
-    
     $term_and_policy_condition = [
         "terms_and_conditions"=>["type"=>"textarea", "id"=>"richtext", "global_class"=>"col-md-12"],
         "policy"=>["type"=>"textarea", "id"=>"richtext2", "global_class"=>"col-md-12"],

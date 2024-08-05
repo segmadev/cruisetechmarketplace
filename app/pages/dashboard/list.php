@@ -1,4 +1,6 @@
 <?php 
+
+    echo "<div class='col-12 col-md-6 col-lg-4'>".$u->show_balance($userID, showBtn: true)."</div>";
     $categories = $d->getall("category", fetch: "all");
     if($categories->rowCount() > 0) {
         require_once "pages/dashboard/category_list.php";

@@ -64,6 +64,7 @@
 <div class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Payment Settings</h4>
+        <small class="text-danger">Some sensitive details won't be shown or can be replace with something else to protect your infomation.</small>
     </div>
     <div class="card-body">
         <form action="" id="foo" enctype="multipart/form-data">

@@ -7,11 +7,12 @@ for (var i in loaddata) {
     path = loaddata[i].getAttribute("data-path") ?? "passer";
     limit = loaddata[i].getAttribute("data-limit") ?? 10;
     start = loaddata[i].getAttribute("data-start") ?? 0;
-    fetchData(what, displayId, page, limit, start, path);
+    isReplace = loaddata[i].getAttribute("data-isreplace") ?? 'false';
+    fetchData(what, displayId, page, limit, start, path, isReplace);
   }
 }
 
-function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer") {
+function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer", isReplace = 'false') {
   data = { page: page, what: what, start: start, limit: limit};
   request = $.ajax({
     type: "POST",
@@ -29,7 +30,7 @@ function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer"
       if(obj['status'] != "ok") return null;
       response = obj['data'];
     }
-    document.getElementById(displayId).innerHTML += response;
+    (isReplace == "false") ? document.getElementById(displayId).innerHTML += response : document.getElementById(displayId).innerHTML = response;
     display = document.getElementById(displayId);
     let elements = display.querySelectorAll("#foo");
     $i = 0;
@@ -41,7 +42,7 @@ function fetchData(what, displayId, page, limit = 10, start = 0, path = "passer"
       });
     }
     start =  parseInt(start) + parseInt(limit);
-    fetchData(what, displayId, page, limit, start, path);
+    fetchData(what, displayId, page, limit, start, path, isReplace);
   });
 
   // request.done(function (response) {

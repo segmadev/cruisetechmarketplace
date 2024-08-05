@@ -11,6 +11,13 @@ if(getCookieValue('browser_theme') == null){
     getBrowserTheme();
 }
 
+function copy_text(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert(`Copied: ${text}`);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+}
     // console.log(getBrowserTheme());
 function getBrowserTheme() {
   if (
@@ -113,7 +120,9 @@ function iniForm(element, action = "passer") {
                 if (willDelete) {
                   runjax(request, event,  $inputs, fd, action);
                 } else {
-                //   close form
+                //   ini element again
+                iniForm(element, action);
+                $inputs.prop("disabled", false);
                 }
               });
         } else {

@@ -9,4 +9,6 @@
     if(isset($_GET['tx_ref']) && isset($_GET['transaction_id']) && !isset($_POST['start'])) {
             $de->validate_payment(htmlspecialchars($_GET['tx_ref']), htmlspecialchars($_GET['transaction_id']), $userID);
     }
+
+    $account_details = $de->get_account_details($userID);
 ?>

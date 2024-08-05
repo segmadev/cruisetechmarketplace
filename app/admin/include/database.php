@@ -1062,19 +1062,22 @@ class database
         return $data = $json_objekat->data;
     }
 
-    function api_call($service_url, $posts = [])
+ 
+    
+    function api_call($service_url, $posts = [], $header = [])
     {
-        $isPost = false;
-        if(count($posts) > 0) $isPost = true;
-        $curl = curl_init($service_url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_POST, $isPost);
-        if(count($posts) > 0)  curl_setopt($curl, CURLOPT_POSTFIELDS, $posts);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $curl_response   = curl_exec($curl);
-        curl_close($curl);
-        return $json_objekat = json_decode($curl_response);
-        // return $data = $json_objekat->data;
+            $isPost = false;
+            if(count($posts) > 0) $isPost = true;
+            $curl = curl_init($service_url);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_POST, $isPost);
+            if(count($posts) > 0)  curl_setopt($curl, CURLOPT_POSTFIELDS, $posts);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+            $curl_response   = curl_exec($curl);
+            curl_close($curl);
+            return json_decode($curl_response);
+            // return $data = $json_objekat->data;
     }
 
     function newcoin()
@@ -1172,6 +1175,22 @@ class database
         return date_format($date, "D, d M Y h:i:sa");
     }
 
+    function datediffe($largeDate, $smallDate) {
+        $date1 = $largeDate;
+        $date2 = $smallDate;
+
+        // Create DateTime objects from the date strings
+        $datetime1 = new DateTime($date1);
+        $datetime2 = new DateTime($date2);
+
+        // Calculate the difference
+        $interval = $datetime1->diff($datetime2);
+
+        // Convert the difference to total hours
+        $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60) + ($interval->s / 3600);
+
+        return $totalHours;
+    }
     function cal_percentage(int | float $no, int | float $total) {
         return round(($no * 100) / $total);
     }
@@ -1278,5 +1297,45 @@ class database
         $newDatetimeStr = $newDatetime->format('Y-m-d H:i:s');
     
         return $newDatetimeStr;
+    }
+
+
+    // tempory user functions below
+    protected function credit_debit($userID, $amount, $what = "balance", $action = "credit", $for = "", $forID = "")
+    {
+        unset($_COOKIE['user_data']);
+        $user = $this->getall("users", "ID = ?", [$userID], "$what, acct_type");
+        if (!is_array($user)) {
+            $this->message("Error getting user", "error");
+            return;
+        }
+        switch ($action) {
+            case 'credit':
+                # code...
+                $user[$what] = (float) $user[$what] + (float) $amount;
+                break;
+            case 'debit':
+                // check if enough balance
+                if ((float) $user[$what] < (float) $amount) {
+                    $this->message("Insufficient " . str_replace("_", " ", $what) . ". Your balance: <b>" . $this->money_format($user[$what]) . "</b>", "error");
+                    return false;
+                }
+
+                $user[$what] = (float) $user[$what] - (float) $amount;
+                break;
+
+            default:
+                # code...
+                break;
+        }
+        
+        $update = $this->update("users", $user, "ID = '$userID'");
+        if (!$update) {
+            $this->message("We have issue performing this task", "error");
+            return null;
+        }
+        $trans = ["userID" => $userID, "forID" => $forID, "trans_for" => $for, "action_type" => $action, "acct_type" => $what, "amount" => $amount, "current_balance" => $user[$what]];
+        $this->quick_insert("transactions", $trans);
+        return true;
     }
 }

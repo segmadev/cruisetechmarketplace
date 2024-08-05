@@ -2,11 +2,63 @@
 if (!class_exists('wallets')) {
     require_once "functions/wallets.php";
 }
+if(side == "admin") {
+    require_once '../vendor/autoload.php';
+}else{
+    require_once 'vendor/autoload.php';
+}
+use Flutterwave\Helper\Config;
+use Flutterwave\Flutterwave;
+use Flutterwave\Service\VirtualAccount;
 class deposit extends user
 {
 
     function get_payments($userID, $start) {
         return $this->getall("payment", "userID = ? order by date DESC LIMIT $start, 10", [$userID], fetch: "moredetails");
+    }
+    function get_account_details($userID) {
+        $user = $this->getall("users", "ID =?", [$userID]);
+        if (!is_array($user)) return null;
+        $account = $this->getall("user_accounts", "userID = ?", [$userID]);
+        if(!is_array($account)) $account = $this->create_account_details($user);
+        if(!is_array($account)) return null;
+        return $account;
+    }
+    function create_account_details($user) {
+        if($this->get_settings("bvn") == "") return false;
+        $myConfig = Config::setUp(
+            $this->get_settings("flutterwave_secret_key"),
+            $this->get_settings("flutterwave_public_key"),
+            $this->get_settings("flutterwave_encyption_key"),
+            'staging'
+        );
+        Flutterwave::bootstrap($myConfig);
+        $service = new VirtualAccount(config: $myConfig);
+        $tx_ref = time().uniqid();
+        $payload = [
+            "email" => $user['email'],
+            "tx_ref"=>$tx_ref,
+            "bvn"=>$this->get_settings("bvn"),
+            "narration"=>$user['first_name'].' '.$user['last_name'],
+            "is_permanent" => true
+        ];
+        $response = $service->create($payload);
+        var_dump($response);
+        if(!isset($response->status) || $response->status != "success" || !isset($response->data)) return false;
+        $data = (array)$response->data;
+        $account = [
+            "userID"=>$user['ID'],
+            "tx_ref"=>$tx_ref,
+            "order_ref"=>$data['order_ref'],
+            "account_number"=>$data['account_number'],
+            "bank_name"=>$data['bank_name'],
+            "note"=>$data['note'],
+            "expiry_date"=>$data['expiry_date'],
+        ];
+        if ($this->quick_insert("user_accounts", $account)) {
+            return $account;
+        }
+        return false;
     }
     function ini_payment($userID)
     {
@@ -99,6 +151,7 @@ class deposit extends user
         curl_close($curl);
         return  json_decode($response, true);
     }
+
 
     function validate_payment($txref, $transID, $userID)
     {
