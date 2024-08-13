@@ -1,5 +1,5 @@
 <?php
-class user extends Notifications
+class user extends content
 {
     public $userdata;
     public $userID;
@@ -104,7 +104,8 @@ class user extends Notifications
     }
 
     public function update_profile($data, $userID)
-    {
+    {   
+        
         $info = $this->validate_form($data);
         if (!is_array($info)) {
             return null;
@@ -118,6 +119,7 @@ class user extends Notifications
             }
             $info['email_verify'] = 0;
         }
+        unlink($info['email']);
         // check phone number
         if ($this->getall("users", "ID != ? and phone_number = ?", [$userID, $info['phone_number']]) > 0) {$this->message("User with phone number alrady exit", "error");return null;}
         if ($this->update("users", $info, "ID = '$userID'", "Profile updated")) {

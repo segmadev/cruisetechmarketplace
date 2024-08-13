@@ -78,6 +78,7 @@ session_start();
              "compound_profits"=>$s->update_settings($compound_profits_details),
              "social_media"=>$s->update_settings($settings_social_media),
              "seo"=>$s->update_settings($settings_seo),
+             "rentals"=>$s->update_settings($rentals_settings),
              "edit_admin"=>$s->edit_admin($adminID, $admin_account),
         };
         echo $return;

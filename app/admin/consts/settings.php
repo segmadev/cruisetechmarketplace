@@ -42,7 +42,11 @@
         "bvn"=>["input_type"=>"number", "is_required"=>false],
         "min_deposit"=>["input_type"=>"number"],
         "max_deposit"=>["input_type"=>"number", "is_required"=>false],
-        "input_data"=>array_merge(["flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["min_deposit"=>[], "max_deposit"=>[]])),
+        "exchange_rate"=>[],
+        "exchange_rate_update_interval"=>["input_type"=>"number","atb"=>'step="0.0001"', "description"=>"value in minutes"],
+        "fix_exchange_rate"=>["type"=>"select", "options"=>["yes"=>"Yes", "no"=>"No"]],
+        "exchange_rate_API"=>["input_type"=>"password", "is_required"=>false, "description"=>"You can get your API key <a target='_BLANK' href='https://www.exchangerate-api.com'>here</a>"],
+        "input_data"=>array_merge(["exchange_rate_API"=>"--placeholder", "flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["min_deposit"=>[], "exchange_rate_update_interval"=>[], "max_deposit"=>[], "fix_exchange_rate"=>[], "exchange_rate"=>[]])),
     ];
 
     $term_and_policy_condition = [
@@ -60,3 +64,12 @@
         "confirm_password"=>["title"=>"Re-type Change Password", "input_type"=>"password", "is_required"=>false],
         "input_data"=>["email"=>$admin['email']],
     ];
+
+    $rentals_settings = [
+        "rental_number_expire_time"=>["input_type"=>"number","title"=>"rental number expire time (In mins)", "description"=>"How long should it take for rented numbers to expire, value in mins."],
+        "rentals_API"=>["input_type"=>"password", "is_required"=>false],
+        "added_value_amount"=>["title"=>"Added Value Amount (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
+    ];
+    $rentals_settings['input_data'] = $s->getdata($rentals_settings);
+    $rentals_settings['input_data']['rentals_API'] = "--placeholder";
+    $rentals_settings['input_data']['exchange_rate_API'] = '--placeholder';

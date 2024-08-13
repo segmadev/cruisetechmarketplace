@@ -90,7 +90,9 @@
 
                                     
                                         <form id="foo" class="col-lg-6">
-                                            <?= $c->create_form($profile_form); ?>
+                                            <?php 
+                                            $profile_form['email']['atb'] = "disabled";
+                                            echo $c->create_form($profile_form); ?>
                                             <input type="hidden" name="update_profile">
                                             <input type="hidden" name="page" value="profile">
                                             <div id="custommessage"></div>

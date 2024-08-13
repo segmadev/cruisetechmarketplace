@@ -402,16 +402,26 @@ function restcomment(data1, data2){
 }
 
 function notify(title, message, type) {
-    window.createNotification({
-      // closeOnClick: closeOnClick,
-      displayCloseButton: displayClose,
-      positionClass: position,
-      showDuration: duration,
-      theme: type
-    })({
-      title: title,
-      message: message
-    });
+    try {
+        swal({
+            title: title,
+            text: message,
+            icon: type,
+            buttons: true,
+            dangerMode: type == "success" ? false : true,
+          })
+    } catch (error) {
+        window.createNotification({
+            // closeOnClick: closeOnClick,
+            displayCloseButton: displayClose,
+            positionClass: position,
+            showDuration: duration,
+            theme: type
+          })({
+            title: title,
+            message: message
+          });   
+    }
   }
 
   function showPreview(event, id = "file-ip-1-preview"){
@@ -1031,3 +1041,29 @@ function imageviwer(url) {
         image.src = url;
     }
 }
+// search items
+document.querySelectorAll('[data-search-list]').forEach(function(input) {
+    input.addEventListener('input', function() {
+        let filter = this.value.toLowerCase();
+        let listId = this.getAttribute('data-search-list');
+        let attribute = this.getAttribute('data-search-attribute');
+        let rows = document.querySelectorAll(`.${listId}`);        
+        rows.forEach(function(row) {
+            let value = row.querySelector(`[data-${attribute}]`).getAttribute(`data-${attribute}`).toLowerCase();
+            row.style.display = value.includes(filter) ? '' : 'none';
+        });
+
+        // Sort rows if needed
+        let sortedRows = Array.from(rows).sort(function(a, b) {
+            let valueA = a.querySelector(`[data-${attribute}]`).getAttribute(`data-${attribute}`).toLowerCase();
+            let valueB = b.querySelector(`[data-${attribute}]`).getAttribute(`data-${attribute}`).toLowerCase();
+            
+            return valueA.localeCompare(valueB);
+        });
+
+        let tbody = document.getElementById(listId);
+        sortedRows.forEach(function(row) {
+            tbody.appendChild(row); // Reorder the rows
+        });
+    });
+});

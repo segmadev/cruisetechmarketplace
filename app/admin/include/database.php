@@ -1064,7 +1064,7 @@ class database
 
  
     
-    function api_call($service_url, $posts = [], $header = [])
+    function api_call($service_url, $posts = [], $header = [], $isRaw = false)
     {
             $isPost = false;
             if(count($posts) > 0) $isPost = true;
@@ -1076,6 +1076,9 @@ class database
             curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
             $curl_response   = curl_exec($curl);
             curl_close($curl);
+            if ($isRaw) {
+                return $curl_response;
+            }
             return json_decode($curl_response);
             // return $data = $json_objekat->data;
     }
@@ -1175,7 +1178,7 @@ class database
         return date_format($date, "D, d M Y h:i:sa");
     }
 
-    function datediffe($largeDate, $smallDate) {
+    function datediffe($largeDate, $smallDate, $format = "h") {
         $date1 = $largeDate;
         $date2 = $smallDate;
 
@@ -1187,9 +1190,10 @@ class database
         $interval = $datetime1->diff($datetime2);
 
         // Convert the difference to total hours
-        $totalHours = ($interval->days * 24) + $interval->h + ($interval->i / 60) + ($interval->s / 3600);
-
-        return $totalHours;
+        if($format == "m") return ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+        return ($interval->days * 24) + $interval->h + ($interval->i / 60) + ($interval->s / 3600);
+        
+        
     }
     function cal_percentage(int | float $no, int | float $total) {
         return round(($no * 100) / $total);
@@ -1337,5 +1341,21 @@ class database
         $trans = ["userID" => $userID, "forID" => $forID, "trans_for" => $for, "action_type" => $action, "acct_type" => $what, "amount" => $amount, "current_balance" => $user[$what]];
         $this->quick_insert("transactions", $trans);
         return true;
+    }
+
+    function removeRepeatedValuesFromBack($arr) {
+        $result = [];
+        $lastValue = null;
+    
+        // Iterate through the array in reverse
+        for ($i = count($arr) - 1; $i >= 0; $i--) {
+            // If the current value is not equal to the last value, add it to the result
+            if ($arr[$i] !== $lastValue) {
+                array_unshift($result, $arr[$i]); // Add to the front of the result array
+                $lastValue = $arr[$i]; // Update the last value
+            }
+        }
+    
+        return $result;
     }
 }

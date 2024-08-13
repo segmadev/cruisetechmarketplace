@@ -1,9 +1,21 @@
 <?php require_once "../content/textarea.php"; 
 ?>
+<div class="btn-group mb-2">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                          Navigate to
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                            <li><a class="dropdown-item" href="#paymentpage">General Settings</a></li>
+                            <li><a class="dropdown-item" href="#paymentpage">Payment Settings</a></li>
+                            <li><a class="dropdown-item" href="#rentalspage">Rental Settings</a></li>
+                            <li><a class="dropdown-item" href="#socialpage">Social Media Links</a></li>
+                          <li><a class="dropdown-item" href="#brandingpage">Branding</a></li>
+                          <li><a class="dropdown-item" href="#seopage">SEO Details</a></li>
+                          <li><a class="dropdown-item" href="#termspage">Policy and terms and condition</a></li>
+                        </ul>
+                      </div>
 <!-- logo settings -->
-
-
-<div class="card col-12">
+<div id="brandingpage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Logo</h4>
     </div>
@@ -22,7 +34,7 @@
     </div>
 </div>
 
-<div class="card col-12">
+<div id="seopage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">SEO Details</h4>
     </div>
@@ -42,7 +54,7 @@
 </div>
 
 <!-- main settings -->
-<div class="card col-12">
+<div id="settingspage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Settings</h4>
     </div>
@@ -61,7 +73,7 @@
     </div>
 </div>
 <!--  deposit  -->
-<div class="card col-12">
+<div id="paymentpage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Payment Settings</h4>
         <small class="text-danger">Some sensitive details won't be shown or can be replace with something else to protect your infomation.</small>
@@ -80,11 +92,30 @@
         </form>
     </div>
 </div>
-<!-- widthdraw -->
+<!-- rentals settings -->
+<div id="rentalspage" class="card col-12">
+    <div class="border-bottom title-part-padding">
+        <h4 class="card-title mb-0">Rentals Settings</h4>
+        <small class="text-danger">This are settings for your rentals app.</small> <br>
+        <small class="text-danger">Some sensitive details won't be shown or can be replace with something else to protect your infomation.</small>
+    </div>
+    <div class="card-body">
+        <form action="" id="foo" enctype="multipart/form-data">
+            <div class="row">
+                <?php echo $c->create_form($rentals_settings); ?>
+                <input type="hidden" name="updatesettings" value="" id="">
+                <input type="hidden" name="page" value="settings" id="">
+                <input type="hidden" name="settings" value="rentals">
+            </div>
+            <div id="custommessage"></div>
+            <input type="submit" value="Update" class="btn btn-primary  col-3">
 
+        </form>
+    </div>
+</div>
 <!-- social media links -->
 
-<div class="card col-12">
+<div id="socialpage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Social Media Links</h4>
     </div>
@@ -104,7 +135,7 @@
 </div>
 
 <!-- term_and_policy_condition -->
-<div class="card col-12">
+<div id="termspage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Term and condition with policy Details</h4>
     </div>

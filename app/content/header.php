@@ -97,8 +97,17 @@ require_once "include/ini-session.php";
          
             <!-- ============================= -->
             <!-- Apps -->
+             
             <!-- ============================= -->
             
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="index?p=rentals&action=new" aria-expanded="false">
+                <span>
+                  <i class="ti-align-box-bottom-center"></i>
+                </span>
+                <span class="hide-menu">Manage Rentals</span>
+              </a>
+            </li>
             <li class="sidebar-item">
               <a class="sidebar-link" href="index?p=orders" aria-expanded="false">
                 <span>

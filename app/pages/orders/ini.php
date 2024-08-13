@@ -2,7 +2,11 @@
     require_once "functions/account.php";
     $a = new Account;
     if(!isset($_GET['id'])) {   
-        $orders = $d->getall("orders", "userID = ? order by date DESC", [$userID], fetch:"moredetails");
+        if(isset($_GET['type'])) {
+            $orders = $d->getall("orders", "userID = ? and order_type = ? order by date DESC", [$userID, htmlspecialchars($_GET['type'])], fetch:"moredetails");
+        }else{
+            $orders = $d->getall("orders", "userID = ? order by date DESC", [$userID], fetch:"moredetails");
+        }
     }
 
     if(isset($_GET['id'])) {
