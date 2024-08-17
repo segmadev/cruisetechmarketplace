@@ -49,15 +49,15 @@ document.querySelectorAll("[data-load]").forEach(loaddata => {
 });
 
 function loadFetchData (loaddata) {
-  console.log("New");
   const what = loaddata.getAttribute("data-load");
   const displayId = loaddata.getAttribute("data-displayId");
   const start = loaddata.getAttribute("data-start") ?? 0;
   const limit = loaddata.getAttribute("data-limit") ?? 1;
   const path = loaddata.getAttribute("data-path") ?? "passer";
   const isReplace = loaddata.getAttribute("data-isreplace") ?? 'false';
+  const interval = loaddata.getAttribute("data-interval") ?? 3000;
   document.querySelector("#" + displayId).innerHTML = "";
-  fetchData(what, displayId, limit, start, path, isReplace);
+  fetchData(what, displayId, limit, start, path, isReplace, interval);
   return true;
 }
 
@@ -104,7 +104,7 @@ function loadFetchData (loaddata) {
 
 // }
 
-function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isReplace="false") {
+function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isReplace="false", interval = 3000) {
   var loading = "<p class='h4'><b>Loading Data</b></p>";
   // var displayHere = document.getElementById(displayId);
   // if(displayHere.innerHTML == "") displayHere = loading;
@@ -132,7 +132,9 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
     (isReplace == "false") ? document.getElementById(displayId).innerHTML += response : document.getElementById(displayId).innerHTML = response;
 
     start =  parseInt(start) + parseInt(limit);
-    fetchData(what, displayId, limit, start, path, isReplace);
+    setTimeout(function() {
+        fetchData(what, displayId, limit, start, path, isReplace);
+    }, parseInt(interval)); 
   });
 }
 

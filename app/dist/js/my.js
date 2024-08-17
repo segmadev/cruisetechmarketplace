@@ -1047,9 +1047,10 @@ document.querySelectorAll('[data-search-list]').forEach(function(input) {
         let filter = this.value.toLowerCase();
         let listId = this.getAttribute('data-search-list');
         let attribute = this.getAttribute('data-search-attribute');
-        let rows = document.querySelectorAll(`.${listId}`);        
+        let rows = document.querySelectorAll(`.${listId}`);    
         rows.forEach(function(row) {
             let value = row.querySelector(`[data-${attribute}]`).getAttribute(`data-${attribute}`).toLowerCase();
+            // console.log(value);    
             row.style.display = value.includes(filter) ? '' : 'none';
         });
 
@@ -1061,8 +1062,10 @@ document.querySelectorAll('[data-search-list]').forEach(function(input) {
             return valueA.localeCompare(valueB);
         });
 
-        let tbody = document.getElementById(listId);
+        let tbody = document.getElementsByClassName(listId);
         sortedRows.forEach(function(row) {
+            console.log(tbody);
+            // row.className += "d-none";
             tbody.appendChild(row); // Reorder the rows
         });
     });

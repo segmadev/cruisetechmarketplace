@@ -1,11 +1,4 @@
-<div class="table-responsive">
-    <table class="table search-table align-middle text-nowrap">
-        <thead class="header-item">
-            <th>Service</th>
-            <th>Price</th>
-            <th></th>
-        </thead>
-        <tbody>
+<div class="card-body p-3 row">
             <?php 
             $script[] = "sweetalert";
             $likeds = $r->getLikes($userID);
@@ -25,9 +18,6 @@
                require "pages/rentals/service.php";
             }?>
           
-
-        </tbody>
-    </table>
 </div>
 
 <script>

@@ -1,79 +1,76 @@
-<?php
-require 'gdrive/vendor/autoload.php';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+</head>
+<body>
 
-use Google\Client;
-use Google\Service\Drive;
+<div data-countdown="2024-08-17 14:35:00"></div>
+<div data-countdown="2024-08-17 13:36:00"></div>
+<div data-countdown="2024-08-17 13:37:00"></div>
 
-function uploadBasic($file_name = "")
-{
-    try {
-        $client = new Client();
-        putenv('GOOGLE_APPLICATION_CREDENTIALS=gdrive/credentials.json');
-        $client->useApplicationDefaultCredentials();
-        $client->addScope(Drive::DRIVE);
-        $driveService = new Drive($client);
-        // $file = getcwd().'\back.png';
-        $file =  "../images/test.MP4";
-        $fileName = basename($file);
-        $mimeType = mime_content_type($file);
-        // $fileName =  htmlspecialchars($_FILES["$file_name"]["name"]);
-        // var_dump($fileName);
-        // $mimeType = mime_content_type($_FILES["$file_name"]["tmp_name"]);
-        if (empty($mimeType)) {
-            $mimeType = "application/octet-stream";
-        }
-        echo $mimeType;
-
-        $fileMetadata = new Drive\DriveFile(array(
-            'name' => $fileName,
-            'parents' => ['1jlKSnaLGJURubYFM-AfKdFKxPEfBtbfe'],
-        ));
-
-        // $content = file_get_contents($_FILES["$file_name"]["tmp_name"]);
-        $content = file_get_contents($file);
-        // var_dump($file);
-        $data = [
-            'data' => "$content",
-            'mimeType' => "$mimeType",
-            'uploadType' => 'multipart',
-            'fields' => 'id',
-        ];
-        // var_dump($data);
-        $file = $driveService->files->create($fileMetadata, $data);
-        printf("File ID: %s\n", $file->id);
-        return $file->id;
-    } catch (Exception $e) {
-        echo "Error Message: " . $e;
+<script>
+    // Convert a date string to a timestamp
+    function toTimestamp(dateString) {
+        return new Date(dateString).getTime();
     }
-}
 
-function deleteFile($fileID) {
-    try {
-    $client = new Client();
-    putenv('GOOGLE_APPLICATION_CREDENTIALS=gdrive/credentials.json');
-    $client->useApplicationDefaultCredentials();
-    $client->addScope(Drive::DRIVE);
-    $driveService = new Drive($client);
-    $driveService->files->delete($fileID);
-    return true;
-    } catch (Exception $e){ echo $e; return false;}
-}
+    // Calculate remaining time and return minutes and seconds
+    function calculateTimeRemaining(mainTime, now) {
+        const remainingTime = mainTime - now;
+        const minutes = Math.floor(remainingTime / (1000 * 60));
+        const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+        return { minutes, seconds, remainingTime };
+    }
 
-if(isset($_GET['delete'])) {
-    deleteFile($_GET['delete']);
-}
+    // Display the countdown or message
+    function displayMessage(element, message) {
+        element.innerHTML = message;
+    }
 
-// if (isset($_POST['upload_file'])) {
-//     //    var_dump(file_get_contents($_FILES["upload"]["tmp_name"]));
-//     // echo $_FILES["upload"]["tmp_name"];
-//     // echo "<br> Name:"; ho $_FILES["upload"]["name"];
-//     uploadBasic("upload");
-//     // uploadBasic();
-// }
-?>
-<!-- upload a video on the server fist to test if it will work -->
-<form action="" method="post" enctype="multipart/form-data">
-    <input type="file" name="upload" id=""> <br>
-    <input type="submit" value="Upload" name="upload_file">
-</form>
+    // Handle countdown logic
+    function handleCountdown(targetTime, element) {
+        const targetDate = toTimestamp(targetTime);
+        const mainTime = targetDate + 5 * 60 * 1000;
+        const now = new Date().getTime();
 
+        if (mainTime <= now) {
+            displayMessage(element, "Expired");
+            return;
+        }
+
+        if (mainTime - now > 5 * 60 * 1000) {
+            displayMessage(element, "Invalid");
+            return;
+        }
+
+        const interval = setInterval(() => {
+            const now = new Date().getTime(); // Update current time
+            const { minutes, seconds, remainingTime } = calculateTimeRemaining(mainTime, now);
+
+            if (remainingTime <= 0) {
+                displayMessage(element, "Expired");
+                clearInterval(interval);
+            } else {
+                displayMessage(element, `Time remaining: ${minutes}m ${seconds}s`);
+            }
+        }, 1000);
+    }
+
+    // Initialize countdown for all elements with data-countdown attribute
+    function initializeCountdowns() {
+        const countdownElements = document.querySelectorAll('[data-countdown]');
+        countdownElements.forEach(element => {
+            const targetTime = element.getAttribute('data-countdown');
+            handleCountdown(targetTime, element);
+        });
+    }
+
+    // Run countdown initialization
+    initializeCountdowns();
+</script>
+
+</body>
+</html>

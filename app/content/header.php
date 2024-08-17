@@ -101,7 +101,7 @@ require_once "include/ini-session.php";
             <!-- ============================= -->
             
             <li class="sidebar-item">
-              <a class="sidebar-link" href="index?p=rentals&action=new" aria-expanded="false">
+              <a class="sidebar-link" href="index?p=rentals" aria-expanded="false">
                 <span>
                   <i class="ti-align-box-bottom-center"></i>
                 </span>

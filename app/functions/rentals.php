@@ -32,6 +32,7 @@
             return $this->quick_insert("liked_services", ["userID"=>$userID, "serviceID"=>$serviceID]);
         }
         function newNumber($userID, $serviceCode) {
+            // return $this->loadpage("index?p=rentals&action=view&accountID="."53298381", true, "Number booked successfully. Redirecting...");
             $services = $this->getServices();
             if(!isset($services[$serviceCode])) {
                 return $this->message("Services no avilable.", "error", 'json');
@@ -69,7 +70,7 @@
             $update = ["accountID"=>$rentNumber['ID'], "loginIDs"=>$rentNumber['ACCESS_NUMBER'], "date"=>date('Y-m-d H:i:s')];
             $update_order = $this->update("orders", $update, "ID ='$orderID'");
             if(!$update_order) return $this->message("Unable to update order.", "error", "json");
-            return $this->message("Number booked successfully.", "success", "json");
+            // $this->message("Number booked successfully.", "success", "json");
         }
 
         function handlePendingNumbers() {
@@ -86,7 +87,10 @@
             if($order['order_type'] != 'rentals' || $order['accountID'] == "") return;
             $isExpired = $this->numberExpired($order['date']);
             if(!$isExpired) $this->requestCodeNumber($order['accountID']); 
-            if($isExpired && (int)$order['status'] != 0) $this->makeNumberAsDone($order['accountID']); 
+            if($isExpired && (int)$order['status'] != 0) $this->makeNumberAsDone($order['accountID']);
+            if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
+                $this->refundOrder($orderID);
+            }
             return $this->getall("number_codes", "orderID = ? ORDER BY date desc", [$order['accountID']], fetch: "all");
         }
 
@@ -130,6 +134,15 @@
             return $this->message("Number status updated.", "success", "json");
         }
 
+        protected function refundOrder($orderID) {
+            $order = $this->getall("orders", "ID =?", [$orderID]);
+            if(!is_array($order)) return;
+            $check = $this->getall('transactions', "forID = ? and trans_for = ?", [$orderID, "orders-refrund"], fetch: "");
+            if($check > 0) return;
+            $this->credit_debit($order['userID'], $order['amount'], "balance", "credit", "orders-refrund", $order['ID']);
+            return true;
+        }
+
         function handleRentailException($response) {
             $results = explode(":", $response);
             // generic errors
@@ -150,9 +163,6 @@
             if($results[0] == "NO_ACTIVATION") return $this->message("Number not found.", "error", "json");
         }
 
-        
-
-        
         function valuedPrice($serviceCode, $amount) {
             return $this->convertDollarToNGN((float)$amount) + (float)$this->get_settings("added_value_amount");
         }
@@ -174,7 +184,7 @@
             $date = date('Y-m-d H:i:s');
             $lastUpdated = $exchangeRate['date'];
             $rate = $exchangeRate['meta_value'];
-            if((int)$this->datediffe($date, $lastUpdated, "m") >= $this->get_settings("exchange_rate_update_interval") && $this->get_settings("fix_exchange_rate") != "yes") $rate = $this->setNewRate();
+            if((int)$this->datediffe($date, $lastUpdated, "m") >= (int)$this->get_settings("exchange_rate_update_interval") && $this->get_settings("fix_exchange_rate") != "yes") $rate = $this->setNewRate();
             return $rate;
         }
 

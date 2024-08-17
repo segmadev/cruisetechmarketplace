@@ -8,13 +8,28 @@ if (!is_array($rent)) {
     return false;
 }
 $codes = $r->getNumberCode($rent['ID']);
+$script[] = "countdown";
 ?>
 <div class="card card-body bg-light">
 <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
-<div>
+<div data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
 <?= $c->badge($rent["status"]) ?>
 </div>
 <hr>
+
+<div
+    id="rentalDetails" 
+    class="border-top" 
+    <?php
+    if((int)$rent['status'] == 1) { ?>
+    data-load="rentals" 
+    data-isreplace="true"
+    data-displayid="rentalDetails" 
+    data-interval="2000"
+    data-path="passer?p=rentals&action=new&accountID=<?= $rent['ID'] ?>"
+    <?php } ?>
+
+>
 <?php
 if ($codes != "") {
     $i =0;
@@ -36,4 +51,5 @@ if ($codes != "") {
     echo $c->empty_page("No code received yet.");
 }
 ?>
+</div>
 </div>

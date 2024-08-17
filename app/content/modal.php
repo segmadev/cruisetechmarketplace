@@ -64,8 +64,15 @@
                 // confirm(response);
                 var body = document.getElementById("modal-body");
                 body.innerHTML = response;
-
                 const elements = body.querySelectorAll('#foo');
+                if (typeof initializeCountdowns === "function") { 
+                    initializeCountdowns();
+                }
+                if (typeof loadFetchData === "function") { 
+                    document.querySelectorAll("[data-load]").forEach(loaddata => {
+                        loadFetchData(loaddata);
+                    });
+                }
                 $i = 0;
                 elements.forEach(element => {
                     element.addEventListener("submit", event => {

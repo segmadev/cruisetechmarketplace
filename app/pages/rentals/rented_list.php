@@ -1,16 +1,18 @@
 <?php 
+$script[] = "fetcher";
     if($no_rented < 1) {
         echo $c->empty_page("No number(s) rented yet.");
     }else{
+      $script[] = "countdown";
         $rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? ORDER BY date desc", [$userID, "", "rentals"], fetch: "all");
 ?>
-<div class="card overflow-hidden chat-application">
+<div class="card overflow-hidden chat-application bg-white">
             <div class="d-flex align-items-center justify-content-between gap-3 m-3 #d-lg-none  ">
               
               <form class="position-relative w-100">
                 <input type="text" 
                 data-search-list="service-details"
-                        data-search-attribute="username"
+                data-search-attribute="username"
                 class="form-control search-chat py-2 ps-5" id="text-srh" placeholder="Search Number or service type">
                 <i class="ti ti-search position-absolute top-50 start-0 translate-middle-y fs-6 text-dark ms-3"></i>
               </form>
@@ -80,11 +82,12 @@
                             $service = "unknown";
                         }
                         ?>
-                      <li class="col-lg-4 col-md-6 col-12 m-0 mt-2 service-details">
-                          <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#bs-example-modal-md" id="chat_user_<?= $rent['accountID'] ?>" data-url="modal?p=rentals&action=view&accountID=<?= $rent['accountID'] ?>" data-title="<?= $rent['loginIDs'] ?>" onclick="modalcontent(this.id)"   class="px-4 py-3 bg-hover-light-black d-flex align-items-center chat-user bg-light" data-user-id="<?= $rent['ID'] ?>">
-                            <div class="ms-6 d-inline-block">
-                              <h6 class="mb-1 fw-semibold chat-title" data-username="<?= $rent['loginIDs'] ?> <?= $service ?>"><?= $rent['loginIDs'] ?> </h6>
-                              <span class="fs-2 text-body-color d-block" data-service-type='<?= $service ?>'><?= $service ?></span>
+                      <li class="col-lg-4 col-md-6 col-12 m-0 mt-2 service-details p-2">
+                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#bs-example-modal-md" id="chat_user_<?= $rent['accountID'] ?>" data-url="modal?p=rentals&action=view&accountID=<?= $rent['accountID'] ?>" data-title="<?= $rent['loginIDs'] ?>" onclick="modalcontent(this.id)"   class="px-4 py-3 bg-hover-light-black d-flex align-items-center chat-user bg-light" data-user-id="<?= $rent['ID'] ?>">
+                          <div class="ms-6 d-inline-block">
+                            <h6 class="mb-1 fw-semibold chat-title" data-username="<?= $rent['loginIDs'] ?> <?= $service ?>"><?= $rent['loginIDs'] ?> </h6>
+                            <span class="fs-2 text-body-color d-block" data-service-type='<?= $service ?>'><?= $service ?></span>
+                            <div data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>"></div>
                             </div>
                           </a>
                         </li>

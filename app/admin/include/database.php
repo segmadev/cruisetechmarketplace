@@ -1191,6 +1191,7 @@ class database
 
         // Convert the difference to total hours
         if($format == "m") return ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+        if($format == "s") return ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
         return ($interval->days * 24) + $interval->h + ($interval->i / 60) + ($interval->s / 3600);
         
         
@@ -1215,8 +1216,15 @@ class database
         return $hold;
     }
 
-    function loadpage($url) {
-        echo '<script>window.location.href = "'.$url.'";</script>';
+    function loadpage($url, $isJson = false, $message = "Redirecting...") {
+       if(!$isJson) {
+           echo '<script>window.location.href = "'.$url.'";</script>';
+           return ;
+       }
+       return json_encode([
+            "message" => ["Success", "$message", "success"],
+            "function" => ["loadpage", "data" => [$url, "null"]],
+        ]);
     }
 
     function ago($time)
@@ -1269,7 +1277,7 @@ class database
                 $function = "<small><a href=\"javascript:void(0)\" onclick=\"showall('$id')\" class='text-gray'>more</a></small>";
                 $data = "data-fulltext='$text'";
             } 
-        $shortenedText = "<p id='$id' $data >$short $function</p>";
+        $shortenedText = "<p class='m-0' id='$id' $data >$short $function</p>";
         return !$justText  ?  $shortenedText : $short;
     }
 
