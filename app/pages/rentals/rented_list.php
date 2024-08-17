@@ -1,5 +1,4 @@
 <?php 
-$script[] = "fetcher";
     if($no_rented < 1) {
         echo $c->empty_page("No number(s) rented yet.");
     }else{
