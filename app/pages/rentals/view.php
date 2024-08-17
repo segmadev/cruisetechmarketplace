@@ -15,7 +15,9 @@ $script[] = "countdown";
 <div data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
 <?= $c->badge($rent["status"]) ?>
 </div>
-<p class="fs-2">If code is taking too long you can reload this page.</p>
+<?php if((int)$rent['status'] == 1) { ?>
+    <b class="fs-2">If code is taking too long you can reload this page.</b>
+<?php } ?>
 <hr>
 
 <div
