@@ -32,7 +32,6 @@
             return $this->quick_insert("liked_services", ["userID"=>$userID, "serviceID"=>$serviceID]);
         }
         function newNumber($userID, $serviceCode) {
-            // return $this->loadpage("index?p=rentals&action=view&accountID="."53298381", true, "Number booked successfully. Redirecting...");
             $services = $this->getServices();
             if(!isset($services[$serviceCode])) {
                 return $this->message("Services no avilable.", "error", 'json');
@@ -70,6 +69,7 @@
             $update = ["accountID"=>$rentNumber['ID'], "loginIDs"=>$rentNumber['ACCESS_NUMBER'], "date"=>date('Y-m-d H:i:s')];
             $update_order = $this->update("orders", $update, "ID ='$orderID'");
             if(!$update_order) return $this->message("Unable to update order.", "error", "json");
+            return $this->loadpage("index?p=rentals&action=view&accountID="."53298381", true, "Number booked successfully. Redirecting...");
             // $this->message("Number booked successfully.", "success", "json");
         }
 
