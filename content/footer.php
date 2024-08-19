@@ -8,6 +8,7 @@
 </script>
 <?php
 $facebook_link = $d->get_settings('facebook_link');
+$telegram = $d->get_settings('telegram');
 $instagram_link = $d->get_settings('instagram_link');
 $x_link = $d->get_settings('x_link');
 $tiktok_link = $d->get_settings('tiktok_link');
@@ -21,6 +22,14 @@ $tiktok_link = $d->get_settings('tiktok_link');
                 </p>
             </div>
             <div>
+                <?php if ($telegram != "") { ?>
+                    <a class="inline-flex h-10 w-10 items-center justify-center gap-x-2 rounded-lg border border-transparent text-sm font-bold text-neutral-700 outline-none ring-zinc-500 hover:bg-neutral-500/10 focus:outline-none focus-visible:ring focus-visible:ring-zinc-500 dark:ring-zinc-200 dark:hover:bg-neutral-50/10" href="<?= $telegram ?>" target="_blank" rel="noopener noreferrer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-telegram" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M15 10l-4 4l6 6l4 -16l-18 7l4 2l2 6l3 -4" />
+                        </svg>
+                    </a>
+                <?php } ?>
                 <?php if ($facebook_link != "") { ?>
                     <a class="inline-flex h-10 w-10 items-center justify-center gap-x-2 rounded-lg border border-transparent text-sm font-bold text-neutral-700 outline-none ring-zinc-500 hover:bg-neutral-500/10 focus:outline-none focus-visible:ring focus-visible:ring-zinc-500 dark:ring-zinc-200 dark:hover:bg-neutral-50/10" href="<?= $facebook_link ?>" target="_blank" rel="noopener noreferrer"><svg class="h-4 w-4 flex-shrink-0 fill-current text-neutral-700 dark:text-neutral-400" viewBox="0 0 24 24" fill="currentColor">
                             <title>Facebook</title>
@@ -58,4 +67,9 @@ $tiktok_link = $d->get_settings('tiktok_link');
             t.innerText = e.toString();
         </script>
     </div>
+    <?php 
+    if($d->get_settings("live_chat_widget")){
+        echo htmlspecialchars_decode($d->get_settings("live_chat_widget"));
+    }
+    ?>
 </footer>

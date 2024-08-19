@@ -3,6 +3,7 @@
 <!-- Core Css -->
 
 <?php
+$script[] = "live_chat";
 $mode = "light";
 if (isset($_SESSION['browser_theme'])) {
     switch ($_SESSION['browser_theme']) {
@@ -17,7 +18,7 @@ if (isset($_SESSION['browser_theme'])) {
         default:
             $logo = $dark_logo;
             // echo  '<link id="themeColors" rel="stylesheet" href="dist/css/style.min.css?n=409" />';
-            echo  '<link id="themeColors" rel="stylesheet" href="dist/css/style-orange.min.css" />';
+            echo  '<link id="themeColors" rel="stylesheet" href="dist/css/style-orange.min.css?n=900" />';
             $theme_btn = '<a href="index?theme=dark" class="btn btn-dark rounded-pill font-medium me-2 mb-2" for="option1"><i class="ti ti-moon"></i> Change to Dark Theme</a>';
             break;
     }

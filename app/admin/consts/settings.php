@@ -19,6 +19,7 @@
        ];
        $settings_form['input_data'] = $s->getdata($settings_form);
         $settings_social_media = [
+            "telegram_link" => ["is_required"=>false],
             "facebook_link" => ["is_required"=>false],
             "instagram_link" => ["is_required"=>false],
             "x_link" => ["is_required"=>false],

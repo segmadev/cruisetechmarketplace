@@ -52,6 +52,12 @@
                                 } ?>"><i class='ti ti-home fs-6'></i>
                               <h6 class="p-0 m-0 fs-2">Home</h6>    
                               </a>
+
+                              <a href="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals") {
+                                  echo "btn-primary";
+                                } ?>"><i class='ti ti-phone fs-6'></i>
+                              <h6 class="p-0 m-0 fs-2">Rental</h6>    
+                              </a>
     <a href="index?p=orders" class="btn btn-sm <?php if ($page == "orders") {
                                               echo "btn-primary";
                                             } ?>"><i class='fs-6 ti ti-align-box-bottom-center'></i>

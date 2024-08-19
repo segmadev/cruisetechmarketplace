@@ -55,8 +55,19 @@
                             </svg> </a><a
                             class="inline-flex items-center justify-center gap-x-2 rounded-lg px-4 py-3 text-center text-sm font-medium text-neutral-600 shadow-sm outline-none ring-zinc-500 focus-visible:ring transition duration-300 border border-neutral-200 bg-neutral-300 hover:bg-neutral-400/50 hover:text-neutral-600 active:text-neutral-700 disabled:pointer-events-none disabled:opacity-50 2xl:text-base ring-zinc-500 dark:border-neutral-700 dark:bg-zinc-700 dark:text-neutral-300 dark:ring-zinc-200 dark:hover:bg-zinc-600 dark:focus:outline-none"
                             href="app/login">Login</a></div>
-                  
+                            <?php if($d->get_settings("telegram")) { ?>
+
+                <a class="sidebar-link inline-flex mt-2"  target="_BLANK" href="<?= $d->get_settings("telegram") ?>" aria-expanded="false">
+                    <img src="https://cdn.pixabay.com/photo/2021/12/27/10/50/telegram-icon-6896828_960_720.png" style="width:20px" srcset="Join out telegram channel">
+                    <b><span class="hide-menu ms-2 text-pretty"> Join Our Telegram for news and update</span></b>
+                    
+                </a>
+                
+            <?php } ?>
                 </div>
+
+           
+
                 <div class="flex w-full">
                     <div class="top-12 overflow-hidden"><img class='animate-hero' src="app/assets/images/banners/<?= $d->get_settings("home_header_img", "content") ?>"
                             alt="Stack of ScrewFast product boxes containing assorted hardware tools"

@@ -103,7 +103,7 @@ require_once "include/ini-session.php";
             <li class="sidebar-item">
               <a class="sidebar-link" href="index?p=rentals" aria-expanded="false">
                 <span>
-                  <i class="ti-align-box-bottom-center"></i>
+                  <i class="ti ti-phone"></i>
                 </span>
                 <span class="hide-menu">Manage Rentals</span>
               </a>
@@ -111,7 +111,7 @@ require_once "include/ini-session.php";
             <li class="sidebar-item">
               <a class="sidebar-link" href="index?p=orders" aria-expanded="false">
                 <span>
-                  <i class="ti-align-box-bottom-center"></i>
+                  <i class="ti ti-align-box-bottom-center"></i>
                 </span>
                 <span class="hide-menu">Orders</span>
               </a>
@@ -176,7 +176,19 @@ require_once "include/ini-session.php";
               </a>
             </div>
           </form>
-          
+          <?php if($d->get_settings("telegram")) { ?>
+          <ul id="sidebarnav">
+            <li class="sidebar-item bg-light-primary mt-2">
+              <a class="sidebar-link" target="_BLANK" href="<?= $d->get_settings("telegram") ?>" aria-expanded="false">
+                <span>
+                  <img src="https://cdn.pixabay.com/photo/2021/12/27/10/50/telegram-icon-6896828_960_720.png" style="width:20px" srcset="Join out telegram channel">
+                </span>
+                <span class="hide-menu"> <span class="m-0 p-0">Join Our Telegram</span> <p class="fs-2 text-muted m-0 p-0">for news and update</p></span>
+                
+              </a>
+            </li>
+            </ul>
+            <?php } ?>
         </nav>
 
         <!-- End Sidebar navigation -->
@@ -187,8 +199,8 @@ require_once "include/ini-session.php";
     <!--  Main wrapper -->
     <div class="body-wrapper">
       <!--  Header Start -->
-      <header class="app-header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white p-1 rounded">
+      <header class="app-header p-2">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white p-0 ps-3 rounded">
           <ul class="navbar-nav">
             <li class="nav-item">
               <a class="nav-link sidebartoggler nav-icon-hover ms-n3 " id="headerCollapse" href="javascript:void(0)">
