@@ -17,7 +17,7 @@ $countDuration = (int)$d->get_settings("rental_number_expire_time");
     <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
 <div 
 data-countdown-duration="<?= $countDuration ?>"
-data-countdown-insec="0<?php // echo $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
+data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
 <?= $c->badge($rent["status"]) ?>
 </div>
 <?php if((int)$rent['status'] == 1) { ?>
