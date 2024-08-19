@@ -1,7 +1,7 @@
 <div class="table-responsive w-100">
     <div class="d-flex gap-2">
-        <a href="index?p=rentals" class="btn btn-sm btn-primary">Rentals</a>
-        <a href="index?p=orders&type=account" class="btn btn-outline-primary">Accounts</a>
+        <!-- <a href="index?p=rentals" class="btn btn-sm btn-primary">Rentals</a> -->
+        <a href="index#accountpage" class="btn btn-primary">Buy New Account</a>
     </div>
     <hr>
     <table class="table align-middle text-nowrap mb-0 bg-transparent">

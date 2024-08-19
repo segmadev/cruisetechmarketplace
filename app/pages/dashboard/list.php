@@ -40,6 +40,7 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
               </div>
             </div>
             
+            <div id="accountpage"></div>
 
             <!-- rentent number part -->
              <div class="col-lg-4 col-md-4 col-12">
@@ -49,11 +50,11 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
                   <h4 class="fw-semibold mb-8">Rent a number</h4>
                   <nav aria-label="breadcrumb">
                     <p class="breadcrumb text-muted">
-                        Rent a phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.
+                        Rent a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.
                     </p>
                   </nav>
                   <hr>
-                  <a href="index?p=rentals&action=new" class="btn btn-primary">Get a Number.</a>
+                  <a href="index?p=rentals&action=new" class="btn btn-primary">Get USA Number.</a>
                 </div>
                 <div class="col-3">
                   <div class="text-center mb-n5">  

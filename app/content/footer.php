@@ -56,12 +56,12 @@
                               <a href="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals") {
                                   echo "btn-primary";
                                 } ?>"><i class='ti ti-phone fs-6'></i>
-                              <h6 class="p-0 m-0 fs-2">Rental</h6>    
+                              <h6 class="p-0 m-0 fs-2">Number</h6>    
                               </a>
-    <a href="index?p=orders" class="btn btn-sm <?php if ($page == "orders") {
+    <a href="index?p=orders&type=account" class="btn btn-sm <?php if ($page == "orders") {
                                               echo "btn-primary";
-                                            } ?>"><i class='fs-6 ti ti-align-box-bottom-center'></i>
-                                          <h6 class="p-0 m-0 fs-2">Orders</h6>  
+                                            } ?>"><i class='fs-6 ti ti-social'></i>
+                                          <h6 class="p-0 m-0 fs-2">Accounts</h6>  
                                           </a>
     <a href="index?p=deposit" class="btn btn-sm <?php if ($page == "deposit") {
                                           echo "btn-primary";
