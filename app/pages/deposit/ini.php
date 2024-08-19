@@ -10,13 +10,11 @@
             $de->validate_payment(htmlspecialchars($_GET['tx_ref']), htmlspecialchars($_GET['transaction_id']), $userID);
     }
     if(isset($_GET['new_account'])) {
-        try {
+    
             if($de->create_account_details($user)){
                 $d->loadpage("index?p=deposit");
             }
-        } catch (\Exception $e) {
-            $d->loadpage("index?p=deposit");
-        }
+        
     }
     // $account_details = $de->get_account_details($userID);
 ?>
