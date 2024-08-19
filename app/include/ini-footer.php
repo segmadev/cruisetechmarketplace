@@ -63,7 +63,7 @@
 <?php if (in_array("countdown", $script)) { ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.40/moment-timezone-with-data.min.js"></script>
-   <script src="dist/js/countdown.js?n=<?= rand(10, 200) ?>"></script>
+   <script src="dist/js/countdown.js?n=89877"></script>
 <?php } ?>
 <?php if (in_array("fetcher", $script)) { ?>
    <script src="dist/js/fetcher.js?n=765654545"></script>

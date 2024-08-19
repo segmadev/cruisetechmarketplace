@@ -30,7 +30,7 @@
                 displayMessage(element, badge("Expired"));
                 clearInterval(interval);
             } else {
-                displayMessage(element, `${minutes}m ${seconds}s`);
+                displayMessage(element, badge(`${minutes}m ${seconds}s`));
             }
         }, 1000);
     }
@@ -40,8 +40,9 @@
         const countdownElements = document.querySelectorAll('[data-countdown-insec]');
         countdownElements.forEach(element => {
             var countdownInSec = parseInt(element.getAttribute('data-countdown-insec'), 10);
-            if(countdownInSec < 5 * 60) {
-                countdownInSec = (5*60) - countdownInSec;
+            var countdownInDuration = parseInt(element.getAttribute('data-countdown-duration')) ?? 5;
+            if(countdownInSec < countdownInDuration * 60) {
+                countdownInSec = (countdownInDuration * 60) - countdownInSec;
                 handleCountdown(countdownInSec, element);
             }else {
                 displayMessage(element, badge("Expired"));
@@ -58,7 +59,7 @@
         if (data === "1") data = "Active";
         if (data === "0") data = "Expired";
         
-        let info = `<span class='badge-sm bg-light-primary text-primary fw-semibold fs-2'>${data}</span>`;
+        let info = `<span class='badge-sm bg-light-primary text-primary fw-semibold fs-2 p-2'>${data}</span>`;
         
         try {
             switch (data) {

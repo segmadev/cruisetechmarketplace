@@ -86,7 +86,10 @@
                           <div class="ms-6 d-inline-block">
                             <h6 class="mb-1 fw-semibold chat-title" data-username="<?= $rent['loginIDs'] ?> <?= $service ?>"><?= $rent['loginIDs'] ?> </h6>
                             <span class="fs-2 text-body-color d-block" data-service-type='<?= $service ?>'><?= $service ?></span>
-                            <div data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>"></div>
+                            <div 
+                            data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>"
+                            data-countdown-duration="<?= $countDuration ?>"
+                            ></div>
                             </div>
                           </a>
                         </li>
