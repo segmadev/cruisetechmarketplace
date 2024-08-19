@@ -1,4 +1,3 @@
-
         <div class="card bg-white p-0">
         <div class="card-header">
                 <h3>SMS Verifications </h3>
