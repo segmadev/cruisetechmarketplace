@@ -11,7 +11,9 @@ $codes = $r->getNumberCode($rent['ID']);
 $script[] = "countdown";
 ?>
 <div class="card card-body bg-light">
-<h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
+    <div><a href="index?p=rentals&action=new" class="btn btn-sm btn-primary"><i class="ti ti-phone"></i> Rent a new number</a></div>
+<hr>
+    <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
 <div data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
 <?= $c->badge($rent["status"]) ?>
 </div>
