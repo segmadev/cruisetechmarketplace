@@ -3,7 +3,7 @@
         echo $c->empty_page("No number(s) rented yet.");
     }else{
       $script[] = "countdown";
-        $rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? ORDER BY date desc LIMIT 5", [$userID, "", "rentals"], fetch: "all");
+        $rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? ORDER BY date desc LIMIT 20", [$userID, "", "rentals"], fetch: "all");
 ?>
 <div class="card overflow-hidden chat-application bg-white">
             <div class="d-flex align-items-center justify-content-between gap-3 m-3 #d-lg-none  ">
