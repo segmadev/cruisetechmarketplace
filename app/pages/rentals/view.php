@@ -12,7 +12,7 @@ $script[] = "countdown";
 $countDuration = (int)$d->get_settings("rental_number_expire_time");
 ?>
 <div class="card card-body bg-light">
-    <div><a href="index?p=rentals&action=new" class="btn btn-sm btn-primary"><i class="ti ti-phone"></i> Rent a new number</a></div>
+    <div><a href="index?p=rentals&action=new" class="btn btn-sm btn-primary"><i class="ti ti-phone"></i> Get a new number</a></div>
 <hr>
     <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
 <div 

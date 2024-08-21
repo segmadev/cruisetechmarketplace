@@ -1,7 +1,7 @@
         <div class="card bg-white p-0">
         <div class="card-header">
                 <h3>SMS Verifications </h3>
-                <p class="m-0">Rent a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.</p>
+                <p class="m-0">Get a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.</p>
                 <p class="text-muted m-0">To view rented numbers <a href="index?p=rentals" class="btn-sm">click here</a>.</p>
                 <form class="position-relative">
                     <input type="text" 
@@ -14,7 +14,7 @@
                 </form>
             </div>
             <div class="card-body p-0 m-0">
-                <p class="bg-danger ps-4 text-white"><b>Note that the price are not fixed price.</b></p>
+                <p class="bg-danger ps-4 text-white"><b>Note that the price are not fixed.</b></p>
                 <?php
                 if (count($rental_services) <= 0) {
                     echo $c->empty_page("No Services Available at the moment.");

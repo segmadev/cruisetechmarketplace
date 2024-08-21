@@ -47,10 +47,10 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
              <div class="card-body bg-light-primary px-4 py-3">
               <div class="row align-items-center">
                 <div class="col-9">
-                  <h4 class="fw-semibold mb-8">Rent a number</h4>
+                  <h4 class="fw-semibold mb-8">Get a number</h4>
                   <nav aria-label="breadcrumb">
                     <p class="breadcrumb text-muted">
-                        Rent a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.
+                        Get a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.
                     </p>
                   </nav>
                   <hr>
@@ -69,7 +69,7 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
 <?php
 // echo "<div class='d-flex gap-2'>
 // <div class='col-12 col-md-6 col-lg-4'>".$u->show_balance($userID, showBtn: true)."</div>
-// <div class='col-12 col-md-6 col-lg-4'>Rent Number</div>
+// <div class='col-12 col-md-6 col-lg-4'>Get Number</div>
 // </div>";
 $categories = $d->getall("category", fetch: "all");
 if ($categories->rowCount() > 0) {
