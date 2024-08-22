@@ -41,12 +41,20 @@
         countdownElements.forEach(element => {
             var countdownInSec = parseInt(element.getAttribute('data-countdown-insec'), 10);
             var countdownInDuration = parseInt(element.getAttribute('data-countdown-duration')) ?? 5;
-            if(countdownInSec < countdownInDuration * 60) {
-                countdownInSec = (countdownInDuration * 60) - countdownInSec;
-                handleCountdown(countdownInSec, element);
-            }else {
-                displayMessage(element, badge("Expired"));
+            var countdownStatus = parseInt(element.getAttribute('data-status')) ?? 1;
+            if(countdownStatus == 0) {
+                displayMessage(element, badge("Expired"))
+            }else if(countdownStatus == 2){
+                displayMessage(element, badge("Closed"))
+            }else{
+                if(countdownInSec < countdownInDuration * 60) {
+                    countdownInSec = (countdownInDuration * 60) - countdownInSec;
+                    handleCountdown(countdownInSec, element);
+                }else {
+                    displayMessage(element, badge("Expired"));
+                }
             }
+            
         });
     }
 
@@ -58,6 +66,7 @@
         
         if (data === "1") data = "Active";
         if (data === "0") data = "Expired";
+        if (data === "2") data = "Closed";
         
         let info = `<span class='badge-sm bg-light-primary text-primary fw-semibold fs-2 p-2'>${data}</span>`;
         
@@ -79,8 +88,8 @@
                 case 'Pending':
                     return `<span class='badge-sm bg-light-warning text-warning fw-semibold fs-2'>${data}</span>`;
                 case '':
-                case 'Bot':
-                    return `<span class='badge-sm bg-light-primary text-primary fw-semibold fs-2'>${data}</span>`;
+                case 'Bot', 'Closed':
+                    return `<span class='badge-sm bg-dark text-white fw-semibold fs-2 p-1'>${data}</span>`;
                 default:
                     return info;
             }

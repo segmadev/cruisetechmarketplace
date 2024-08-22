@@ -1070,3 +1070,9 @@ document.querySelectorAll('[data-search-list]').forEach(function(input) {
         });
     });
 });
+
+
+function confirmRedirect(message = "Are you sure you want to leave this page?") {
+    const userConfirmed = confirm(message);
+    return userConfirmed; // If the user clicks "OK", return true to proceed with the link, otherwise return false.
+}

@@ -265,6 +265,7 @@ class content extends database
         $data = (string)ucfirst($data);
         if($data == "1") $data = "Active";
         if($data == "0") $data = "Expired";
+        if($data == "2") $data = "Closed";
         $info = "<span class='badge bg-light-primary text-primary fw-semibold fs-2'>$data</span>";
         
         try {
@@ -272,7 +273,7 @@ class content extends database
                   'Active', 'Approved','Success', 'Successful', "Allocated", "Completed"   => "<span class='badge bg-light-success text-success fw-semibold fs-2'>$data</span>",
                 'Disable', 'Expired', 'Reject', 'Rejected' => "<span class='badge bg-light-danger text-danger fw-semibold fs-2'>$data</span>",
                 'initiate', 'Pending' => "<span class='badge bg-light-warning text-warning fw-semibold fs-2'>$data</span>",
-                "","Bot" => "<span class='badge bg-light-primary text-primary fw-semibold fs-2'>$data</span>"
+                "","Bot","Closed" => "<span class='badge bg-dark text-white fw-semibold fs-2'>$data</span>"
             };
         } catch (\Throwable $th) {
            return "<span class='badge bg-light-primary text-primary fw-semibold fs-2'>$data</span>";

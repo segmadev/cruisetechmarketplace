@@ -87,11 +87,22 @@
             if($order['order_type'] != 'rentals' || $order['accountID'] == "") return;
             $isExpired = $this->numberExpired($order['date']);
             if(!$isExpired) $this->requestCodeNumber($order['accountID']); 
-            if($isExpired && (int)$order['status'] != 0) $this->makeNumberAsDone($order['accountID']);
+            if($isExpired && (int)$order['status'] == 1) $this->makeNumberAsDone($order['accountID']);
             if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
                 $this->refundOrder($orderID);
             }
             return $this->getall("number_codes", "orderID = ? ORDER BY date desc", [$order['accountID']], fetch: "all");
+        }
+
+        function closeRental($orderID) {
+            $order = $this->getall("orders", "ID =?", [$orderID]);
+            if(!is_array($order)) return;
+            if($order['order_type'] != 'rentals' || $order['accountID'] == "") return;
+            $this->makeNumberAsDone($order['accountID'], 2);
+           
+            if($this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
+                $this->refundOrder($orderID);
+            }
         }
 
         function numberExpired($date) : bool {
@@ -105,7 +116,6 @@
         protected function rentNumber($serviceCode, $cost) {
             // first check the balance
             $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getNumber&service=$serviceCode&max_price=$cost";
-            // var_dump($url);
             $result = $this->api_call($url, isRaw: true);
             if($result == null) {
                 return $this->message("Int Error: unable to get number.", "error", "json");
@@ -127,10 +137,10 @@
             return ;
         }
 
-        protected function makeNumberAsDone($id) {
-            $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=setStatus&id=$id&status=6";
+        protected function makeNumberAsDone($id, $status = 0) {
+            $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=setStatus&id=$id&status=8";
             $this->api_call($url, isRaw: true);
-            $this->update("orders", ["status"=>0], "accountID = '$id'");
+            $this->update("orders", ["status"=>$status], "accountID = '$id'");
             return $this->message("Number status updated.", "success", "json");
         }
 
