@@ -142,7 +142,7 @@ class Account extends user
                     <img src='".PATH."assets/images/icons/".$platform['icon']."' class='img-fluid rounded-circle' width='20' />
                 </div>
                 <div class='ms-2'>
-                <h6 class='note-title w-100 mb-0'> ".$this->short_text($account['title'], 27)." </h6>
+                <h6 class='note-title w-100 mb-0'> ".$this->short_text($account['title'], 38)." </h6>
                 <p class='note-date fs-2 m-0'>".$platform['name']. "</p>
                 </div>
                     </div>

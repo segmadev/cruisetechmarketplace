@@ -3,6 +3,7 @@
     <hr>
     <div class='w-100'>
         <?php
+        $script[] = "divtopdf";
         if ($orders == "" || $orders->rowCount() == 0) {
             echo $c->empty_page("No order yet. You havn't make any orders yet", h1: "NO order");
         } else {
