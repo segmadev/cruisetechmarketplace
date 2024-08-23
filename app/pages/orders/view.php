@@ -14,7 +14,7 @@ if (!$order || $order == "") {
             </div>
             <div class="ms-3">
                 <h2><?= $account['title'] ?></h2>
-                <p class="h5">Amount: <?= $d->money_format($order['amount']) ?></p>
+                <p class="h5 print-ignore">Amount: <?= $d->money_format($order['amount']) ?></p>
             </div>
         </div>
         <div class="card bg-light-success p-3">
@@ -25,16 +25,19 @@ if (!$order || $order == "") {
             ?>
                 <hr>
                 <div class=""><b>Login <?php echo $i;
-                                                $i++ ?>: </b> <?= $login['login_details'] ?>ddjsbdmnsbdnsbdsnmdvsbdvsbdvsdsdvbsvdbsdvsbdnsvdbnasvdabndvasdbnvsdbasvdasbndvasbndvasdbasndvsbn</div>
+                                                $i++ ?>: </b> <?= $login['login_details'] ?></div>
             <?php } ?>
+        <?php if($account['Aditional_auth_info'] != "") { ?>
             <hr>
             <ul>
                 <li>Aditional Details: <?= $account['Aditional_auth_info'] ?></li>
             </ul>
+            <?php } ?>
         </div>
+        <?php if($account['description'] != "") { ?>
         <hr>
         <p class='text-mute'><?= $account['description'] ?></p>
-
+            <?php } ?>
 
 
     </div>
