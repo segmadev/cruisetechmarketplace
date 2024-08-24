@@ -6,39 +6,50 @@ if (!$order || $order == "") {
     ?>
     <div class="card p-3 bg-white" id="logindetailsdiv">
         <div>
-            <button class="mr-auto print-ignore btn btn-sm mb-2 btn-outline-primary" onclick="printDiv('logindetailsdiv', 'accountlogin' )" type="button"><i class="ti ti-download"></i> Download as PDF</button>
+        <div class="btn-group mb-2 print-ignore">
+                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ti ti-download"></i> Download Login
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                            <li><a class="dropdown-item" href="#" onclick="printDiv('logindetailsdiv', '<?=preg_replace('/[^a-zA-Z0-9_ -]/s', ' ', $account['title'])?>')">Download as PDF</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="downloadText('logindetailsdiv', '<?=preg_replace('/[^a-zA-Z0-9_ -]/s', ' ', $account['title'])?>')">Download as txt</a></li>
+                        </ul>
+                      </div>
         </div>
+        <hr class="print-ignore">
         <div class="flex d-flex">
             <div>
-                <img class="img-fluid rounded-circle" width="40" src="<?= $a->get_platfrom_img_url($account['platformID'])  ?>" alt="">
+                <img class="img-fluid rounded-circle" width="40" src="<?=$a->get_platfrom_img_url($account['platformID'])?>" alt="">
             </div>
             <div class="ms-3">
-                <h2><?= $account['title'] ?></h2>
-                <p class="h5 print-ignore">Amount: <?= $d->money_format($order['amount']) ?></p>
+                <h2><?=$account['title']?></h2>
+                <p class="h5 print-ignore">Amount: <?=$d->money_format($order['amount'])?></p>
             </div>
         </div>
         <div class="card bg-light-success p-3">
-            <h6><b>Account Access Details</b></h6>
+            <h6 class="print-ignore"><b>Account Access Details</b></h6>
             <?php $i = 1;
-            foreach ($logins as $login) {
-                $login = $d->getall("logininfo", "ID = ?", [$login]);
-            ?>
+    foreach ($logins as $login) {
+        $login = $d->getall("logininfo", "ID = ?", [$login]);
+        ?>
                 <hr>
                 <div class=""><b>Login <?php echo $i;
-                                                $i++ ?>: </b> <?= $login['login_details'] ?></div>
-            <?php } ?>
-        <?php if($account['Aditional_auth_info'] != "") { ?>
+        $i++ ?>: </b> <?=$login['login_details']?></div>
+            <?php
+}?>
+        <?php if ($account['Aditional_auth_info'] != "") {?>
             <hr>
             <ul>
-                <li>Aditional Details: <?= $account['Aditional_auth_info'] ?></li>
+                <li class="print-ignore">Aditional Details: <?=$account['Aditional_auth_info']?></li>
             </ul>
-            <?php } ?>
+            <?php }?>
         </div>
-        <?php if($account['description'] != "") { ?>
+        <?php if ($account['description'] != "") {?>
         <hr>
-        <p class='text-mute'><?= $account['description'] ?></p>
-            <?php } ?>
+        <p class='text-mute print-ignore'><?=$account['description']?></p>
+            <?php }?>
 
 
     </div>
-<?php   } ?>
+<?php
+}?>

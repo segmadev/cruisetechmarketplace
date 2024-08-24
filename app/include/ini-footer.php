@@ -66,7 +66,7 @@
    <script src="dist/js/countdown.js?n=11234411"></script>
 <?php } ?>
 <?php if (in_array("divtopdf", $script)) { ?>
-    <script src="dist/js/divtopdf.js?n=2245"></script>
+    <script src="dist/js/divtopdf.js?n=442245"></script>
 <?php } ?>
 <?php if (in_array("fetcher", $script)) { ?>
    <script src="dist/js/fetcher.js?n=765654545"></script>
