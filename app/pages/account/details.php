@@ -34,7 +34,7 @@ if (!$account || $account == "") {
             <button type="submit" class=" d-flex align-items-center gap-3 btn btn-success" href="#"><i class="fs-4 ti ti-check"></i>Buy Account</button>
         </form>
         <hr>
-        <p class='text-mute'><?= $account['description'] ?></p>
+        <p class='text-mute'><?= htmlspecialchars_decode($account['description']) ?></p>
     </div>
 <?php   } ?>
 

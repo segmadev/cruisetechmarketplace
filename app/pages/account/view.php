@@ -26,7 +26,7 @@ if (!$account || $account == "") {
             </ul>
         </div>
         <hr>
-        <p class='text-mute'><?= $account['description'] ?></p>
+        <p class='text-mute'><?= htmlspecialchars_decode($account['description']); ?></p>
 
 
 
