@@ -172,6 +172,8 @@ class autorize extends database
             $sendmail = $d->smtpmailer($data['email'], "Password Reset ($reset)", $smessage);
             if ($sendmail) {
                 return $d->loadpage("forget_password?reset=".base64_encode($data['email']), true);
+            }else{
+                return $d->message("Failed to send email. Please try again later.", "error");
             }
         }
         return $d->message("Error", "error");
