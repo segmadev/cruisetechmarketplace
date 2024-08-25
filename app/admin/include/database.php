@@ -744,7 +744,7 @@ class database
         $d = new database;
         $smtp = $d->getall("smtp_config", "ID = ?", ["$smtpid"]);
         if (!is_array($smtp)) {
-            $d->message("SMTP selected not found please choose another one or refresh page and try again", "error");
+            // $d->message("SMTP selected not found please choose another one or refresh page and try again", "error");
             return false;
         }
         $server = $smtp['server'];
@@ -782,11 +782,11 @@ class database
             }
         } catch (phpmailerException $e) {
 
-            echo $e->errorMessage(); //Pretty error messages from PHPMailer
+            // echo $e->errorMessage(); //Pretty error messages from PHPMailer
             // $d->message("Error Sending message. You can try new SMTP", "error");
             return false;
         } catch (Exception $e) {
-            echo $e->getMessage(); //Boring error messages from anything else!
+            // echo $e->getMessage(); //Boring error messages from anything else!
             // $d->message("Error Sending message. You can try new SMTP", "error");
             return false;
         }
