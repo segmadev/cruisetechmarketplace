@@ -4,5 +4,5 @@
     require_once "admin/include/database.php";
     require_once "functions/rentals.php";
     $r = new rentals;
-    $pendingNumbers = $r->handlePendingNumbers();
+    $pendingNumbers = $r->handleBalance();
     echo json_encode($pendingNumbers);
