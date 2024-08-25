@@ -129,11 +129,10 @@
             if($this->get_settings("notification_email") == "" || (float)$this->get_settings("notify_low_balance_amount") <= 0) return;
             $api_url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getBalance";
             $result = $this->api_call($api_url, isRaw: true);
-            var_dump($result);
             $result = $this->handleRentailException($result);
             if(!is_array($result) || !isset($result['balance'])) return ;
             if((float)$result['balance'] > (float)$this->get_settings("notify_low_balance_amount")) return ;
-            $message = "You have a low balance on ".$this->base_url.". Current balance is <b>".$this->money_format($result['balance'], "USD")."</b>";
+            $message = "You have a low balance on ".str_replace('stubs/', '', $this->base_url).". Current balance is <b>".$this->money_format($result['balance'], "USD")."</b>";
             $smessage = $this->get_email_template("default")['template'];
             $smessage = $this->replace_word(['${first_name}' => "Admin", '${message_here}' => $message, '${website_url}' => $this->get_settings("website_url")], $smessage);
             $this->smtpmailer($this->get_settings("notification_email"), "Rental Low Balance on ".date("Y-m-d h:i:sa"), $smessage);
