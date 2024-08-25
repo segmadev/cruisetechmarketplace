@@ -7,7 +7,7 @@
         "title"=>["description"=>"Name or title of the account"],
         "description"=>["type"=>"textarea", "title"=>"Description (optional)", "is_required"=>false, "description"=>"Tell buyers more about the account"],
         "amount"=>["input_type"=>"number", "description"=>"What is the amount you selling the account for"],
-        "Aditional_auth_info"=>["title"=>"Aditional Authentication Information (optional)", "is_required"=>false, "type"=>"textarea", "description"=>"Enter additional details about the account,<span class='text-danger'>This won't show until the user purchases the account.</span>"],
+        "Aditional_auth_info"=>["id"=>"richtext", "global_class"=>"col-md-12", "title"=>"Aditional Authentication Information (optional)", "is_required"=>false, "type"=>"textarea", "description"=>"Enter additional details about the account,<span class='text-danger'>This won't show until the user purchases the account.</span>"],
         "input_data"=>$account
     ];
 

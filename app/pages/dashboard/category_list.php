@@ -17,6 +17,6 @@
             </li>
     <?php  }
     $categories = $new_categories;
-    }  ?>
+    }  ?>   
 </ul>
 </div>

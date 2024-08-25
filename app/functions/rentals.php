@@ -81,6 +81,10 @@
             }
             return ["message"=>"success"];
         }
+
+        function handleBalance() {
+            
+        }
         function getNumberCode($orderID) {
             $order = $this->getall("orders", "ID =?", [$orderID]);
             if(!is_array($order)) return;

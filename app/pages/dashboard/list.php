@@ -71,7 +71,7 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
 // <div class='col-12 col-md-6 col-lg-4'>".$u->show_balance($userID, showBtn: true)."</div>
 // <div class='col-12 col-md-6 col-lg-4'>Get Number</div>
 // </div>";
-$categories = $d->getall("category", fetch: "all");
+$categories = $d->getall("category", 'date != ? order by date ASC', [""], fetch: "all");
 if ($categories->rowCount() > 0) {
     require_once "pages/dashboard/category_list.php";
     foreach ($categories as $category) {

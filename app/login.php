@@ -72,7 +72,7 @@ require_once "include/auth-ini.php"; ?>
                           Remeber this Device
                         </label>
                       </div>
-                      <!-- <a class="text-primary fw-medium" href="forget-password">Forgot Password ?</a> -->
+                      <!-- <a class="text-primary fw-medium" href="forget_password">Forgot Password ?</a> -->
                     </div>
                     <div id="custommessage"></div>
                     <button type="submit"  class="btn btn-primary w-100 py-8 mb-4 rounded-2">Sign In</button>

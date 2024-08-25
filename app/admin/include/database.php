@@ -739,7 +739,7 @@ class database
     {
         $body = htmlspecialchars_decode($body);
         // return $to;
-        require_once rootFile."include/phpmailer/PHPMailerAutoload.php";
+        require_once rootFile."/app/include/phpmailer/PHPMailerAutoload.php";
         // require_once "";
         $d = new database;
         $smtp = $d->getall("smtp_config", "ID = ?", ["$smtpid"]);
@@ -1052,26 +1052,27 @@ class database
     {
         return $this->getall("email_template", "name = ?", [$name]);
     }
-    function getcoins($coinID = "")
-    {
-        $service_url     = 'https://api.coincap.io/v2/assets';
-        if ($coinID) {
-            $service_url     = 'https://api.coincap.io/v2/assets/' . $coinID;
-        }
-        $json_objekat = $this->api_call($service_url);
-        return $data = $json_objekat->data;
-    }
 
- 
+
+    function isJson($string) {
+        // Decode the string and store the result
+        try {
+            json_decode($string);
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
     
     function api_call($service_url, $posts = [], $header = [], $isRaw = false)
     {
             $isPost = false;
-            if(count($posts) > 0) $isPost = true;
+
+            if($this->isJson(($posts)) || count($posts) > 0) $isPost = true;
             $curl = curl_init($service_url);
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_POST, $isPost);
-            if(count($posts) > 0)  curl_setopt($curl, CURLOPT_POSTFIELDS, $posts);
+            if($this->isJson(($posts)) || count($posts) > 0)  curl_setopt($curl, CURLOPT_POSTFIELDS, $posts);
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
             $curl_response   = curl_exec($curl);

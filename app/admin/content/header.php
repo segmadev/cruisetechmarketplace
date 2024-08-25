@@ -366,10 +366,10 @@ require_once "../include/ini-session.php";
 
                         <!-- Email Template -->
 
-                        <!-- <li class="nav-small-cap">
+                        <li class="nav-small-cap">
                             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                             <span class="hide-menu">Email Template</span>
-                        </li> -->
+                        </li>
                         <!-- <li class="sidebar-item">
                             <a class="sidebar-link" href="index?p=email_template&action=new" aria-expanded="false">
                                 <span>
@@ -378,14 +378,14 @@ require_once "../include/ini-session.php";
                                 <span class="hide-menu">Create Template</span>
                             </a>
                         </li> -->
-                        <!-- <li class="sidebar-item">
+                        <li class="sidebar-item">
                             <a class="sidebar-link" href="index?p=email_template" aria-expanded="false">
                                 <span>
                                     <i class="ti ti-list"></i>
                                 </span>
                                 <span class="hide-menu">Template List</span>
                             </a>
-                        </li> -->
+                        </li>
 
 
                     </ul>

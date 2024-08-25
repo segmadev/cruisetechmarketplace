@@ -8,3 +8,10 @@ define("PATH", '');
     if(isset($_POST['signin'])) {
         echo $a->signin();
     }
+
+    if(isset($_POST['forget_password'])) {
+        echo $a->sendotp();
+    }
+    if(isset($_POST['reset_password'])) {
+        echo $a->resetpassword($reset_form);
+    }

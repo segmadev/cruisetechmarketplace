@@ -1,3 +1,9 @@
+<style>
+    .addition p {
+        margin: 0;
+        padding: 0;
+    }
+</style>
 <?php
 if (!$order || $order == "") {
     echo $c->empty_page("Order not found or not sold to you.", h1: "Not Found");
@@ -40,7 +46,7 @@ if (!$order || $order == "") {
         <?php if ($account['Aditional_auth_info'] != "") {?>
             <hr>
             <ul>
-                <li class="print-ignore">Aditional Details: <?=$account['Aditional_auth_info']?></li>
+                <li class="print-ignore addition"><b>Aditional Details:</b> <?= htmlspecialchars_decode($account['Aditional_auth_info']) ?></li>
             </ul>
             <?php }?>
         </div>
