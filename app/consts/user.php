@@ -4,7 +4,7 @@ $user_form = [
     "ID" => ["input_type"=>"hidden", "is_required"=>false],
     "first_name" => [],
     "last_name" => [],
-    "email" => ["input_type"=>"email", "is_required"=>false, "atb"=>"disabled=true"],
+    "email" => ["input_type"=>"email", "is_required"=>false],
     "gender" => ["placeholder" => "Select your gender", "is_required" => true, "options" => ["Male" => "Male", "Female" => "Female"], "type" => "select"],
     "password" => ["input_type"=>"password"],
     "confrim_password" => ["input_type"=>"password"], 
