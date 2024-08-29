@@ -217,7 +217,7 @@
                 
                 if($response['status'] == "success") {
                     $message =  (array)$response['message'];
-                    $message = $message[0];
+                    $message = (array)$message[0];
                     // var_dump("message 0:", ($message));
                     return ["ID"=>$message['order_id'],"ACCESS_NUMBER"=>$message['number'], "expiration"=>($message['expiration'] ?? ""), "expire_date"=>($message['expires'] ?? "")];
                 }
