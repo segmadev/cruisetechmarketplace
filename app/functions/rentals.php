@@ -426,7 +426,7 @@
             $data = (array)$data;
             if(isset($data['message'])) (array)$data['message'];
             if(isset($data['event']) && $data['event'] == "incoming_message") {
-                $message = $data['message'][0];
+                $message = $data['message'][0] ?? $data['message'];
                 if(!is_array($message)) return ;
                 $code = $message['sms'];
                 $number = $message['number'];
