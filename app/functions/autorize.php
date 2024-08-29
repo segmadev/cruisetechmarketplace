@@ -10,7 +10,7 @@ class autorize extends database
         }
         $check = $this->getall("users", "email = ?", [$info['email']]);
         if ($check > 0) {
-            echo $this->message("User with email alrady exit.", "error");
+            echo $this->message("User with email already exit.", "error");
             return null;
         }
 

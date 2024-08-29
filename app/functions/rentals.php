@@ -54,11 +54,11 @@
             $noType = $data['type'] ?? "short_term";
             $service = $this->getServices($broker, $noType, $serviceCode);
             if(!is_array($service) ||count($service) == 0) {
-                return $this->message("Service(s) not avilable.", "error", 'json');
+                return $this->message("Service(s) not available.", "error", 'json');
             }
             $cost = $service['cost'] ?? $service['price'];
             if(isset($service['available']) && (int)$service['available'] <= 0){
-                return $this->message("No Number avilable you can try another network.", "error", 'json');
+                return $this->message("No Number available you can try another network.", "error", 'json');
             }
             $valuedPrice = $this->valuedPrice($serviceCode, $cost);
             $user = $this->getall("users", "ID = ?", [$userID]);
@@ -285,7 +285,7 @@
             // booking numbers errors handlers
             if($results[0] == "ACCESS_NUMBER") return ["ID"=>$results[1],"ACCESS_NUMBER"=>$results[2]];
             if($results[0] == "MAX_PRICE_EXCEEDED") return $this->message("Please refresh this page and try again.", "error", "json");
-            if($results[0] == "NO_NUMBERS") return $this->message("No numbers avilable for this service at the moment.", "error", "json");
+            if($results[0] == "NO_NUMBERS") return $this->message("No numbers available for this service at the moment.", "error", "json");
             if($results[0] == "TOO_MANY_ACTIVE_RENTALS") return $this->message("We have too many orders at the moment please try again in few mins.", "error", "json");
             if($results[0] == "NO_MONEY") return $this->message("We can not take orders.", "error", "json");
             // mark number as done
@@ -330,7 +330,7 @@
         protected function getExchangeRate() {
             $exchangeRate = $this->getall("settings", "meta_name = ?",["exchange_rate"]);
             if (!is_array($exchangeRate) || !isset($exchangeRate['meta_value'])) {
-                echo $this->message("This service is not avilable at the moment", "error");
+                echo $this->message("This service is not available at the moment", "error");
                 die('Exchange rate not found.');
                 // exit();
             }
@@ -346,7 +346,7 @@
             $url = "https://v6.exchangerate-api.com/v6/".$this->exchangeRateAPI."/latest/USD";
             $data = (array)$this->api_call($url);
             if (!isset($data['conversion_rates']->NGN)) {
-                echo $this->message("This service is not avilable at the moment", "error");
+                echo $this->message("This service is not available at the moment", "error");
                 die('Exchange rate for USD to NGN not found.');
                 // exit();
             }
