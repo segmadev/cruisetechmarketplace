@@ -38,8 +38,17 @@
             if(!is_array($info) || $info == null || $info == false) { return null;}
             foreach ($info as $key => $value) {
                 if($value == "--placeholder" || $value == "00000000000") continue;
-                if($this->getall("$what", "meta_name = ?", [$key], fetch: "") == 0) { continue; }
+                $settingData = $this->getall("$what", "meta_name = ?", [$key]);
+                if(!is_array($settingData)) { continue; }
+                if($this->isEncrypted($settingData['meta_value']) == true && $this->isEncrypted($value) == false) {
+                    $value = $this->enypt_and_save_data($value);
+                    if(!is_array($value)) return $this->message("Error encrypting data", "error", 'json');
+                    $value = $value['ID'];
+                }
                 $update = $this->update("$what", ["meta_value"=>$value], "meta_name = '$key'");
+                if($update && $this->isEncrypted($value) && $this->isEncrypted($settingData['meta_value']) && $value != $settingData['meta_value']) {
+                   $this->enypt_unlink(($settingData['meta_value']));
+                }
             }
             $return = [
                 "message" => ["Success", "$what Updated", "success"],
@@ -52,10 +61,7 @@
             $info = [];
             foreach($data as $key => $row) {
                 if($key == "input_data") { continue; }
-                $datad = $this->getall("$what", "meta_name = ?", [$key], fetch: "details");
-                if(!is_array($datad)) { continue; }
-                $info[$key] = $datad['meta_value'];
-                //  $this->quick_insert("settings", ["meta_name"=>$key, "meta_value"=>$value]);
+                $info[$key] = $this->get_settings($key);
             }
             return $info;
         }

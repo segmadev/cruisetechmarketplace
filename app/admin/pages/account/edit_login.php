@@ -11,11 +11,13 @@
         exit();
     }
     $logininfo["login_details"] = $logininfo["login_details[]"];
+    $logininfo["username"] = $logininfo["username[]"];
+    $logininfo["preview_link"] = $logininfo["preview_link[]"];
     $logininfo['ID']['type'] = "input"; 
     $logininfo['ID']['input_type'] = "hidden"; 
     $logininfo['accountID']['type'] = "input"; 
     $logininfo['accountID']['input_type'] = "hidden"; 
-    unset($logininfo["login_details[]"]);
+    unset($logininfo["login_details[]"], $logininfo["preview_link[]"], $logininfo['username[]']);
     $logininfo["input_data"] = $login_details;
 ?>
 <form action="" id="foo" method="post">

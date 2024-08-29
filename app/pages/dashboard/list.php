@@ -49,8 +49,8 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
                 <div class="col-9">
                   <h4 class="fw-semibold mb-8">Get a number</h4>
                   <nav aria-label="breadcrumb">
-                    <p class="breadcrumb text-muted">
-                        Get a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.
+                    <p class="text-muted">
+                       Get USA phone number to receive OTP for <a href="index?p=rentals&network=1&action=new">short term</a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.
                     </p>
                   </nav>
                   <hr>

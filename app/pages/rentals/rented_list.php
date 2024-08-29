@@ -3,7 +3,8 @@
         echo $c->empty_page("No number(s) rented yet.");
     }else{
       $script[] = "countdown";
-        $rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? ORDER BY date desc LIMIT 20", [$userID, "", "rentals"], fetch: "all");
+        $rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? and status = ? ORDER BY date desc", [$userID, "", "rentals", 1], fetch: "all");
+        $rented_numbers_non_active = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? and status = ? ORDER BY date LIMIT 20", [$userID, "", "rentals", 0], fetch: "all");
 ?>
 <div class="card overflow-hidden chat-application bg-white">
             <div class="d-flex align-items-center justify-content-between gap-3 m-3 #d-lg-none  ">
@@ -71,30 +72,14 @@
                       <ul class="chat-users" style="height: calc(100vh - 100px)" data-simplebar>
                       <div class="flex-row row ">
                       <?php 
-                        $rental_services = $r->getServices();
                       foreach($rented_numbers as $rent) {  
-                        if(isset($rental_services[$rent['serviceCode']])) {
-                            $service = (array)$rental_services[$rent['serviceCode']];
-                            $service = (array)$service['187'];
-                            $service = $service['name'];
-                        }else{
-                            $service = "unknown";
-                        }
-                        ?>
-                      <li class="col-lg-4 col-md-6 col-12 m-0 mt-2 service-details p-2">
-                        <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#bs-example-modal-md" id="chat_user_<?= $rent['accountID'] ?>" data-url="modal?p=rentals&action=view&accountID=<?= $rent['accountID'] ?>" data-title="<?= $rent['loginIDs'] ?>" onclick="modalcontent(this.id)"   class="px-4 py-3 bg-hover-light-black d-flex align-items-center chat-user bg-light" data-user-id="<?= $rent['ID'] ?>">
-                          <div class="ms-6 d-inline-block">
-                            <h6 class="mb-1 fw-semibold chat-title" data-username="<?= $rent['loginIDs'] ?> <?= $service ?>"><?= $rent['loginIDs'] ?> </h6>
-                            <span class="fs-2 text-body-color d-block" data-service-type='<?= $service ?>'><?= $service ?></span>
-                            <div 
-                            data-status="<?= (int)$rent['status'] ?>"
-                            data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>"
-                            data-countdown-duration="<?= $countDuration ?>"
-                            ></div>
-                            </div>
-                          </a>
-                        </li>
-                        <?php } ?>
+                        require "pages/rentals/single_number.php";
+                       } 
+                      foreach($rented_numbers_non_active as $rent) {  
+                        require "pages/rentals/single_number.php";
+                       } 
+                       
+                       ?>
                       </div>
                         
                       </ul>

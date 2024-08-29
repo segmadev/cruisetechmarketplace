@@ -3,13 +3,17 @@ if (!isset($_GET['accountID']))
     return $d->message("No ID passed", "error");
 $acctID = $_GET['accountID'];
 $rent = $d->getall("orders", "userID = ? and accountID = ?", [$userID, $acctID]);
+$rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and loginIDs != ? and order_type = ? and status = ? ORDER BY date desc LIMIT 5", [$userID, $acctID, "", "rentals", 1], fetch: "all");
 if (!is_array($rent)) {
     $d->message("No rental found", "error");
     return false;
 }
 $codes = $r->getNumberCode($rent['ID']);
 $script[] = "countdown";
-$countDuration = (int)$d->get_settings("rental_number_expire_time");
+$countDuration = ($rent['expiration'] ?? (int)$d->get_settings("rental_number_expire_time") * 60);
+if($rent['expire_date'] != "" && $rent['expire_date'] != "0000-00-00 00:00:00") {
+    $rent['date'] = $rent['expire_date'];
+}
 ?>
 <div class="card card-body bg-light">
     <div class='d-flex gap-2'>
@@ -17,13 +21,16 @@ $countDuration = (int)$d->get_settings("rental_number_expire_time");
         <?php if((int)$rent['status'] == 1) { ?>
             <a onclick="return confirmRedirect('Are you sure you want to close this number?')" href="index?p=rentals&action=view&&close=true&orderID=<?= $rent['ID'] ?>&accountID=<?= $rent['accountID'] ?>" class="btn btn-sm btn-dark"><i class="ti ti-danger"></i> Close Number</a>
             <?php } ?>
+            <a href="index?p=rentals" class="btn btn-sm btn-outline-primary"><i class="ti ti-eye"></i> View order numbers</a>
         </div>
 <hr>
     <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
 <div 
     data-status="<?= (int)$rent['status'] ?>"
+    data-expire="<?= $rent['expire_date'] ?>"
     data-countdown-duration="<?= $countDuration ?>"
-    data-countdown-insec="<?= $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
+    data-countdown="<?= $r->getSecondsUntilExpiration($rent['expire_date']) ?>"
+    data-countdown-insecOld="ll<?php // $d->datediffe($rent['date'], date('Y-m-d H:i:s'), "s") ?>">
     <?= $c->badge($rent["status"]) ?>
 </div>
 <?php if((int)$rent['status'] == 1) { ?>
@@ -65,5 +72,11 @@ if ($codes != "") {
     echo $c->empty_page("No code received yet.");
 }
 ?>
+<div class="row">
+    <?php foreach($rented_numbers as $rent) {  
+        $simplePage = true;
+                        require "pages/rentals/single_number.php";
+                       } ?>
+</div>
 </div>
 </div>

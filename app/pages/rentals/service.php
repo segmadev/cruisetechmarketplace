@@ -1,17 +1,19 @@
-<?php
-$service = (array) $service;
-$service = (array) $service['187'];
-$names = explode("/", $service['name']);
-$cost = $d->money_format($r->valuedPrice($key, $service['cost']));
-// $isLiked = $d->getall("")
-?>
 
-            <li class="search-items-details col-lg-4 col-md-6 col-12 p-0 m-0">
+  <?php 
+  $service = (array) $service;
+  $service = isset($service['187']) ? (array) $service['187'] : $service;
+  $names = explode("/", $service['name']);
+  $cost = $d->money_format($r->valuedPrice($key, $service['cost'] ?? $service['price']));?>
+  
+  <li class="search-items-details col-lg-4 col-md-6 col-12 p-0 m-0">
                 <div action="" class="w-100 py-6 d-flex align-items-center p-2 shadow-sm m-0">
                 <form action="" id="foo" class="w-100">
                 <div id="custommessage"></div>
-                <input type="hidden" name="id" value="<?=$key?>">
+                <input type="hidden" name="id" value="<?=  $key?>">
                 <input type="hidden" name="page" value="rentals">
+                <input type="hidden" name="type" value="<?= $number_type ?>">
+                <input type="hidden" name="broker" value="<?= $broker ?>">
+                <input type="hidden" name="network" value="<?= $network ?>">
                 <input type="hidden" name="new_rent">
                 <input type="hidden" name="confirm" value="Are you sure you want to rent number for <?=$service['name']?>"> 
                     <button type="submit" class="border-0 bg-transparent d-flex align-items-center text-align-start" style="text-align: start; width: 90%">
@@ -20,6 +22,10 @@ $cost = $d->money_format($r->valuedPrice($key, $service['cost']));
                         </div>
                         <div class="ms-3">
                             <?php 
+                                $avilable = null;
+                                if(isset($service['count'])) $avilable = "Available: ".$d->short_no(((int)$service['count']), 8000);
+                                if(isset($service['available'])) $avilable = "Available: ".$d->short_no((int)$service['available'], 8000);
+
                                 if (strlen($service['name']) <= 23) {
                                     $name = $service['name'];
                                     echo '<h5 class="m-0 fs-3"> '. $d->short_text($name, 20) . '</h5>';
@@ -31,10 +37,11 @@ $cost = $d->money_format($r->valuedPrice($key, $service['cost']));
                                     if(count($names) > 0) $name = implode(',', $names);
                                     echo '<span class="fs-2">'.$name.'</span>';
                                 }
-                            ?>
+                                ?>
                           <!-- <h6 class="mb-1 fs-4 fw-semibold">PayPal</h6>
                           <p class="fs-3 mb-0">Big Brands</p> -->
-                          <h6 class="fs-4 text-muted"><?=$cost?></h6>
+                          <h6 class="fs-4 text-muted m-0 p-0"><?=$cost?></h6>
+                          <span class="fs-1 m-0 p-0"><?= $avilable ?></span>
                         </div>
                         </form>
                     </button>

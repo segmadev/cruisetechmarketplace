@@ -14,7 +14,9 @@
     $logininfo = [
         "ID"=>["type"=>"placeholder"],
         "accountID"=>["type"=>"placeholder"],
-        "login_details[]"=>["type"=>"textarea", "placeholder"=>"Login Details", "title"=>"Login Details", "is_required"=>false],
+        "login_details[]"=>["global_class"=>'w-100', "type"=>"textarea", "placeholder"=>"Login Details", "title"=>"Login Details", "is_required"=>false],
+        "preview_link[]"=>["placeholder"=>"Paste Link here", "title"=>"Account Preview Link", "is_required"=>false],
+        "username[]"=>["placeholder"=>"Username", "title"=>"Account Username", "is_required"=>false],
         "status"=>["type"=>"placeholder"],
         "sold_to"=>["type"=>"placeholder"],
     ];

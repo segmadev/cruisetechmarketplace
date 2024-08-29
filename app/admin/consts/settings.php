@@ -68,7 +68,9 @@
 
     $rentals_settings = [
         "rental_number_expire_time"=>["input_type"=>"number","title"=>"rental number expire time (In mins)", "description"=>"How long should it take for rented numbers to expire, value in mins."],
-        "rentals_API"=>["input_type"=>"password", "is_required"=>false],
+        "rentals_API"=>["input_type"=>"password", "title"=>"Daisysms API Key", "is_required"=>false],
+        "nonvoipusnumber_email"=>["input_type"=>"password", "is_required"=>false],
+        "nonvoipusnumber_password"=>["input_type"=>"password", "is_required"=>false],
         "added_value_amount"=>["title"=>"Added Value Amount (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "notification_email"=>["input_type"=>"email", "description"=>"Active email to get notification on low balance"],
         "notify_low_balance_amount"=>["is_required"=>false, "description"=>"At what balance do you want to get notifications. Set to (0)zero to turn off notifications"]

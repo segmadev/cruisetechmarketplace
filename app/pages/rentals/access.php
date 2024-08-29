@@ -1,5 +1,3 @@
-<?php
-// $postDetails = json_encode(["email"=>"serikioluwagbenga@gmail.com", "password"=>"Admin111"]);
-$postDetails = json_encode(["email"=>"alaooluwafunkemercy@gmail.com", "password"=>"Alao3026", "type"=>"long_term"]);
- $request = $d->api_call("https://nonvoipusnumber.com/manager/api/products", $postDetails, ["Content-Type: application/json"]);
-//  var_dump($request);
+<?php 
+    // var_dump($d->encryptData("Admin@111", "7857645gfgfgtr5e456"));
+    // var_dump($d->decryptData("jLPcCXm8r60lfvC+/Odb525YM0hnVzdHYWY2ODRhZjM5WXdaR2c9PQ==", "7857645gfgfgtr5e456"));

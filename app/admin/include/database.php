@@ -351,7 +351,7 @@ class database
         return $data;
     }
 
-    function validate_form($datas, $what = "", $action = null)
+    function validate_form($datas, $what = "", $action = null, bool $showError = true)
     {
         $err = false;
         $info = [];
@@ -372,7 +372,7 @@ class database
             }
             if ($this->check_if_required($data)) {
                 if (!isset($_POST[$key]) || empty($_POST[$key])) {
-                    echo $this->message(ucwords(str_replace("_", " ", $key)) . " is required", "error");
+                    if($showError) { echo $this->message(ucwords(str_replace("_", " ", $key)) . " is required", "error");}
                     $err = true;
                     continue;
                 }
@@ -381,7 +381,7 @@ class database
             if (isset(Regex[$key]) && Regex[$key]['value'] && !empty($_POST[$key])) {
                 if (!preg_match(Regex[$key]['value'], htmlspecialchars($_POST[$key]))) {
                     $err = true;
-                    echo $this->message(Regex[$key]["error_message"], "error");
+                    if($showError) { echo $this->message(Regex[$key]["error_message"], "error"); }
                     continue;
                 }
             }
@@ -407,7 +407,7 @@ class database
         if (isset($datas["password"]) && isset($datas['confirm_password']) && !empty($data['password'])) {
             if ($_POST['password'] != $_POST['confirm_password']) {
                 $err = true;
-                echo $this->message("Password and confrim password do not match", "error");
+                if($showError) { echo $this->message("Password and confrim password do not match", "error"); }
                 return null;
             }
             // $info['password'] = password_hash($_POST['password'],  PASSWORD_DEFAULT);
@@ -1018,11 +1018,46 @@ class database
 
     function get_settings($value = "company_name", $where = "settings",  $who = "all")
     {
-        $data = $this->getall("$where", "meta_name = ? and meta_for = ?", [htmlspecialchars($value), $who], "meta_value");
+        $data = $this->getall("$where", "meta_name = ? and meta_for = ?", [htmlspecialchars($value), $who]);
         if (!is_array($data)) {
             return "";
         }
+        if($this->isEncrypted($data['meta_value'])) {
+            $data['meta_value'] = $this->get_enypt_data($data['meta_value']);
+        }
         return $data['meta_value'];
+    }
+
+    protected function get_enypt_data($id) {
+        $data = $this->getall("encrypted_data", "ID = ?", [$id]);
+        if(!is_array($data)) return false;
+        return $this->decryptData($data['meta_value']);
+    }
+
+    function isEncrypted($data) {
+        $explode = explode("-", $data);
+        if($explode[0] == "enyptdata") return true;
+        return false;
+    }
+
+    protected function enypt_unlink($id) {
+        if($this->delete("encrypted_data", "ID = ?", [$id])) return true;
+        return false;
+    }
+    function enypt_and_save_data($data) {
+        if($data == null || $data == "") return false;
+        $mainData = $data;
+        $data = $this->encryptData($data);
+        if($data == false || $data == "") return false;
+        $data = [
+            "ID"=>uniqid("enyptdata-"),
+            "meta_value"=>$data
+        ];
+        if($this->quick_insert("encrypted_data", $data)) {
+            $data['data'] = $mainData;
+            return $data;
+        }
+        return false;
     }
 
     function create_settings(array $data, $what = "settings") {
@@ -1052,6 +1087,7 @@ class database
     {
         return $this->getall("email_template", "name = ?", [$name]);
     }
+
 
 
     function isJson($string) {
@@ -1285,6 +1321,7 @@ class database
     function short_no( $no, $maxno = 99) {
         if($no == 0) { $no = ""; }
         if($no > $maxno) { $no = "$maxno+"; }
+        return $no;
     }
 
     function generateRandomDateTime($startDate = '2022-01-01 09:00:00', $endDate = null) {
@@ -1367,4 +1404,88 @@ class database
     
         return $result;
     }
+
+    // data encytion
+    function encryptData($data, $secretKey = null) {
+        if($secretKey == null && isset($_ENV['DATA_ENCRYPTION_KEY'])) $secretKey = $_ENV['DATA_ENCRYPTION_KEY'];
+        if($secretKey == null) return false;
+        $method = 'AES-256-CBC';
+        $ivLength = openssl_cipher_iv_length($method);
+        $iv = openssl_random_pseudo_bytes($ivLength);
+        $encryptedData = openssl_encrypt($data, $method, $secretKey, 0, $iv);
+        return base64_encode($iv . $encryptedData);
+    }
+
+    function decryptData($encryptedDataWithIv, $secretKey = null) {
+        if($secretKey == null && isset($_ENV['DATA_ENCRYPTION_KEY'])) $secretKey = $_ENV['DATA_ENCRYPTION_KEY'];
+        if($secretKey == null) return false;
+        $method = 'AES-256-CBC';
+        $ivLength = openssl_cipher_iv_length($method);
+    
+        $ivWithCiphertext = base64_decode($encryptedDataWithIv);
+        $iv = substr($ivWithCiphertext, 0, $ivLength);
+        $encryptedData = substr($ivWithCiphertext, $ivLength);
+        
+        return openssl_decrypt($encryptedData, $method, $secretKey, 0, $iv);
+    }
+
+
+    // cookies handler
+
+    // Function to set a cookie, can be used for both simple values and arrays
+function setCookieValue($name, $value, $expire = 86400, $path = "/", $domain = "", $secure = false, $httponly = false) {
+    if (is_array($value)) {
+        // Encode array to JSON if the value is an array
+        $value = json_encode($value);
+    }
+    try {
+        //code...
+        setcookie($name, $value, time() + $expire, $path, $domain, $secure, $httponly);
+    } catch (\Throwable $th) {
+        //throw $th;
+    }
+}
+
+// Function to retrieve a cookie value, ensures that arrays are returned as arrays
+function getCookieValue($name) {
+    if (isset($_COOKIE[$name])) {
+        $value = $_COOKIE[$name];
+        // Attempt to decode JSON
+        try {
+            $decodedValue = json_decode($value, true);
+            return $decodedValue;
+        } catch (\Throwable $th) {
+            return $value;
+        }
+    }
+    return null; // Return null if the cookie does not exist
+}
+
+// Function to update an array stored in a cookie
+function updateArrayInCookie($cookieName, $newElement, $key = null, $expire = 86400, $path = "/", $domain = "", $secure = false, $httponly = false) {
+    // Retrieve the current array from the cookie
+    $currentArray = $this->getCookieValue($cookieName);
+
+    if (!is_array($currentArray)) {
+        // If the cookie does not exist or is not an array, start with an empty array
+        $currentArray = [];
+    }
+
+    if ($key !== null && array_key_exists($key, $currentArray)) {
+        // If a key is provided and exists, update that element
+        $currentArray[$key] = $newElement;
+    } else {
+        // Otherwise, add the new element to the array
+        $currentArray[] = $newElement;
+    }
+
+    // Store the updated array back in the cookie
+    $this->setCookieValue($cookieName, $currentArray, $expire, $path, $domain, $secure, $httponly);
+}
+
+// Function to delete a cookie
+function deleteCookie($name, $path = "/", $domain = "") {
+    setcookie($name, "", time() - 3600, $path, $domain);
+}
+
 }

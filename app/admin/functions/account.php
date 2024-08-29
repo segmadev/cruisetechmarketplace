@@ -21,11 +21,15 @@ class accounts extends Account
         if(!isset($_POST['login_details'])) return $count;
         foreach ($_POST['login_details'] as $key => $value) {
             if($value == "" || $value == " ") continue;
+            $username = $_POST['username'][$key] ?? "";
+            $preview_link = $_POST['preview_link'][$key] ?? "";
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
             if($check > 0) continue;
             $this->quick_insert("logininfo", [
                 "accountID" => $accountID,
-                "login_details" => $value
+                "login_details" => $value,
+                "username"=>$username,
+                "preview_link"=>$preview_link,
             ]);
             $count++;
         }
@@ -33,7 +37,7 @@ class accounts extends Account
         return $count;
     }
 
-    function update_login_info($ID, $value, $accountID) {
+    function update_login_info($ID, $value, $accountID, $username, $preview_link) {
         $ID = htmlspecialchars($ID);
         $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details = ?", [$ID, $accountID, $value]);
         if(is_array($check) && $check['login_details'] != $value) {
@@ -43,7 +47,9 @@ class accounts extends Account
          $this->update(
             "logininfo",
             [
-                "login_details" => $value
+                "login_details" => $value,
+                "username" => $username,
+                "preview_link" => $preview_link
             ],
             "ID = '$ID'",
             "Login Details Updated."

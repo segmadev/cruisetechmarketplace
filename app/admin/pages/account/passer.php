@@ -6,7 +6,9 @@ if (isset($_POST['edit_login_details']) && isset($_POST['ID'])) {
     $loginID = htmlspecialchars($_POST['ID']);
     $value = htmlspecialchars($_POST['login_details']);
     $accountID = htmlspecialchars($_POST['accountID']);
-    echo $a->update_login_info($loginID, $value, $accountID);
+    $username = htmlspecialchars($_POST['username'] ?? "");
+    $preview_link = htmlspecialchars($_POST['preview_link'] ?? '');
+    echo $a->update_login_info($loginID, $value, $accountID, $username, $preview_link);
 }
 if (isset($_POST['delete_login'])) {
     $id = htmlspecialchars($_POST['ID'] ?? "");

@@ -1,4 +1,5 @@
 <?php 
+ob_start();
 require_once "include/session.php";
 if(isset($_GET['theme'])) {
     if($_GET['theme'] == "dark") {
@@ -22,14 +23,18 @@ if (!isset($_SESSION['browser_theme'])) {
     $_SESSION['browser_theme'] = "dark";
 }
 require_once "include/side.php";
-
 require_once "consts/main.php";
+require_once 'vendor/autoload.php';
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(rootFile);
+$dotenv->load();
 require_once "consts/Regex.php";
 require_once "admin/include/database.php"; 
 $d = new database;
 $user = $d->getall("users", "token = ?", [$userToken]);
 if(!is_array($user)) {
     $d->message("Unable to identify user", "error");
+    exit();
 }
 $userID = $user['ID'];
 require_once "consts/general.php";
@@ -70,5 +75,5 @@ $form_trans = [
     "amount"=>["input_type"=>"number"],
     "current_balance"=>["input_type"=>"number"],
 ];
-$d->create_table("transactions", $form_trans);
+// $d->create_table("transactions", $form_trans);
 $script[] = "live_chat";

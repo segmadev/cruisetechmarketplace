@@ -1,7 +1,7 @@
-        <div class="card bg-white p-0">
+    <div class="card bg-white p-0">
         <div class="card-header">
                 <h3>SMS Verifications </h3>
-                <p class="m-0">Get a USA phone number to receive OTP for <?= $d->get_settings("rental_number_expire_time") ?> minutes.</p>
+                <p class="m-0">Get USA phone number to receive OTP for <a href="index?p=rentals&network=1&action=new">short term</a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
                 <p class="text-muted m-0">To view rented numbers <a href="index?p=rentals" class="btn-sm">click here</a>.</p>
                 <form class="position-relative">
                     <input type="text" 
@@ -15,15 +15,50 @@
             </div>
             <div class="card-body p-0 m-0">
                 <p class="bg-danger ps-4 text-white"><b>Note that the price are not fixed.</b></p>
-                <?php
-                if (count($rental_services) <= 0) {
-                    echo $c->empty_page("No Services Available at the moment.");
-                } else {
-                    require_once "pages/rentals/services_list.php";
-                }
+                <div class="d-flex p-2 flex gap-2">
+               
+                    <div class="btn-group mb-2 print-ignore">
+                            <button class="btn btn-sm <?php if($number_type == "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti ti-phone"></i> 
+                                Short term <?php if($number_type == "short_term"){ echo 'Network '.$network; } ?>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Network 1</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term Network 2</a></li>
+                            </ul>
+                        </div>
+                   
+                    <div class="btn-group mb-2 print-ignore">
+                            <button class="btn btn-sm <?php if($number_type != "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="ti ti-phone"></i> <?php if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; }else{ echo "Long Term"; } ?>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">3days</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=long_term">30days network 1</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&type=long_term">30days network 2</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <?php 
+                    if($number_type == "short_term" && $network == 1) require_once "pages/rentals/short.php"; 
+                    if($number_type == "long_term" || $number_type == '3days' || $network == 2) require_once "pages/rentals/long.php";
                 ?>
-
-
                 <!-- table end -->
             </div>
         </div>
+
+        
+<script>
+     document.querySelectorAll('.heart-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const heartPath = button.querySelector('.heart-path');
+                // Toggle fill color
+                if (heartPath.getAttribute('fill') === '#fa5a15') {
+                    heartPath.setAttribute('fill', 'none');
+                } else {
+                    heartPath.setAttribute('fill', '#fa5a15');
+                }
+            });
+        });
+</script>
