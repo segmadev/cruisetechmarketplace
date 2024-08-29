@@ -75,6 +75,7 @@
                       foreach($rented_numbers as $rent) {  
                         require "pages/rentals/single_number.php";
                        } 
+                       echo "<h5 class='w-100 bg-light-danger p-2 ps-4'> Non Active Numbers</h5>";
                       foreach($rented_numbers_non_active as $rent) {  
                         require "pages/rentals/single_number.php";
                        } 

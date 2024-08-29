@@ -3,7 +3,7 @@
   $service = (array) $service;
   $service = isset($service['187']) ? (array) $service['187'] : $service;
   $names = explode("/", $service['name']);
-  $cost = $d->money_format($r->valuedPrice($key, $service['cost'] ?? $service['price']));?>
+  $cost = $d->money_format($r->valuedPrice($number_type, $broker, $service['cost'] ?? $service['price']));?>
   
   <li class="search-items-details col-lg-4 col-md-6 col-12 p-0 m-0">
                 <div action="" class="w-100 py-6 d-flex align-items-center p-2 shadow-sm m-0">
@@ -25,7 +25,6 @@
                                 $avilable = null;
                                 if(isset($service['count'])) $avilable = "Available: ".$d->short_no(((int)$service['count']), 8000);
                                 if(isset($service['available'])) $avilable = "Available: ".$d->short_no((int)$service['available'], 8000);
-
                                 if (strlen($service['name']) <= 23) {
                                     $name = $service['name'];
                                     echo '<h5 class="m-0 fs-3"> '. $d->short_text($name, 20) . '</h5>';

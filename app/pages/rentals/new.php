@@ -20,22 +20,22 @@
                     <div class="btn-group mb-2 print-ignore">
                             <button class="btn btn-sm <?php if($number_type == "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="ti ti-phone"></i> 
-                                Short term <?php if($number_type == "short_term"){ echo 'Network '.$network; } ?>
+                                <?php if($number_type == "short_term"){ echo 'Short Term Number '.$network; }else{ echo " Short term Numbers"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Network 1</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term Network 2</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term Number 2</a></li>
                             </ul>
                         </div>
                    
                     <div class="btn-group mb-2 print-ignore">
                             <button class="btn btn-sm <?php if($number_type != "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="ti ti-phone"></i> <?php if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; }else{ echo "Long Term"; } ?>
+                            <i class="ti ti-phone"></i> <?php if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; }else{ echo "Long Term Number"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">3days</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=long_term">30days network 1</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&type=long_term">30days network 2</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">Long Term Number <span class="text-primary">(3days)</span> </a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=long_term">Long Term Number <span class="text-primary">(30days)</span></a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&type=long_term">LTR (Network 2) <span class="text-primary">(30days)</span></a></li>
                             </ul>
                         </div>
                     </div>

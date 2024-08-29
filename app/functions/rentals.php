@@ -60,7 +60,7 @@
             if(isset($service['available']) && (int)$service['available'] <= 0){
                 return $this->message("No Number available you can try another network.", "error", 'json');
             }
-            $valuedPrice = $this->valuedPrice($serviceCode, $cost);
+            $valuedPrice = $this->valuedPrice($noType, $broker, $cost);
             $user = $this->getall("users", "ID = ?", [$userID]);
             if(!is_array($user)) return $this->message("Unable to get user information.", "error", "json");
             if($user['balance'] < $valuedPrice) return $this->message("Insufficient balance", "error", "json");
@@ -295,8 +295,9 @@
             if($results[0] == "ACCESS_BALANCE") return ["balance"=>$results[1]];
         }
 
-        function valuedPrice($serviceCode, $amount) {
-            return round($this->convertDollarToNGN((float)$amount) + (float)$this->get_settings("added_value_amount"), 2);
+        function valuedPrice($noType, $broker, $amount) {
+            // echo "added_value_amount_".$broker."_".$noType;
+            return round($this->convertDollarToNGN((float)$amount) + (float)$this->get_settings("added_value_amount_".$broker."_".$noType), 2);
         }
         function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false) {
             if($fromCookie) {

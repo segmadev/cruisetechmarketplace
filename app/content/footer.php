@@ -53,10 +53,15 @@
                               <h6 class="p-0 m-0 fs-2">Home</h6>    
                               </a>
 
-                              <a href="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals") {
+                              <a href="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action != "list") {
                                   echo "btn-primary";
                                 } ?>"><i class='ti ti-phone fs-6'></i>
                               <h6 class="p-0 m-0 fs-2">Number</h6>    
+                              </a>
+                              <a href="index?p=rentals" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action == "list") {
+                                  echo "btn-primary";
+                                } ?>"><i class='ti ti-inbox fs-6'></i>
+                              <h6 class="p-0 m-0 fs-2">Active No.</h6>    
                               </a>
     <a href="index?p=orders&type=account" class="btn btn-sm <?php if ($page == "orders") {
                                               echo "btn-primary";
@@ -68,11 +73,6 @@
                                         } ?>"><i class='fs-6 ti ti-wallet'></i>
                                       <h6 class="p-0 m-0 fs-2">Wallet</h6>    
                                       </a>
-    <a href="index?p=profile" class="btn btn-sm <?php if ($page == "profile") {
-                                            echo "btn-primary";
-                                          } ?>"><i class='fs-6 ti ti-user'></i>
-                                        <h6 class="p-0 m-0 fs-2">Profile</h6>    
-                                        </a>
 
     <!-- <a href="index?p=profile" class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Settings"><img src="<?= $u->get_profile_icon_link($userID) ?>" alt="" width="40" height="40"></a> -->
   </div>
