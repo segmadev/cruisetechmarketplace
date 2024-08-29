@@ -9,7 +9,7 @@
     $filename = 'note.txt';
 
     // The content you want to write into the file
-    $content = "visit ".$rawData;
+    $content =  $rawData;
 
     // Open the file for writing. 'a' mode opens the file for writing and places the file pointer at the end of the file.
     // If the file does not exist, it attempts to create it.

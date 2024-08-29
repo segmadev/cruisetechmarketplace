@@ -423,6 +423,8 @@
             $rawData = file_get_contents('php://input');
             // Decode the JSON data into a PHP array
             $data = json_decode($rawData, true);
+            $data = (array)$data;
+            if(isset($data['message'])) (array)$data['message'];
             if(isset($data['event']) && $data['event'] == "incoming_message") {
                 $message = $data['message'][0];
                 if(!is_array($message)) return ;
