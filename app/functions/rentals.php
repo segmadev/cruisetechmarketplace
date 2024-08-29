@@ -395,7 +395,7 @@
 
         function nonResuse($serviceName, $number) {
             $data = ["service"=>$serviceName, "number"=>$number];
-            $request = $this->nonAPiCall($this->non_end_points['reuse'], $data);
+            return $this->nonAPiCall($this->non_end_points['reuse'], $data);
         }
 
         function nonActivateNumber($userID, $orderID) {
@@ -441,9 +441,7 @@
                 if(!is_array($data)) return ;
                 $id = $data['accountID'];
                 if($this->newCode($id, $code)) {
-                    if(isset($data['serviceName']) && $data['serviceName'] != "") {
-                        $this->nonResuse($data['serviceName'], $number);
-                    }
+                    $this->nonResuse($data['serviceName'], $number);
                     return json_encode(["success"]);
                 }
             }
