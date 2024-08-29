@@ -70,6 +70,7 @@
                 "userID"=>$userID,
                 "accountID"=>"",
                 "serviceCode"=>$serviceCode,
+                "serviceName"=>$service['name'] ?? "",
                 "loginIDs"=>"",
                 "amount"=>$valuedPrice,
                 "no_of_orders"=>1,
@@ -392,6 +393,11 @@
             // exit();
         }
 
+        function nonResuse($serviceName, $number) {
+            $data = ["service"=>$serviceName, "number"=>$number];
+            $request = $this->nonAPiCall($this->non_end_points['reuse'], $data);
+        }
+
         function nonActivateNumber($userID, $orderID) {
             $order = $this->getall("orders", "userID = ? and orderID = ? and type != ? and broker_name = ?", array($userID, $orderID, "short_term", ""));
             if(!is_array($order)) return false;
@@ -435,6 +441,9 @@
                 if(!is_array($data)) return ;
                 $id = $data['accountID'];
                 if($this->newCode($id, $code)) {
+                    if(isset($data['serviceName']) && $data['serviceName'] != "") {
+                        $this->nonResuse($data['serviceName'], $number);
+                    }
                     return json_encode(["success"]);
                 }
             }
