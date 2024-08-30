@@ -55,7 +55,7 @@ require_once "include/ini-session.php";
       <img src="http://demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/dist/images/logos/favicon.ico" alt="loader" class="lds-ripple img-fluid" />
     </div> -->
   <!--  Body Wrapper -->
-  <div class="page-wrapper" id="main-wrapper" data-theme="blue_theme" data-layout="vertical" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
+  <div class="page-wrapper" id="main-wrapper" data-theme="blue_theme" data-layout="vertical" data-sidebartype="full" data-sidebar-position="" data-header-position="">
     <!-- Sidebar Start -->
     <aside class="left-sidebar">
       <!-- Sidebar scroll-->

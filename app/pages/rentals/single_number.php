@@ -2,8 +2,10 @@
  $service = "";
  $simplePage = $simlePage ?? null;
 if(!$simplePage) {
-    if(isset($rental_services[$rent['serviceCode']])) {
-        $service = $r->getServices($rent['broker_name'], $rent['type'], $rent['serviceCode'], fromCookie: true);
+    if(isset($rent['serviceName']) && $rent['serviceName'] != "") {
+      $service = $rent['serviceName'];
+    }else if(isset($rental_services[$rent['serviceCode']])) {
+          $service =  $r->getServices($rent['broker_name'], $rent['type'], $rent['serviceCode'], fromCookie: true);
           $service = $service['name'];
       }else{
           $service = "unknown";

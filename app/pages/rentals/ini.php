@@ -3,6 +3,8 @@
     $script[] = "fetcher";
     $number_type = htmlspecialchars($_GET['type'] ?? "short_term");
     $network = 1;
+    // var_dump($r->nonResuse("GMail", "12259075113"));
+    // exit();
     if(isset($_GET['network'])) $network = htmlspecialchars((int)$_GET['network'] ?? 1);
     if($number_type == "short_term" && $network == 1) {
         $broker = "daisysms";

@@ -5,5 +5,3 @@
     require_once "functions/rentals.php";
     $r = new rentals;
     echo $r->nonHandleCallBack();
-
-    
