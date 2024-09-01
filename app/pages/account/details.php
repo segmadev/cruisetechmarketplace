@@ -21,7 +21,7 @@ if (!$account || $account == "") {
                 </div>
             </div>
         </div>
-        <p class='text-mute'><?= $d->short_text(htmlspecialchars_decode($account['description']), 60) ?></p>
+        <p class='text-mute'><?= $d->short_text(htmlspecialchars_decode($account['description']), 30) ?></p>
         <hr>
         <form action="" id="foo">
             <div class="input-group input-group-sm rounded" id="qtynumberDiv">
