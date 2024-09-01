@@ -20,8 +20,8 @@ if (!$account || $account == "") {
                     <p><?= $d->money_format($account['amount']) ?></p>
                 </div>
             </div>
-            <p class='text-mute'><?= $d->short_text(htmlspecialchars_decode($account['description']), 100) ?></p>
         </div>
+        <p class='text-mute'><?= $d->short_text(htmlspecialchars_decode($account['description']), 60) ?></p>
         <hr>
         <form action="" id="foo">
             <div class="input-group input-group-sm rounded" id="qtynumberDiv">
