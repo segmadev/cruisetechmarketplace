@@ -74,7 +74,7 @@
                 aria-label="Global">
                 <div class="flex items-center justify-between"><a
                         class="flex-none rounded-lg text-xl font-bold outline-none ring-zinc-500 focus-visible:ring :ring-zinc-200 :focus:outline-none"
-                        href="index.html" aria-label="Brand">
+                        href="/" aria-label="Brand">
                         <!-- logo -->
                         <img src="app/assets/images/logos/<?= $d->get_settings("light_logo") ?>" class="h-auto" style="width: 200px;" alt="www">
                         
@@ -123,14 +123,14 @@
                     class="hs-collapse hidden grow basis-full overflow-hidden transition-all duration-300 md:block">
                     <div
                         class="mt-5 flex flex-col gap-x-0 gap-y-4 md:mt-0 md:flex-row md:items-center md:justify-end md:gap-x-4 lg:gap-x-7 md:gap-y-0 md:ps-7">
-                        <!-- <a id="home" href="index.html" data-astro-prefetch
+                        <!-- <a id="home" href="/" data-astro-prefetch
                             class="rounded-lg text-base font-medium text-neutral-600 outline-none ring-zinc-500 hover:text-neutral-500 focus-visible:ring :text-neutral-400 :ring-zinc-200 :hover:text-neutral-500 :focus:outline-none md:py-3 md:text-sm 2xl:text-base">Home</a> -->
                         <script type="module">
                         document.addEventListener("DOMContentLoaded", function() {
                             let t = window.location.pathname;
-                            t.split("index.html");
+                            t.split("index");
                             let a;
-                            t === "/" ? a = "home" : a = t.replace("index.html", "");
+                            t === "/" ? a = "home" : a = t.replace("index", "");
                             let e = document.getElementById(a);
                             e && (e.classList.remove("text-neutral-600", ":text-neutral-400",
                                     "hover:text-neutral-500", ":hover:text-neutral-500"), e.classList
@@ -156,18 +156,18 @@
                         document.addEventListener("DOMContentLoaded", function() {
                             document.querySelectorAll(".hs-dropdown-menu a").forEach(s => {
                                 const i = s,
-                                    n = i.getAttribute("href")?.replace("index.html", "").replace(
-                                        "index.html", "");
+                                    n = i.getAttribute("href")?.replace("index", "").replace(
+                                        "index", "");
                                 i.addEventListener("click", function(l) {
                                     l.preventDefault();
                                     const e = new URL(404. html),
-                                        t = e.pathname.split("index.html").filter(a => a && !o
+                                        t = e.pathname.split("index").filter(a => a && !o
                                             .includes(a));
-                                    n !== e.pathname.split("index.html")[1] && (e.pathname
+                                    n !== e.pathname.split("index")[1] && (e.pathname
                                         .includes("/post") ? e.pathname.includes("en") ? (t
                                             .unshift(n), t.splice(2, 0, n)) : (t.unshift(n),
                                             t.splice(2, 0, "en")) : n !== "en" && t.unshift(
-                                            n), e.pathname = t.join("index.html"), window
+                                            n), e.pathname = t.join("index"), window
                                         .location.href = e.toString())
                                 })
                             })

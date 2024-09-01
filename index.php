@@ -7,12 +7,21 @@
     </astro-banner>
     <script
         type="module">class n extends HTMLElement { connectedCallback() { const e = this.getAttribute("btnId"), t = this.querySelector(`#${e}`); t?.addEventListener("click", () => this.remove()) } } customElements.define("astro-banner", n);</script>
+  
     <?php
+    if(isset($_GET['page']) && ($_GET['page'] == "terms" || $_GET['page'] == "policy")) {
+        $page = htmlspecialchars($_GET['page']);
+        if(file_exists(("content/$page.php"))) {
+            require_once "content/$page.php";
+        }
+    }else{
     require_once "content/hero.php";
     require_once "content/company.php";
     require_once "content/about.php";
     require_once "content/how_it_works.php";
     require_once "content/action.php";
+    }
+   
     ?>
 </main>
 </div>

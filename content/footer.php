@@ -18,7 +18,10 @@ $tiktok_link = $d->get_settings('tiktok_link');
         <div class="mt-9 grid gap-y-2 sm:mt-12 sm:flex sm:items-center sm:justify-between sm:gap-y-0">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                    © <span id="current-year"></span> <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300" href="#" target="_blank" rel="noopener noreferrer"><?= $d->get_settings(); ?></a>.
+                    © <span id="current-year"></span> 
+                    <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300" href="/" target="" rel="noopener noreferrer"><?= $d->get_settings(); ?></a> |
+                    <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300" href="?page=policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> |
+                    <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300" href="?page=terms" target="_blank" rel="noopener noreferrer">Terms and conditions</a>
                 </p>
             </div>
             <div>

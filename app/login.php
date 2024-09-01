@@ -74,6 +74,12 @@ require_once "include/auth-ini.php"; ?>
                       </div>
                       <a class="text-primary fw-medium" href="forget_password">Forgot Password ?</a>
                     </div>
+                    <div>
+                      <p>
+                        By signing in, you agree to our
+                        <a class="" href="/?page=terms" target="_blank" rel="noopener noreferrer">Terms and conditions</a> and 
+                        <a class="" href="/?page=policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>  </p>
+                    </div>
                     <div id="custommessage"></div>
                     <button type="submit"  class="btn btn-primary w-100 py-8 mb-4 rounded-2">Sign In</button>
                     <div class="d-flex align-items-center justify-content-center">
