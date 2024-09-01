@@ -119,11 +119,14 @@ class Account extends user
            // get all logins with accoutID based on qty
             $logins = $this->getall("logininfo", "accountID = ? and sold_to = ? LIMIT $qty", [$accountID, ""], fetch:"all");
             if ($logins->rowCount() < $qty) {
-              return $this->message("only ".$logins->rowCount()." available left", "error");
+              return $this->message("only ".$logins->rowCount()." available left", "error", "json");
             }
           }
-          
-          
+        
+        if($qty == 0) {
+          return $this->message("No qty passed or account not selected", "error", "json");
+        }
+        
         $amount = (float)$account['amount'] * (int)$qty;
         $orderID = uniqid("order-");
         // debit user account

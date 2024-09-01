@@ -23,15 +23,15 @@ function getCookie(name) {
 }
 
 // Function to shorten preview link
-function shortenLink(link, maxLength = 30) {
+function shortenLink(link, maxLength = 15) {
     return link.length > maxLength ? link.substring(0, maxLength) + '...' : link;
 }
 
 // Function to render a login item
 function renderLogin(login, isInCart = false) {
     return `
-        <div class="col single-note-item all-category p-0 m-0" data-ID="${login.ID}">
-            <div class="card card-body bg-light p-0 p-2 border-1 mb-1">
+        <div class="col single-note-item all-category p-0 ms-2 col-lg-4 col-sm-4" style='min-width: 250px!important' data-ID="${login.ID}">
+            <div class="card card-body bg-light p-0 p-2 border-1 mb-1 w-100">
                 <div class="d-flex m-0 justify-content-between">
                     <div class="d-flex m-0">
                         <div>
@@ -40,12 +40,12 @@ function renderLogin(login, isInCart = false) {
                         </div>
                         <div class="ms-1">
                             <h6 class="note-title w-100 mb-0">
-                                <p class="m-0">${login.username}</p>
+                                <p class="m-0">${shortenLink(login.username)}</p>
                             </h6>
                             <p class="note-date fs-2 m-0">${"N" + parseInt(amount).toLocaleString('en-US')}</p>
                         </div>
                     </div>
-                    <div class="">
+                    <div class="ms-2">
                         <a target="_BLANK" href="${login.preview_link}" class="link me-1 btn btn-sm bg-blue">
                             <i class="ti ti-eye fs-4 favourite-note"></i>
                         </a>

@@ -55,7 +55,7 @@ if (!$account || $account == "") {
     </form>
     <?php 
         if($accountPreview == 1) {
-            echo '<div id="logins-container" class="row gap-3"></div>';
+            echo '<div id="logins-container" class="row gap-2"></div>';
         }
     ?>
 
