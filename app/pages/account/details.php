@@ -4,7 +4,7 @@ if (!$account || $account == "") {
 } else {
     $accountPreview = $d->get_settings("account_preview");
     $script[] = "sweetalert";
-    ($accountPreview == 1) ?? $script[] = "cart";
+    if($accountPreview == 1)  $script[] = "cart";
     ?>
     <div class="card p-3">
         <div class="flex d-flex">
