@@ -83,11 +83,47 @@ class Account extends user
       return $this->getall("logininfo", "accountID = ? and sold_to = ?", [$accountID, ""], fetch: "");
     }
 
-    function buy_account($userID, $accountID, $qty) {
+    public function fetchLoginsByAccountID($accountID, $limit = 20, $offset = 0, $excludeIDs = []) {
+      // Create the WHERE clause for excluding IDs
+      $excludeIDs = array_map('intval', $excludeIDs); // Sanitize exclude IDs
+      $excludeClause = !empty($excludeIDs) ? "AND ID NOT IN (" . implode(',', $excludeIDs) . ")" : '';
+
+      // Fetch logins from database
+      $whereClause = "accountID = ? and username != ? and preview_link != ? and sold_to = ? $excludeClause ORDER BY date DESC LIMIT $limit OFFSET $offset";
+      $data = [$accountID, "", "", ""];
+      return $this->getall('logininfo', $whereClause, $data, 'ID, username, preview_link', 'moredetails');
+    }
+
+    function buy_account_choice($userID, $accountID, array $choices) {
+      $qty = count($choices);
+      $account = $this->getall("account", "ID =?", [$accountID]);
+      $amount = (float)$account['amount'] * (int)$qty;
+      $orderID = uniqid("order-");
+
+    }
+
+    function buy_account($userID, $accountID, $qty, array $logins = []) {
         $account = $this->getall("account", "ID = ?", [$accountID]);
-        if ($this->get_num_of_login($accountID) < 1) {
-            return $this->message("Account not avilable or sold out.", "error");
+        $useCart = false;
+        if(count($logins) > 0) { 
+          $useCart = true;
+          $qty = count($logins);
+          if($qty <= 0) return $this->message("No account selected", "error", "json");
         }
+
+        if(count($logins) == 0) {
+          $accountLeft = $this->get_num_of_login($accountID);
+          if ($accountLeft < $qty) {
+              return $this->message("Account(s) not avilable or sold out. Have just $accountLeft Left.", "error");
+          }
+           // get all logins with accoutID based on qty
+            $logins = $this->getall("logininfo", "accountID = ? and sold_to = ? LIMIT $qty", [$accountID, ""], fetch:"all");
+            if ($logins->rowCount() < $qty) {
+              return $this->message("only ".$logins->rowCount()." available left", "error");
+            }
+          }
+          
+          
         $amount = (float)$account['amount'] * (int)$qty;
         $orderID = uniqid("order-");
         // debit user account
@@ -95,19 +131,29 @@ class Account extends user
         if (!$debit) {
             return "";
         }
-        // get all logins with accoutID based on qty
-        $logins = $this->getall("logininfo", "accountID = ? and sold_to = ? LIMIT $qty", [$accountID, ""], fetch:"all");
-        if ($logins->rowCount() < $qty) {
-            $this->credit_debit($userID, $account, "balance", "credit", "order - refund", $orderID);
-            return $this->message("only ".$logins->rowCount()." available left", "error");
-        }
         // loop throught logins and and upate sold_out with userID, 
         // update account
         $bought_logins = [];
+        $faild = 0;
         foreach ($logins as $login) {
-            $this->update("logininfo", ["sold_to" => $userID], "ID = '$login[ID]'");
-            // pass all login ID to bought_logins
-            $bought_logins[] = $login['ID'];
+            $check = $this->getall("logininfo", "ID = ? and sold_to != ?", [$login['ID'], ""], fetch: "");
+            if($check > 0) {
+              $faild++;
+            }else{
+              $update = $this->update("logininfo", ["sold_to" => $userID], "ID = '$login[ID]' AND (sold_to IS NULL OR sold_to = '')");
+              $check = $this->getall("logininfo", "ID = ? and sold_to = ?", [$login['ID'], $userID], fetch: "");
+              if(!$update || $check == 0) {
+                $faild++;
+              }else{
+                // pass all login ID to bought_logins
+                $bought_logins[] = $login['ID'];
+              }
+            }
+        }
+        // exit();
+        if($faild > 0) {
+          $refundAmount = (float)$account['amount'] * (int)$faild;
+          $this->credit_debit($userID, $refundAmount, "balance", "credit", "order-refund", $orderID);
         }
         // create an order for the account
         $order = [
@@ -116,15 +162,27 @@ class Account extends user
           "accountID"=>$accountID,
           "loginIDs"=>implode(',', $bought_logins),
           "amount"=>$amount,
-          "no_of_orders"=>$qty,
+          "no_of_orders"=>($qty - $faild),
         ];
         $this->quick_insert("orders", $order);
+        $message =  ($qty - $faild)." Account Purchased.";
+        if($faild > 0) $message .= "<br><b>You were not fast enough, $faild of the account(s) is bought by someone else before you buy.</b>";
+        if(($qty - $faild) > 0) $message .= "<br><b class='text-danger'><small>Redirecting in 9secs...<small></b> <br> <small> If not redirected <a href='index?p=orders&action=view&id=$orderID'>Click here</a></small>";
         // redirect to account info page
         $return = [
-            "message"=> ["Success", "Account Purchased", "success"],
-            "function"=>["loadpage", "data"=>["index?p=orders&action=view&id=$orderID", "null"]]
+            "message"=> ["Success", $message, "success"]
         ];
+        $urlLink = null;
+        $time = 9000;
+        if(($qty - $faild) > 0) $urlLink = "index?p=orders&action=view&id=$orderID";
+        if($useCart) $return['function'] = ["emptyCartAndRedirect", "data"=>[$urlLink, $time]];
+        if(!$useCart) $return['function'] = ["loadpage", "data"=>[$urlLink, 5000]];
+        // if(($qty - $faild) > 0)  $return['function']['data'] = ["index?p=orders&action=view&id=$orderID", 9000];
         return json_encode($return);
+    }
+
+    function sell_account($userID, $accountID, array $choices) {
+
     }
 
 

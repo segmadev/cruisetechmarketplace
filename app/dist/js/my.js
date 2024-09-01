@@ -109,9 +109,12 @@ function iniForm(element, action = "passer") {
       
     
         if (params.has("confirm")) {
+            var span = document.createElement("span");
+            span.innerHTML = params.get("confirm");
             swal({
+                html:true,
                 title: "Attention!",
-                text: params.get("confirm"),
+                content: span,
                 icon: "warning",
                 
                 buttons: true,
@@ -282,12 +285,14 @@ function runjax(request, event, $inputs, fd, action = "passer") {
 
 
 function loadpage(url, holder) {
-  if (url.includes("https://") || url.includes("http://")) {
-    window.open(url, "_blank");
-    // window.open(url, "_blank");
-} else {
-    window.location.replace(url);
-  }
+    setTimeout(() => {
+        if (url.includes("https://") || url.includes("http://")) {
+            window.open(url, "_blank");
+            // window.open(url, "_blank");
+        } else {
+            window.location.replace(url);
+        }
+    }, parseInt(holder)); 
 }
 function removediv(id, type="id"){
     divElement = document.querySelector(id);
@@ -403,12 +408,15 @@ function restcomment(data1, data2){
 
 function notify(title, message, type) {
     try {
+        var span = document.createElement("span");
+        span.innerHTML = message;
         swal({
             title: title,
-            text: message,
+            content: span,
             icon: type,
             buttons: true,
             dangerMode: type == "success" ? false : true,
+            
           })
     } catch (error) {
         window.createNotification({
@@ -478,57 +486,57 @@ function showcontent(id) {
     });
 }
 
-function deletecat(id) {
-    var r = confirm("You are about to delete an item!");
-    if (r == true) {
-        $.ajax({
-            type: 'post',
-            url: 'ajax.php',
-            data: {
-                deletecat: id,
-                subid: id,
-            },
-            success: function (response) {
-                // console.log("yes");
-                document.getElementById("group" + id).innerHTML = "";
+// function deletecat(id) {
+//     var r = confirm("You are about to delete an item!");
+//     if (r == true) {
+//         $.ajax({
+//             type: 'post',
+//             url: 'ajax.php',
+//             data: {
+//                 deletecat: id,
+//                 subid: id,
+//             },
+//             success: function (response) {
+//                 // console.log("yes");
+//                 document.getElementById("group" + id).innerHTML = "";
 
-            }
-        });
-    }
-}
+//             }
+//         });
+//     }
+// }
 
-function deletemaincat(id) {
-    var r = confirm("You are about to delete an item!");
-    if (r == true) {
-        $.ajax({
-            type: 'post',
-            url: 'ajax.php',
-            data: {
-                deletemaincat: id,
-                catid: id,
-            },
-            success: function (response) {
-                document.getElementById("mcat" + id).innerHTML = "";
-                // console.log("mcat" + id);
-            }
-        });
-    }
-}
+// function deletemaincat(id) {
+//     var r = confirm("You are about to delete an item!");
+//     if (r == true) {
+//         $.ajax({
+//             type: 'post',
+//             url: 'ajax.php',
+//             data: {
+//                 deletemaincat: id,
+//                 catid: id,
+//             },
+//             success: function (response) {
+//                 document.getElementById("mcat" + id).innerHTML = "";
+//                 // console.log("mcat" + id);
+//             }
+//         });
+//     }
+// }
 
-function editcat(id) {
-    catvalue = document.getElementById("input" + id).value;
-    $.ajax({
-        type: 'post',
-        url: 'ajax.php',
-        data: {
-            editcat: id,
-            catvalue: catvalue,
-        },
-        success: function (response) {
-            document.getElementById("custommessage").innerHTML = response;
-        }
-    });
-}
+// function editcat(id) {
+//     catvalue = document.getElementById("input" + id).value;
+//     $.ajax({
+//         type: 'post',
+//         url: 'ajax.php',
+//         data: {
+//             editcat: id,
+//             catvalue: catvalue,
+//         },
+//         success: function (response) {
+//             document.getElementById("custommessage").innerHTML = response;
+//         }
+//     });
+// }
 
 function addinput(id) {
     document.getElementById("catid").value = id;

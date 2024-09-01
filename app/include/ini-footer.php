@@ -65,6 +65,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.40/moment-timezone-with-data.min.js"></script>
    <script src="dist/js/countdown.js?n=1183636"></script>
 <?php } ?>
+<?php if (in_array("cart", $script)) { ?>
+  <script src="dist/js/cart.js?n=<?= rand(10, 10000); ?>"></script>
+<?php } ?>
 <?php if (in_array("divtopdf", $script)) { ?>
     <script src="dist/js/divtopdf.js?n=442245"></script>
 <?php } ?>

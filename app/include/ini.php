@@ -33,7 +33,7 @@ require_once "admin/include/database.php";
 $d = new database;
 $user = $d->getall("users", "token = ?", [$userToken]);
 if(!is_array($user)) {
-    $d->message("Unable to identify user", "error");
+    $d->message("Unable to identify user. <a href='login'>Login here</a>", "error");
     exit();
 }
 $userID = $user['ID'];

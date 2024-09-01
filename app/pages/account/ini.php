@@ -13,6 +13,7 @@ $d->create_table("orders", $orders);
       $a = new Account;
     if(isset($_GET['id']) && $action == "details") {
        $account = $a->get_account(htmlspecialchars($_GET['id']));
+       $logins = $d->getall("logininfo", "accountID = ? and sold_to = ? LIMIT 10", [htmlspecialchars($_GET['id']), ""], 'username, preview_link', fetch:"all");
     }
     if(isset($_GET['id']) && $action == "view") {
        $account = $a->get_account(htmlspecialchars($_GET['id']), 3);
