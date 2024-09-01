@@ -124,7 +124,7 @@ class Account extends user
           }
         
         if($qty == 0) {
-          return $this->message("No qty passed or account not selected", "error", "json");
+          return $this->message("You selected zero(0) account.", "error", "json");
         }
         
         $amount = (float)$account['amount'] * (int)$qty;

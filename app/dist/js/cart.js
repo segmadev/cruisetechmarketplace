@@ -46,7 +46,7 @@ function renderLogin(login, isInCart = false) {
                         </div>
                     </div>
                     <div class="ms-2">
-                        <a target="_BLANK" href="${login.preview_link}" class="link me-1 btn btn-sm bg-blue">
+                        <a target="_BLANK" href="${addHttpsToLink(login.preview_link)}" class="link me-1 btn btn-sm bg-blue">
                             <i class="ti ti-eye fs-4 favourite-note"></i>
                         </a>
                         <a href="#" onclick="toggleCart(${login.ID}, '${login.username}', '${login.preview_link}'); return false;" class="link me-1 btn btn-sm bg-primary text-white">
@@ -57,6 +57,15 @@ function renderLogin(login, isInCart = false) {
             </div>
         </div>
     `;
+}
+
+function addHttpsToLink(link) {
+    // Check if the link doesn't already start with 'http://' or 'https://'
+    if (!link.startsWith('http://') && !link.startsWith('https://')) {
+        // Prepend 'https://' to the link
+        link = 'https://' + link;
+    }
+    return link;
 }
 
 // Function to update the cart count in the HTML
