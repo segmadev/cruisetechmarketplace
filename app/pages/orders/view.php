@@ -52,7 +52,7 @@ if (!$order || $order == "") {
         </div>
         <?php if ($account['description'] != "") {?>
         <hr>
-        <p class='text-mute print-ignore'><?=$account['description']?></p>
+        <p class='text-mute print-ignore'><?= htmlspecialchars_decode($account['description']); ?></p>
             <?php }?>
 
 

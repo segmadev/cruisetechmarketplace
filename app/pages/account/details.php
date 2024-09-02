@@ -6,6 +6,21 @@ if (!$account || $account == "") {
     $script[] = "sweetalert";
     if($accountPreview == 1)  $script[] = "cart";
     ?>
+    <style>
+         .accountcontent {
+            overflow: hidden!important;
+            height: 40px!important;
+            transition: height 0.3s ease;
+        }
+        .accountcontent.expanded {
+            height: auto!important;
+        }
+        .read-more {
+            cursor: pointer;
+            display: none;
+        }
+
+    </style>
     <div class="card p-3">
         <div class="flex d-flex">
             <div>
@@ -21,7 +36,11 @@ if (!$account || $account == "") {
                 </div>
             </div>
         </div>
-        <p class='text-mute'><?= $d->short_text(htmlspecialchars_decode($account['description']), 30) ?></p>
+        <?php 
+        if($account['description'] != "") { ?>
+            <div class='text-mute accountcontent' id="accountcontent"><?= htmlspecialchars_decode($account['description'])?></div>
+            <div class="read-more text-primary" onclick="toggleContent()">Read More</div>
+        <?php } ?>
         <hr>
         <form action="" id="foo">
             <div class="input-group input-group-sm rounded" id="qtynumberDiv">
@@ -81,6 +100,30 @@ if (!$account || $account == "") {
         qtynumber.value = currentValue;
         document.getElementById("DisplayAmount").innerHTML = "<?= htmlspecialchars(currency ?? "N") ?>" + (parseInt(amount) * currentValue).toLocaleString('en-US');
     });
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var content = document.getElementById("accountcontent");
+        var readMore = document.querySelector(".read-more");
+
+        // Check if content overflows
+        if (content.scrollHeight > content.clientHeight) {
+            readMore.style.display = "inline"; // Show the Read More button if there's overflow
+        }
+    });
+
+    function toggleContent() {
+        var content = document.getElementById("accountcontent");
+        var readMore = document.querySelector(".read-more");
+        if (content.classList.contains("expanded")) {
+            content.classList.remove("expanded");
+            readMore.textContent = "Read More";
+        } else {
+            content.classList.add("expanded");
+            readMore.textContent = "Read Less";
+        }
+    }
 </script>
 
 </script>

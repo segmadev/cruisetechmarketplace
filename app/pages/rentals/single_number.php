@@ -4,7 +4,7 @@
 if(!$simplePage) {
     if(isset($rent['serviceName']) && $rent['serviceName'] != "") {
       $service = $rent['serviceName'];
-    }else if(isset($rental_services[$rent['serviceCode']])) {
+    }else if(isset($rent['serviceCode']) && $rent['serviceCode'] != "") {
           $service =  $r->getServices($rent['broker_name'], $rent['type'], $rent['serviceCode'], fromCookie: true);
           $service = $service['name'];
       }else{

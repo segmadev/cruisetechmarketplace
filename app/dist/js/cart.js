@@ -74,7 +74,7 @@ function updateCartCount() {
     if(cart.length == 0)  document.getElementById("qtynumberDiv").style.display = "flex";
     document.getElementById("qtynumber").value = cart.length;
     document.getElementById("cartDetails").innerHTML = JSON.stringify(cart);
-    document.getElementById("DisplayAmount").innerHTML = "N" + (parseInt(amount) * cart.length).toLocaleString('en-US');
+    document.getElementById("DisplayAmount").innerHTML = "N" + (parseInt(amount) * cart.length).toLocaleString('en-US') + "</b><br> Quantity: <b>"+cart.length+"</b>";
     // (parseInt(amount) * currentValue).toLocaleString('en-US')
 
     // $('#qtynumberere').value(cart.length);
