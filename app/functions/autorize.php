@@ -8,6 +8,16 @@ class autorize extends database
         if (!is_array($info)) {
             return null;
         }
+        if(!$this->isValidName($info['first_name'])) {
+            echo $this->message("Invalid First name.", "error");
+            return null;
+        }
+
+        if(!$this->isValidName($info['last_name'])) {
+            echo $this->message("Invalid Last name.", "error");
+            return null;
+        }
+
         $check = $this->getall("users", "email = ?", [$info['email']]);
         if ($check > 0) {
             echo $this->message("User with email already exit.", "error");
@@ -49,6 +59,11 @@ class autorize extends database
             ];
             return json_encode($return);
         }
+    }
+
+    function isValidName($name) {
+        // Check if the name contains only letters, spaces, or hyphens
+        return preg_match("/^[a-zA-Z'-]{1,30}$/", $name);
     }
 
     private function apply_referral_code($userID, $code)
