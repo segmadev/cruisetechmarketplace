@@ -1,33 +1,159 @@
 <hr>
 <div class="row">
-    <?php 
-        $loginClass = 'row border border-1 p-3';
+    <?php
+    $loginClass = 'row border border-1 p-3';
     ?>
     <h3 class="h5">Add Account Logins</h3>
-    <div id="loginInfos" class="row">
-       <div class="<?= $loginClass ?>"> 
-        <h6><b>Login 1</b></h6>
-        <?= $c->create_form($logininfo); ?>
-    </div>
-    <div class="<?= $loginClass ?>"> 
-           <h6><b>Login 2</b></h6>
-        <?= $c->create_form($logininfo); ?>
-    </div>
-    </div>
+    <div id="loginInfos" class="row"></div>
 </div>
-<button type="button" onclick="add_login()" class="btn text-primary"><b><i class="ti ti-plus"></i> Add more Login</b></button>
+<button type="button" onclick="add_login()" class="btn text-primary"><b><i class="ti ti-plus"></i> Add more
+        Login</b></button>
 <hr>
+<?php require_once 'pages/account/autofill.php'; ?>
 <script>
-    let i = 3;
+    let i = 1;
     function add_login() {
-        var template = `<h6><b>Login ${i++}</b></h6> <?= $c->create_form($logininfo);  ?>`;
+        var template = `<div class="d-flex justify-content-between align-items-center w-100">
+            <h6 class="login-number"><b>Login ${i++}</b></h6>
+            <button type='button' class='btn btn-danger btn-sm remove-login'>Remove</button>
+        </div> <?= $c->create_form($logininfo); ?>`;
         var new_row = document.createElement('div');
         new_row.className = "add-new w-100 <?= $loginClass ?>";
         new_row.innerHTML = template;
         document.getElementById("loginInfos").appendChild(new_row);
 
+        // Add event listener to the remove button
+    new_row.querySelector('.remove-login').addEventListener('click', function() {
+        remove_login(new_row);
+    });
+    }
+
+    add_login();
+    function auto_fill(data, urlPattern, dataPattern) {
+    // Remove any login cards that are not filled (empty fields)
+    remove_empty_logins();
+    let patterns = dataPattern.split('|');
+    let mismatchedRows = [];  // Array to collect mismatched rows
+    console.log(patterns)
+    var usernamePosition = findPosition(patterns);
+    if(usernamePosition < 0) {
+        alert("Username and ID not found in the data pattern.");
+        return
+    }
+    data.forEach((item, index) => {
+        // Split the data by the delimiter
+        let details = item.split('|');
+        
+        // Check if the number of fields matches the pattern (allow optional fields)
+        if (details.length < patterns.length - 1) {
+            mismatchedRows.push(index + 1); // Collect the row number (1-based index)
+            return;
+        }
+
+        
+        
+        let username = details[usernamePosition];  // Assuming the first field is 'id', treat it as username
+        let preview_link = urlPattern.replace(/username|ID|id/, username);
+
+        // Construct login details excluding optional fields like 'dob'
+        let login_details = details.slice(0, patterns.length).join(' | ');
+
+        // Call add_login to create new inputs
+        add_login();
+
+        // Fill in the fields with the extracted data
+        let last_added = document.querySelectorAll('.add-new').length - 1;
+        let container = document.querySelectorAll('.add-new')[last_added];
+
+        container.querySelector('textarea[name="login_details[]"]').value = login_details;
+        container.querySelector('input[name="preview_link[]"]').value = preview_link;
+        container.querySelector('input[name="username[]"]').value = username;
+    });
+    
+    // Show a single alert if there are mismatched rows
+        if (mismatchedRows.length > 0) {
+            alert(`Data doesn't match the specified pattern in the following rows: ${mismatchedRows.join(', ')}`);
+        }
+    }
+
+
+        function processFile() {
+            let fileInput = document.getElementById("data-file");
+            let urlPattern = document.getElementById("url-pattern").value.trim();
+            let dataPattern = document.getElementById("data-pattern").value.trim();
+
+            if (fileInput.files.length === 0 || !urlPattern || !dataPattern) {
+                alert("Please upload a file and fill in the URL pattern and data pattern.");
+                return;
+            }
+
+            
+
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+
+            reader.onload = function(event) {
+                let text = event.target.result.trim();
+                let data = text.split("\n").map(line => line.trim()).filter(line => line);
+
+                // Call auto_fill to automatically populate the form fields
+                auto_fill(data, urlPattern, dataPattern);
+
+                // Clear the file input
+                fileInput.value = '';
+            };
+
+            reader.readAsText(file);
+        }
+
+        function remove_login(row) {
+            row.remove();  // Remove the selected row
+            update_login_numbers();  // Update the login numbers
+        }
+
+    function update_login_numbers() {
+        const loginRows = document.querySelectorAll('.add-new');
+        loginRows.forEach((row, index) => {
+            const numberLabel = row.querySelector('.login-number b');
+            numberLabel.textContent = `Login ${index + 1}`;  // Update the login number
+        });
+        i = loginRows.length + 1;  // Update the counter for future logins
+    }
+
+
+    // Function to remove any login cards that are empty
+    function remove_empty_logins() {
+        const loginRows = document.querySelectorAll('.add-new');
+        loginRows.forEach(row => {
+            const loginDetails = row.querySelector('textarea[name="login_details[]"]').value.trim();
+            const previewLink = row.querySelector('input[name="preview_link[]"]').value.trim();
+            const username = row.querySelector('input[name="username[]"]').value.trim();
+            
+            // If all fields are empty, remove the row
+            if (!loginDetails && !previewLink && !username) {
+                row.remove();
+            }
+        });
+
+        // Update login numbers after removing empty logins
+        update_login_numbers();
+    }
+
+    function findPosition(arr) {
+        // Try to find 'username'
+        let position = arr.indexOf('username');
+        
+        // If 'username' is not found, try 'ID'
+        if (position === -1) {
+            position = arr.indexOf('ID');
+        }
+
+        // If 'ID' is not found, try 'id'
+        if (position === -1) {
+            position = arr.indexOf('id');
+        }
+
+        // If neither 'username', 'ID', nor 'id' is found, return false
+        return position;
     }
 </script>
-
-
-
