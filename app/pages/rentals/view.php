@@ -1,4 +1,5 @@
 <?php
+
 if (!isset($_GET['accountID']))
     return $d->message("No ID passed", "error");
 $acctID = $_GET['accountID'];
@@ -8,12 +9,14 @@ if (!is_array($rent)) {
     $d->message("No rental found", "error");
     return false;
 }
+
 $codes = $r->getNumberCode($rent['ID']);
 $script[] = "countdown";
 $countDuration = ($rent['expiration'] ?? (int)$d->get_settings("rental_number_expire_time") * 60);
 if($rent['expire_date'] != "" && $rent['expire_date'] != "0000-00-00 00:00:00") {
     $rent['date'] = $rent['expire_date'];
 }
+
 ?>
 <div class="card card-body bg-light">
     <div class='d-flex gap-2'>

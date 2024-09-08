@@ -46,7 +46,7 @@
 <br><br><br>
 
 <footer class="d-flex justify-content-center bottom-nav" style="margin-top: 50px">
-  <div class="col-11 shadow d-flex justify-content-around p-1 rounded botton-navs bg-light-danger">
+  <div class="col-11 shadow d-flex justify-content-around p-1 rounded botton-navs bg-light-primary">
     <a data-url="index" class="btn btn-sm p-2 m-0 <?php if ($page == "dashboard") {
                                   // echo "btn-primary";
                                 } ?>"><i class='ti ti-home fs-6'></i>

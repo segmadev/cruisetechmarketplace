@@ -186,12 +186,16 @@
             if(!$isExpired && $order['broker_name'] == "daisysms") $this->requestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "anosim") $this->anosimRequestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "sms_activation") $this->smsActivationrequestCodeNumber($order['accountID']); 
+           
             if($isExpired == true && (int)$order['status'] == 1) {
-                $this->closeRental($order['userID'], $order['ID'], 0, $order);
+                $this->closeRental($order['userID'], $order['ID'], 0);
+                var_dump($isExpired);
+                exit();
             }
-            if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
-                $this->refundOrder($orderID);
-            }
+            
+            // if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
+            //     $this->refundOrder($orderID);
+            // }
             return $this->getall("number_codes", "orderID = ? ORDER BY date desc", [$order['accountID']], fetch: "all");
         }
 
@@ -202,8 +206,6 @@
             $marked = false;
             if($order['broker_name'] == "nonvoipusnumber") {
                 $marked = $this->nonRejectNumber($order['serviceCode'], $order['type'], $order['loginIDs'], $order['accountID']);
-            }else{
-                $this->getNumberCode($orderID);
             }
             if($order['broker_name'] == "daisysms") {
                 $marked = true;

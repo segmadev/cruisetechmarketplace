@@ -69,7 +69,7 @@ require_once "include/auth-ini.php"; ?>
                       <div class="form-check">
                         <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
                         <label class="form-check-label text-dark" for="flexCheckChecked">
-                          Remeber this Device
+                          Remember this Device
                         </label>
                       </div>
                       <a class="text-primary fw-medium" href="forget_password">Forgot Password ?</a>
