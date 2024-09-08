@@ -50,11 +50,11 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
                   <h4 class="fw-semibold mb-8">Get a number</h4>
                   <nav aria-label="breadcrumb">
                     <p class="text-muted">
-                       Get USA phone number to receive OTP for <a data-url="index?p=rentals&network=1&action=new"> short term </a> or <a data-url="index?p=rentals&network=1&action=new&type=long_term"> long term </a> use.
+                       Get phone number to receive OTP for <a data-url="index?p=rentals&network=1&action=new"> short term </a> or <a data-url="index?p=rentals&network=1&action=new&type=long_term"> long term </a> use.
                     </p>
                   </nav>
                   <hr>
-                  <a data-url="index?p=rentals&action=new" class="btn btn-primary">Get USA Number.</a>
+                  <a data-url="index?p=rentals&action=new" class="btn btn-primary">Get Number.</a>
                 </div>
                 <div class="col-3">
                   <div class="text-center mb-n5">  
