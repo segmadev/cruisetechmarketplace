@@ -83,5 +83,16 @@
 <!-- Mirrored from demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/html/main/ by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 14 Aug 2023 16:01:44 GMT -->
 
 </html>
-
+<script>
+ modalelements = document.querySelectorAll('[data-url]');
+    iniModal(modalelements)
+    function iniModal(modalelements){
+        modalelements.forEach(element => { 
+            element.style.cursor = 'pointer';
+            element.addEventListener('click', function(e){
+            // e.preventDefault();
+            modalcontentv2(element);
+        })});
+    }
+  </script>
 <?php ob_end_flush(); ?>
