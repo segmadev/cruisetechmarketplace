@@ -70,9 +70,13 @@
     $rentals_settings = [
         "rental_number_expire_time"=>["input_type"=>"number","title"=>"rental number expire time (In mins)", "description"=>"How long should it take for rented numbers to expire, value in mins."],
         "rentals_API"=>["input_type"=>"password", "title"=>"Daisysms API Key", "is_required"=>false],
+        "anosim_API"=>["input_type"=>"password", "title"=>"Anosim API Key", "is_required"=>false],
+        "sms_activation_API"=>["input_type"=>"password", "title"=>"sms activation service API API Key", "is_required"=>false],
         "nonvoipusnumber_email"=>["input_type"=>"password", "is_required"=>false],
         "nonvoipusnumber_password"=>["input_type"=>"password", "is_required"=>false],
         "added_value_amount_daisysms_short_term"=>["title"=>"Added Value Amount for dailysms (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
+        "added_value_amount_anosim_short_term"=>["title"=>"Added Value Amount for Anosim (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
+        "added_value_amount_sms_activation_short_term"=>["title"=>"Added Value Amount for sms activation service (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_short_term"=>["title"=>"Added Value Amount for nonvoipusnumber short (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_long_term"=>[ "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_3days"=>[ "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
