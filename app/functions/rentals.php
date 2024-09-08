@@ -658,7 +658,7 @@
 
          function getCountryCode($countryName) {
                         // Read the JSON file
-                $jsonFile = file_get_contents('countries/countries.json');
+                $jsonFile = file_get_contents('countrie/countries.json');
 
                 // Decode the JSON data into an associative array
                 $countries = json_decode($jsonFile, true);
