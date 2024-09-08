@@ -1100,25 +1100,51 @@ class database
         }
     }
     
-    function api_call($service_url, $posts = [], $header = [], $isRaw = false)
+    function api_call($service_url, $posts = [], $header = [], $isRaw = false, $method = 'GET',)
     {
-            $isPost = false;
+        $curl = curl_init($service_url);
 
-            if($this->isJson(($posts)) || count($posts) > 0) $isPost = true;
-            $curl = curl_init($service_url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_POST, $isPost);
-            if($this->isJson(($posts)) || count($posts) > 0)  curl_setopt($curl, CURLOPT_POSTFIELDS, $posts);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-            $curl_response   = curl_exec($curl);
-            curl_close($curl);
-            if ($isRaw) {
-                return $curl_response;
-            }
-            return json_decode($curl_response);
-            // return $data = $json_objekat->data;
+        // If there are posts, assume a non-GET method
+        if ($this->isJson(($posts)) || count($posts) > 0) {
+           $method = "POST";
+        }
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+
+        // Set method-specific options
+        switch (strtoupper($method)) {
+            case 'POST':
+                curl_setopt($curl, CURLOPT_POST, true);
+                break;
+            case 'PATCH':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PATCH');
+                break;
+            case 'PUT':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
+                break;
+            case 'DELETE':
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                break;
+            default:
+                // For GET and any other methods, do nothing
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+                break;
+        }
+
+        // Add POST or PATCH fields if needed
+        if (in_array(strtoupper($method), ['POST', 'PATCH', 'PUT'])) {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $posts);
+        }
+
+        // Execute request and handle response
+        $curl_response = curl_exec($curl);
+        curl_close($curl);
+
+        return $isRaw ? $curl_response : json_decode($curl_response);
     }
+
 
     function newcoin()
     {

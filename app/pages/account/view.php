@@ -31,4 +31,3 @@ if (!$account || $account == "") {
 
 
     </div>
-<?php   } ?>

@@ -21,7 +21,7 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
                         <div class="border-end pe-4 border-muted border-opacity-10">
                           <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center" id='accountBalanceValue1' data-load='deposit' data-displayId='accountBalanceValue1' data-isreplace='true' data-path='passer?p=account&get_balance=yes'><i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i></h3>
                           <p class="mb-0 text-dark">Your Balance</p>
-                          <a href="index?p=deposit" class="btn btn-sm btn-dark">Deposit</a>
+                          <a data-url="index?p=deposit" class="btn btn-sm btn-dark">Deposit</a>
                         </div>
                         <div class="ps-4">
                             <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center"><?=number_format($totalOrders);?></h3>
@@ -50,11 +50,11 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
                   <h4 class="fw-semibold mb-8">Get a number</h4>
                   <nav aria-label="breadcrumb">
                     <p class="text-muted">
-                       Get USA phone number to receive OTP for <a href="index?p=rentals&network=1&action=new"> short term </a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term </a> use.
+                       Get USA phone number to receive OTP for <a data-url="index?p=rentals&network=1&action=new"> short term </a> or <a data-url="index?p=rentals&network=1&action=new&type=long_term"> long term </a> use.
                     </p>
                   </nav>
                   <hr>
-                  <a href="index?p=rentals&action=new" class="btn btn-primary">Get USA Number.</a>
+                  <a data-url="index?p=rentals&action=new" class="btn btn-primary">Get USA Number.</a>
                 </div>
                 <div class="col-3">
                   <div class="text-center mb-n5">  

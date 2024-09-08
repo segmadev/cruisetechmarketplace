@@ -14,17 +14,26 @@
                 <input type="hidden" name="type" value="<?= $number_type ?>">
                 <input type="hidden" name="broker" value="<?= $broker ?>">
                 <input type="hidden" name="network" value="<?= $network ?>">
+                <input type="hidden" name="countryCode" value="<?= $countryCode ?? "" ?>">
                 <input type="hidden" name="new_rent">
                 <input type="hidden" name="confirm" value="Are you sure you want to rent number for <?=$service['name']?>"> 
                     <button type="submit" class="border-0 bg-transparent d-flex align-items-center text-align-start" style="text-align: start; width: 90%">
                         <div data-name="<?= $service['name'] ?>" class="flex-shrink-0 bg-transparent rounded-circle round d-flex align-items-center justify-content-center">
-                          <img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://<?=  trim(strtolower($names[0])) ?>.com&size=24" alt="" class="img-fluid" width="24" height="24">
+                            <?php 
+                                $domain = trim(strtolower($names[0])).".com";
+                                if(trim(strtolower($names[0])) == "telegram") {
+                                    $domain = trim(strtolower($names[0])).".org";
+                                }
+                                
+                            ?>
+                          <img src="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://<?=  $domain ?>&size=24" alt="" class="img-fluid" width="24" height="24">
                         </div>
                         <div class="ms-3">
                             <?php 
                                 $avilable = null;
                                 if(isset($service['count'])) $avilable = "Available: ".$d->short_no(((int)$service['count']), 8000);
                                 if(isset($service['available'])) $avilable = "Available: ".$d->short_no((int)$service['available'], 8000);
+                                if(isset($service['quantity'])) $avilable = "Available: ".$d->short_no((int)$service['quantity'], 8000);
                                 if (strlen($service['name']) <= 23) {
                                     $name = $service['name'];
                                     echo '<h5 class="m-0 fs-3"> '. $d->short_text($name, 20) . '</h5>';

@@ -7,6 +7,9 @@
         protected $exchangeRateAPI;
         protected $non_end_points;
         protected $non_auth;
+        protected $anosim_end_points;
+        public $brokers;
+        public $sms_end_points;
         // protected $API_header;
         public function __construct() {
             // Call the parent constructor to initialize user properties
@@ -25,11 +28,39 @@
                 "reject"=>"https://nonvoipusnumber.com/manager/api/reject",
                 "renew"=>"https://nonvoipusnumber.com/manager/api/renew",
             ];
+
+            $this->anosim_end_points = [
+                "base_url"=>"https://anosim.net/api/v1",
+                "balance"=>"/Balance",
+                "countries"=>"/Countries",
+                "products"=>"/Products",
+                "order"=>"/Orders",
+                "getsms"=>"/Sms",
+                "orderbooking"=>"/OrderBooking",
+                "orderbookings"=>"/OrderBookings",
+                "/"=>"/"
+
+            ];
+            $this->sms_end_points = [
+                "base_url"=>"https://sms-activation-service.pro/stubs/handler_api",
+            ];
             $this->non_auth = [
                 "email"=>$this->get_settings("nonvoipusnumber_email"),
                 "password"=>$this->get_settings("nonvoipusnumber_password"),
             ];
+
+            $this->brokers = [
+                1=>"daisysms",
+                2=>"nonvoipusnumber",
+                3=>"anosim",
+            ];
             // $this->API_header = ['Authorization: Bearer '. $this->API_code];
+        }
+
+        function getBrokerName($id) {
+            // $brokers = [
+            //     "1"=>"dai",
+            // ];
         }
 
         function getLikes($userID) {
@@ -47,12 +78,12 @@
             return $this->quick_insert("liked_services", ["userID"=>$userID, "serviceID"=>$serviceID]);
         }
         function newNumber($userID) {
-            $data = $this->validate_form(["id"=>[], "broker"=>["is_required"=>false], "type"=>["is_required"=>false]], showError: false);
+            $data = $this->validate_form(["id"=>[], "broker"=>["is_required"=>false], "type"=>["is_required"=>false], "countryCode"=>["is_required"=>false]], showError: false);
             if(!is_array($data)) return $this->message("Invalid form data. Reload page and try again", "error", "json");
             $serviceCode = $data['id'];
             $broker = $data['broker'] ?? "daisysms";
             $noType = $data['type'] ?? "short_term";
-            $service = $this->getServices($broker, $noType, $serviceCode);
+            $service = $this->getServices($broker, $noType, $serviceCode, countryID: $data['countryCode']);
             if(!is_array($service) ||count($service) == 0) {
                 return $this->message("Service(s) not available.", "error", 'json');
             }
@@ -79,13 +110,13 @@
             ];
             if(!$this->quick_insert("orders", $order)) return $this->message("Unable to make order", "error", "json");
             if(!$this->credit_debit($userID, $valuedPrice, "balance", "debit", "orders", $order['ID'])) return $this->message("Error charging your account", "error", "json");
-            $rentNumber = $this->rentNumber($serviceCode, $cost, $broker);
+            $rentNumber = $this->rentNumber($serviceCode, $cost, $broker, $data['countryCode'] ?? null);
             if(!is_array($rentNumber) || !isset($rentNumber['ID']) || !isset($rentNumber['ACCESS_NUMBER'])) {
                 $this->credit_debit($userID, $valuedPrice, "balance", "credit", "orders-refrund", $order['ID']);
                 $this->delete("orders", "ID = ?", [$orderID]);
                 return $rentNumber;
             }
-            if($broker == "daisysms") {
+            if($broker == "daisysms" || $broker == "sms_activation") {
                 $rentNumber['expiration'] = ((int)$this->get_settings('rental_number_expire_time') * 60);
             }
 
@@ -124,10 +155,9 @@
             return ($expirationDateTime > $currentDateTime) ? $seconds : -$seconds;
         }
 
-        function getFutureDateTime($seconds) {
+        function getFutureDateTime($seconds, $isMin = false) {
             // Convert seconds to minutes
-            $minutes = $seconds / 60;
-        
+            if(!$isMin) $minutes = $seconds / 60;
             // Get the current date and time
             $currentDateTime = new DateTime();
         
@@ -153,26 +183,45 @@
             if(!is_array($order)) return;
             if($order['order_type'] != 'rentals' || $order['accountID'] == "") return;
             $isExpired = $this->numberExpired($order['expire_date']);
-            if(!$isExpired) $this->requestCodeNumber($order['accountID']); 
-            if($isExpired && (int)$order['status'] == 1) $this->makeNumberAsDone($order['accountID']);
+            if(!$isExpired && $order['broker_name'] == "daisysms") $this->requestCodeNumber($order['accountID']); 
+            if(!$isExpired && $order['broker_name'] == "anosim") $this->anosimRequestCodeNumber($order['accountID']); 
+            if(!$isExpired && $order['broker_name'] == "sms_activation") $this->smsActivationrequestCodeNumber($order['accountID']); 
+            if($isExpired == true && (int)$order['status'] == 1) {
+                $this->closeRental($order['userID'], $order['ID'], 0, $order);
+            }
             if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
                 $this->refundOrder($orderID);
             }
             return $this->getall("number_codes", "orderID = ? ORDER BY date desc", [$order['accountID']], fetch: "all");
         }
 
-        function closeRental($userID, $orderID) {
-            $order = $this->getall("orders", "ID = ? and userID = ?", [$orderID, $userID]);
+        function closeRental($userID, $orderID, $status = 2, $order = null) {
+            if($order == null) $order = $this->getall("orders", "ID = ? and userID = ?", [$orderID, $userID]);
             if(!is_array($order)) return;
             if($order['order_type'] != 'rentals' || $order['accountID'] == "") return;
+            $marked = false;
             if($order['broker_name'] == "nonvoipusnumber") {
-                $this->nonRejectNumber($order['serviceCode'], $order['type'], $order['loginIDs'], $order['accountID']);
+                $marked = $this->nonRejectNumber($order['serviceCode'], $order['type'], $order['loginIDs'], $order['accountID']);
+            }else{
+                $this->getNumberCode($orderID);
             }
             if($order['broker_name'] == "daisysms") {
-                $this->makeNumberAsDone($order['accountID'], 2);
+                $marked = true;
+                if($this->makeNumberAsDone($order['accountID']) == false) $marked = false;
+            }
+            if($order['broker_name'] == "sms_activation") {
+                $marked = true;
+                if($this->smsActivationCancel($order['accountID']) == false) $marked = false;
+            }
+            if($order['broker_name'] == "anosim") {
+               $marked = $this->anosimCancel($order['accountID']);
             }
            
-            if($this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
+            $broker_name = $order['broker_name'];
+            if($marked == true || $status == 0) {
+                $this->update("orders", ["status"=>$status], "ID = '$orderID' and broker_name = '$broker_name'");
+            }
+            if($marked && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
                 $this->refundOrder($orderID);
             }
         }
@@ -195,7 +244,7 @@
         }
 
 
-        protected function rentNumber($serviceCode, $cost, $broker = "daisysms") {
+        protected function rentNumber($serviceCode, $cost, $broker = "daisysms", $countryCode = "") {
             // first check the balance
             if($broker == "daisysms") {
                 $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getNumber&service=$serviceCode&max_price=$cost";
@@ -204,6 +253,14 @@
                     return $this->message("Int Error: unable to get number.", "error", "json");
                 }
                 return $this->handleRentailException($result);
+            }
+
+            if($broker == "sms_activation") {
+                $result = $this->smsActivationGetNumber($serviceCode, $countryCode);
+                if($result == null) {
+                    return $this->message("Int Error: unable to get number.", "error", "json");
+                }
+                return $result;
             }
 
             if($broker == "nonvoipusnumber") {
@@ -222,6 +279,10 @@
                     // var_dump("message 0:", ($message));
                     return ["ID"=>$message['order_id'],"ACCESS_NUMBER"=>$message['number'], "expiration"=>($message['expiration'] ?? ""), "expire_date"=>($message['expires'] ?? "")];
                 }
+            }
+
+            if($broker == "anosim") {
+                return $this->anosimRentNumber($serviceCode);
             }
         }
 
@@ -249,17 +310,20 @@
             return ;
         }
 
-        protected function newCode($id, $code) {
+        protected function newCode($id, $code, $sender="", $number = "") {
             if($this->getall("number_codes", "orderID = ? and NumberCode = ?", [$id, $code])) return ;
-            $insert = ["orderID"=>$id, "NumberCode"=>$code];
+            $insert = ["orderID"=>$id, "phone_number"=>$number, "NumberCode"=>$code, "sender"=>$sender];
             if($this->quick_insert("number_codes", $insert)) return true;
             return false; 
         }
 
         protected function makeNumberAsDone($id, $status = 0) {
             $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=setStatus&id=$id&status=8";
-            $this->api_call($url, isRaw: true);
-            $this->update("orders", ["status"=>$status], "accountID = '$id'");
+            $request = $this->api_call($url, isRaw: true);
+            if($request == "EARLY_CANCEL_DENIED" || $request == "CANNOT_BEFORE_2_MIN") {
+                $this->message("You can not cancel this number at the moment", "error");
+                return false;
+            }
             return $this->message("Number status updated.", "success", "json");
         }
 
@@ -285,10 +349,10 @@
             if($results[0] == "STATUS_CANCEL") return ["serviceCode"=>"STATUS_CANCEL"];
             // booking numbers errors handlers
             if($results[0] == "ACCESS_NUMBER") return ["ID"=>$results[1],"ACCESS_NUMBER"=>$results[2]];
-            if($results[0] == "MAX_PRICE_EXCEEDED") return $this->message("Please refresh this page and try again.", "error", "json");
+            if($results[0] == "MAX_PRICE_EXCEEDED" || $results[0] = "WRONG_MAX_PRICE") return $this->message("Please refresh this page and try again.", "error", "json");
             if($results[0] == "NO_NUMBERS") return $this->message("No numbers available for this service at the moment.", "error", "json");
             if($results[0] == "TOO_MANY_ACTIVE_RENTALS") return $this->message("We have too many orders at the moment please try again in few mins.", "error", "json");
-            if($results[0] == "NO_MONEY") return $this->message("We can not take orders.", "error", "json");
+            if($results[0] == "NO_MONEY" || $results[0] == "NO_BALANCE") return $this->message("We can not take orders for this number type at the moment.", "error", "json");
             // mark number as done
             if($results[0] == "ACCESS_ACTIVATION") return ["status"=>true];
             if($results[0] == "NO_ACTIVATION") return $this->message("Number not found.", "error", "json");
@@ -300,7 +364,7 @@
             // echo "added_value_amount_".$broker."_".$noType;
             return round($this->convertDollarToNGN((float)$amount) + (float)$this->get_settings("added_value_amount_".$broker."_".$noType), 2);
         }
-        function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false) {
+        function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false, $countryID = null) {
             if($fromCookie) {
                 $data = $this->getCookieValue($type."service".$noType.($id ?? ''));
                 if($data != null) return $data;
@@ -326,6 +390,15 @@
                 $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
                 return $data;
             }
+
+            if($type == "anosim") {
+                $data = $this->anosimGetServices($countryID ?? null, id: $id ?? "");
+                return $data;
+            }
+            if($type == "sms_activation") {
+                $data = $this->smsActivationGetService($countryID, $id);
+                return $data;
+            }
            
         }
 
@@ -341,7 +414,7 @@
             $lastUpdated = $exchangeRate['date'];
             $rate = $exchangeRate['meta_value'];
             if((int)$this->datediffe($date, $lastUpdated, "m") >= (int)$this->get_settings("exchange_rate_update_interval") && $this->get_settings("fix_exchange_rate") != "yes") $rate = $this->setNewRate();
-            return $rate;
+            return $rate + 30;
         }
 
         protected function setNewRate(){
@@ -381,12 +454,7 @@
             $service = (array)$service[0];
             $data = ["service"=>$service['name'], "number"=>$number, "order_id"=>$orderID];
             $request = $this->nonAPiCall($this->non_end_points['reject'], $data);
-            // $request = json_decode('{
-            //         "status": "success",
-            //         "message": "The rental for paypal 16095170503 has been stopped and refunded."
-            //         }');
             if($request->status  == "success")  {
-                $this->update("orders", ["status"=>2], "accountID = '$orderID'");
                 return true;
             } 
             return false;
@@ -440,12 +508,167 @@
                 $data = $this->getall("orders", "loginIDs = ?", [$number]);
                 if(!is_array($data)) return ;
                 $id = $data['accountID'];
-                if($this->newCode($id, $code)) {
+                if($this->newCode($id, $code, $message['sender'] ?? "", $message['number'])) {
                     $this->nonResuse($data['serviceName'], $number);
                     return json_encode(["success"]);
                 }
             }
         }
 
+        // anosim api calls
+        protected function anosimGetServices($countryID = 98, $id = "") {
+            $services = $this->anosimCallApi("products", "&countryId=$countryID", $id);
+            if($id != "")  {
+                $services = (array)$services;
+                $services['name'] = $services['service'];
+                unset($services['service']);
+                return $services;
+            }
+            return $this->cleanAnosimData($services);
+        }
+
+         function anosimRentNumber($id) {
+            $request = $this->anosimCallApi("order", "&productId=$id&amount=1&providerId=0", method: "POST");
+            // if(!is_string($request) || trim($request) === '') return  $this->message("Number not available or Something went wrong. Try another network/service 1", "error", "json");
+            $request = (array)$request;
+            if(isset($request[0])) $request = $request[0];
+            if(!is_array($request) || !isset($request['orderBookings'])) return $this->message("Number not available or Something went wrong. Try another network/service 2", "error", "json");
+            $request = $request['orderBookings'][0];
+            if(!is_array($request)) $request = (array)$request;
+            if(isset($request[0])) $request = $request[0];
+            $info = [];
+            $info['expiration'] = (int)$request['durationInMinutes'] * 60;  
+            $info['ID'] = $request['id'];
+            $info['ACCESS_NUMBER'] = $request['number'];
+            $info['country'] = $request['country'];
+            return $info;
+
+        }
+        protected function anosimRequestCodeNumber($id = "") {
+            $request = $this->anosimCallApi("getsms", id: $id);
+            $request = (array)$request;
+            foreach($request as $message) {
+                $message = (array)$message;
+                if(!isset($message['messageText'])) continue;
+                $this->newCode($id, htmlspecialchars($message['messageText']), htmlspecialchars($message['messageSender'] ?? ""), htmlspecialchars($message['simCardNumber'] ?? ""));
+            }  
+        }
+
+         protected function anosimCancel($id) {
+            // https://anosim.net/api/v1/OrderBookings/59?apikey=XXX
+            $request = $this->anosimCallApi("orderbookings", id: $id,  method: "PATCH");
+            $request = (array)$request;
+            if(isset($request[0])) $request = $request[0];
+            if(isset($request['success']) && ($request['success'] == true || $request['success'] == "true")) {
+                $this->update("orders", ["status"=>2], "accountID = '$id' and broker_name = 'anosim'");
+                return true;
+            }
+            return false;
+        }
         
+        function anosmsCountries() {
+            return $this->anosimCallApi("countries");
+        }
+        function anosimCallApi($endpoint = "/", $data = "", $id = "", $method = "GET") {
+            $id = (!empty($id)) ? "/".$id : $id;
+            $url = $this->anosim_end_points["base_url"]
+                   .$this->anosim_end_points["$endpoint"]
+                   ."$id?apikey=".$this->get_settings("anosim_API")
+                   .$data;
+            return $this->api_call($url, method: $method);
+        }
+
+        function cleanAnosimData($jsonData) : array {
+            // Decode the JSON into a PHP array
+            // $data = json_decode($jsonData, true);
+            // $data = $jsonData;
+            // Use array_filter and array_map to process the data
+            $result = array_map(function($item) {
+                // Change 'service' key to 'name'
+                $item = (array)$item;
+                $item['name'] = $item['service'];
+                unset($item['service']);
+                return $item;
+            }, array_filter((array)$jsonData, function($item) {
+                $item = (array)$item;
+                if(!isset($item['rentalType'])) return $item;
+                // Filter only where rentalType is 'Activation'
+                return $item['rentalType'] === 'Activation';
+            }));
+        
+            return $result; // Return the processed array
+        }
+
+
+        // sms-activation-service api
+        function getElementById($id, $data) {
+            $filtered = array_filter($data, function($item) use ($id) {
+                return $item['id'] == $id;
+            });
+        
+            // Reset array keys and return the first matching element, or null if none found
+            return !empty($filtered) ? array_values($filtered)[0] : null;
+        }
+         function smsActivationGetService($countryCode, $service = null) {
+             $services = $this->smsActivationAPI("&action=getServicesAndCost&country=$countryCode&operator=any&service=$service&lang=en");
+            if(!is_array($services)) return [];
+            if($service != null) return (array)$services[0];
+            return $services;
+        }
+
+        protected function smsActivationrequestCodeNumber($id) {
+            $result = $this->smsActivationAPI("&action=getStatus&id=$id&lang=en", isRaw: true);
+            $result = $this->handleRentailException($result);
+            if(!is_array($result) || !isset($result['serviceCode'])) return ;
+            if($result['serviceCode'] == "STATUS_CANCEL") return ;
+            if($result['serviceCode'] == "STATUS_WAIT_CODE") return ;
+            $code = $result['serviceCode'];
+            if($this->newCode($id, $code)) return true;
+            return ;
+        }
+
+        protected function smsActivationCancel($id, $status = 8) {
+            $services = $this->smsActivationAPI("&action=setStatus&id=$id&status=$status&lang=en", isRaw: true);
+            if($services == "EARLY_CANCEL_DENIED" || $services == "CANNOT_BEFORE_2_MIN") {
+                $this->message("You can not cancel this number at the moment", "error");
+                return false;
+            }
+            return $this->message("Number status updated.", "success", "json");
+        }
+
+        // rent number
+        function smsActivationGetNumber($serviceID, $countryCode = null) {
+            $request = $this->smsActivationAPI("&action=getNumber&service=$serviceID&country=$countryCode&lang=en", isRaw: true);
+            return $this->handleRentailException($request);
+
+        }
+        function smsActivationCountries() {
+            $countries = $this->getCookieValue("smsActivationCountries");
+            if($countries!= "" && $countries != null) return unserialize(base64_decode($countries));
+            $countries = $this->smsActivationAPI("&action=getCountryAndOperators&lang=en");
+            $this->setCookieValue("smsActivationCountries", base64_encode(serialize($countries)));
+            return (array)$countries;
+        }
+
+         function smsActivationAPI($params, $method = "GET", $isRaw = false) {
+            
+            $url = $this->sms_end_points['base_url']."?api_key=".$this->get_settings("sms_activation_API").$params;
+            return $this->api_call($url, method: $method, isRaw: $isRaw);
+         }
+
+         function getCountryCode($countryName) {
+                        // Read the JSON file
+                $jsonFile = file_get_contents('countries/countries.json');
+
+                // Decode the JSON data into an associative array
+                $countries = json_decode($jsonFile, true);
+
+                // Loop through the array to find the country by name
+                foreach ($countries as $country) {
+                    if (strtolower($country['name']) == strtolower($countryName)) {
+                        return $country['code']; // Return the country code if found
+                    }
+                }
+                return null; // Return null if the country name is not found
+         }
     }

@@ -16,5 +16,6 @@
 <script src="dist/js/app-style-switcher.js"></script>
 <script src="dist/js/sidebarmenu.js"></script>
 <script src="dist/js/custom.js?n=2"></script>
+<script src="dist/js/my.js?n=1184747"></script>
+<script src="countries/script.js?n=999"></script>
 <?php  require_once "include/ini-footer.php"; ?>
-<script src="dist/js/my.js?n=0093736"></script>

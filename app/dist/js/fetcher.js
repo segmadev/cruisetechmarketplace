@@ -129,7 +129,11 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
     // } else {
     //   displayHere.innerHTML += response;
     // }
-    (isReplace == "false") ? document.getElementById(displayId).innerHTML += response : document.getElementById(displayId).innerHTML = response;
+    try {
+      (isReplace == "false") ? document.getElementById(displayId).innerHTML += response : document.getElementById(displayId).innerHTML = response;
+    } catch (error) {
+      
+    }
 
     start =  parseInt(start) + parseInt(limit);
     setTimeout(function() {

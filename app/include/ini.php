@@ -77,3 +77,4 @@ $form_trans = [
 ];
 // $d->create_table("transactions", $form_trans);
 $script[] = "live_chat";
+$script[] = "modal";

@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center">
                 <h6 class="modal-title" id="myModalLabel">
-                    Medium Modal
+                    Title
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -48,96 +48,161 @@
 
 
 <script>
-    function modalcontent(id) {
-        var value = document.getElementById(id);
-        document.getElementById("modal-body").innerHTML = "Getting data...";
-        title = value.dataset.title;
-        link = value.dataset.url;
-        title += ' | <span class="btn btn-tool fs-3 text-primary" id="' + id + '" data-url="' + link + '" data-id="' + id + '" data-title="' + title + '" onclick="modalcontent(\'' + id + '\')"> <li class="nav-icon fas fa-sync"></li> Reload</span>';
-        id = value.dataset.id;
-        modaltitle = document.getElementById('myModalLabel').innerHTML = title;
-        $.ajax({
-            type: 'GET',
-            url: link,
-            data: {},
-            success: function(response) {
-                // confirm(response);
-                var body = document.getElementById("modal-body");
-                body.innerHTML = response;
-                const elements = body.querySelectorAll('#foo');
-                if (typeof initializeCountdowns === "function") { 
-                    initializeCountdowns();
-                }
-                if (typeof loadFetchData === "function") { 
-                    document.querySelectorAll("[data-load]").forEach(loaddata => {
-                        loadFetchData(loaddata);
-                    });
-                }
-                $i = 0;
-                elements.forEach(element => {
-                    element.addEventListener("submit", event => {
-                        // Prevent default posting of form - put here to work in case of errors
-                        event.preventDefault();
-
-                        // Abort any pending request
-                        if (request) {
-                            request.abort();
-                        }
-                        // setup some local variables
-                        var $form = $(event.target);
-                        var fd = new FormData(element);
-                        var action = 'passer';
-                        if (window.location.href != $form[0].action) {
-                            action = $form[0].action;
-                        }
-                        // Let's select and cache all the fields
-                        var $inputs = $form.find("input, select, button, textarea");
-
-                        // Serialize the data in the form
-                        var serializedData = $form.serialize();
-
-                        // Let's disable the inputs for the duration of the Ajax request.
-                        // Note: we disable elements AFTER the form data has been serialized.
-                        // Disabled form elements will not be serialized.
-                        $inputs.prop("disabled", true);
-                        const params = new URLSearchParams(serializedData);
-
-                        // Fire off the request to /form.php
-
-
-                        if (params.has("confirm")) {
-                            swal({
-                                title: "Attention!",
-                                text: params.get("confirm"),
-                                icon: "warning",
-
-                                buttons: true,
-                                dangerMode: true,
-                            }).then((willDelete) => {
-                                if (willDelete) {
-                                    runjax(request, event, $inputs, fd, action);
-                                } else {
-                                    //   close form
-                                }
-                            });
-                        } else {
-                            runjax(request, event, $inputs, fd, action);
-                        }
-
-                        // Callback handler that will be called on success
-
-                        // request.always(function () {
-                        //     // Reenable the inputs
-                        //     $inputs.prop("disabled", false);
-                        // });
-
-                    });
-                    $i++;
-                });
-
-            }
+    modalelements = document.querySelectorAll('[data-url]');
+    iniModal(modalelements)
+    function iniModal(modalelements){
+        modalelements.forEach(element => { 
+            element.style.cursor = 'pointer';
+            element.addEventListener('click', function(e){
+            // e.preventDefault();
+            modalcontentv2(element);
+        })});
+    }
+    
+    function modalcontentv2(value) {
+    // Get the modal body and link from the data attributes
+    let link = value.dataset.url;
+    let scrollToTop = false;
+    contentDivId = link.startsWith("modal") ? (value.dataset.content || "modal-body") : (value.dataset.content || "maincontentdiv");
+    let contentDiv = document.getElementById(contentDivId);
+    // Check if the content ID is specified in the data attributes
+    if (link.startsWith("modal")) {
+        const title = value.dataset.title;
+        const reloadButton = document.createElement('span');
+        reloadButton.className = "btn btn-tool fs-3 text-primary";
+        reloadButton.innerHTML = '<li class="nav-icon fas fa-sync"></li> Reload';
+        reloadButton.addEventListener('click', () => modalcontentv2(value));
+        // Set the modal title
+        const modaltitle = document.getElementById('myModalLabel');
+        modaltitle.innerHTML = `${title} | `;
+        modaltitle.appendChild(reloadButton);
+    } 
+    if (link.startsWith("index")) {
+        scrollToTop = true;
+        const sidebarLinks = document.querySelectorAll('.sidebar-item.selected');
+        console.log(sidebarLinks);
+        sidebarLinks.forEach(activelink => {
+            activelink.classList.remove('selected');
         });
-        // document.getElementById("modal-body").innerHTML='<object type="text/html" data="'+link+'" style="width: 100%!important; overflow: auto!important; height: 60vh;"></object>';
+        window.history.replaceState(null, null, link);
+        link = link.replace("index", "modal");
+    }
+    contentDiv.innerHTML = ` <div class="loading-spinner-container">
+        <div class="spinner"></div>
+      </div>`;
+    $.ajax({
+        type: 'GET',
+        url: link,
+        data: {},
+        success: function(response) {
+            contentDiv.innerHTML = response;
+            if(scrollToTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+            // handleDynamicScripts(contentDiv)
+            try {
 
+                const mainBody = document.getElementById('main-wrapper');
+                const button = document.getElementById('sidebarCollapse');
+                
+                if (mainBody && button && mainBody.classList.contains('show-sidebar')) {
+                    button.click();
+                }
+            } catch (error) {
+                // Silently catch any errors to prevent them from being logged
+            }
+
+
+            // Initialize countdowns if function exists
+            if (typeof initializeCountdowns === "function") {
+                initializeCountdowns();
+            }
+
+            // Load fetch data if function exists
+            if (typeof loadFetchData === "function") {
+                document.querySelectorAll("[data-load]").forEach(loaddata => {
+                    loadFetchData(loaddata);
+                });
+            }
+
+            if (typeof jsInis === "function") {
+                jsInis(contentDiv);
+            }
+            // Initialize forms and modal elements
+            document.querySelectorAll('#foo').forEach(element => iniForm(element));
+            const modalelements = contentDiv.querySelectorAll('[data-url]');
+            iniModal(modalelements);
+        }
+    });
+}
+
+
+async function handleDynamicScripts(targetElement) {
+  // Function to load jQuery if not already present
+  async function includeJQuery() {
+    if (window.jQuery) {
+      // jQuery is already loaded
+      return;
+    }
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://code.jquery.com/jquery-3.6.0.min.js'; // Update jQuery version as needed
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load jQuery'));
+      document.head.appendChild(script);
+    });
+  }
+
+  // Ensure jQuery is included
+  try {
+    await includeJQuery();
+
+    // Insert the HTML content into the target element
+    // const targetElement = document.getElementById(targetElementId);
+    // targetElement.innerHTML = htmlContent;
+
+    // Handle external scripts
+    const externalScripts = targetElement.querySelectorAll('script[src]');
+    for (const script of externalScripts) {
+      const newScript = document.createElement('script');
+      newScript.src = script.src;
+      newScript.onload = () => {
+        // Remove the old script tag after loading
+        script.remove();
+      };
+      newScript.onerror = () => {
+        console.error('Failed to load external script:', script.src);
+      };
+      document.body.appendChild(newScript);
+    }
+
+    // Handle inline scripts
+    const inlineScripts = targetElement.querySelectorAll('script:not([src])');
+    for (const script of inlineScripts) {
+      const newScript = document.createElement('script');
+      newScript.textContent = script.textContent;
+      newScript.onload = () => {
+        // Optionally handle script execution completion
+        console.log('Inline script executed.');
+      };
+      newScript.onerror = () => {
+        console.error('Failed to execute inline script.');
+      };
+      document.body.appendChild(newScript);
+      script.remove(); // Remove the old inline script tag
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+
+
+
+
+
+
+    function modalcontent(id) {
+        return null;
     }
 </script>

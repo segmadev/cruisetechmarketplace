@@ -1049,8 +1049,36 @@ function imageviwer(url) {
         image.src = url;
     }
 }
-// search items
-document.querySelectorAll('[data-search-list]').forEach(function(input) {
+
+
+
+function confirmRedirect(message = "Are you sure you want to leave this page?") {
+    const userConfirmed = confirm(message);
+    return userConfirmed; // If the user clicks "OK", return true to proceed with the link, otherwise return false.
+}
+
+
+function setNavActive(t = null) {
+    t = t ?? window.location.pathname;
+    t.split("index");
+    let a;
+    t === "/" ? a = "home" : a = t.replace("index", "");
+    let e = document.getElementById(a);
+    e && (e.classList.remove("text-neutral-600", ":text-neutral-400",
+            "hover:text-neutral-500", ":hover:text-neutral-500"), e.classList
+        .add("text-orange-400", ":text-orange-300"), e.setAttribute(
+            "aria-current", "page"))
+}
+
+function jsInis(elements) {
+    newelements = elements.querySelectorAll('[data-search-list]');
+    iniSearch(newelements);
+}
+
+function iniSearch(elements = null) {
+    // search items
+    let listelements = elements || document.querySelectorAll('[data-search-list]');
+    listelements.forEach(function(input) {
     input.addEventListener('input', function() {
         let filter = this.value.toLowerCase();
         let listId = this.getAttribute('data-search-list');
@@ -1078,9 +1106,6 @@ document.querySelectorAll('[data-search-list]').forEach(function(input) {
         });
     });
 });
-
-
-function confirmRedirect(message = "Are you sure you want to leave this page?") {
-    const userConfirmed = confirm(message);
-    return userConfirmed; // If the user clicks "OK", return true to proceed with the link, otherwise return false.
 }
+
+iniSearch();

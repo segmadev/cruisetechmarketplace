@@ -2,7 +2,6 @@
     if(count($rental_services) == 0 || $rental_services == "") {
         echo $c->empty_page("No Services Available at the moment.");
     }else{
-        $script[] = "sweetalert";
         // $important = [];
         $likeds = $r->getLikes($userID);
         $important_loop = $likeds;

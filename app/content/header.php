@@ -87,7 +87,7 @@ require_once "include/ini-session.php";
             <!-- Dashboard -->
             <!-- =================== -->
             <li class="sidebar-item">
-              <a class="sidebar-link" href="index" aria-expanded="false">
+              <a class="sidebar-link" data-url="index" aria-expanded="false">
                 <span>
                   <i class="ti ti-dashboard"></i>
                 </span>
@@ -101,7 +101,7 @@ require_once "include/ini-session.php";
             <!-- ============================= -->
             
             <li class="sidebar-item">
-              <a class="sidebar-link" href="index?p=rentals" aria-expanded="false">
+              <a class="sidebar-link" data-url="index?p=rentals" aria-expanded="false">
                 <span>
                   <i class="ti ti-phone"></i>
                 </span>
@@ -109,7 +109,7 @@ require_once "include/ini-session.php";
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="index?p=orders&type=account" aria-expanded="false">
+              <a class="sidebar-link" data-url="index?p=orders&type=account" aria-expanded="false">
                 <span>
                   <i class="ti ti-social"></i>
                 </span>
@@ -134,7 +134,7 @@ require_once "include/ini-session.php";
 
             
             <li class="sidebar-item">
-              <a class="sidebar-link" href="index?p=deposit" aria-expanded="false">
+              <a class="sidebar-link" data-url="index?p=deposit" aria-expanded="false">
                 <span>
                   <i class="ti ti-currency-dollar"></i>
                 </span>
@@ -143,7 +143,7 @@ require_once "include/ini-session.php";
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="index?p=deposit&action=transactions" aria-expanded="false">
+              <a class="sidebar-link" data-url="index?p=deposit&action=transactions" aria-expanded="false">
                 <span>
                   <i class="ti ti-list "></i>
                 </span>
@@ -250,5 +250,5 @@ require_once "include/ini-session.php";
         </nav>
       </header>
       <!--  Header End -->
-      <div class="container-fluid px-2">
+      <div class="container-fluid px-2" id="maincontentdiv">
         

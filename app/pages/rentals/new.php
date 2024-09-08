@@ -1,8 +1,90 @@
+    <?php         
+        $script[] = "sweetalert"; 
+        $script[] = "select2"; 
+    
+    ?>
+        <link rel="stylesheet" href="dist/libs/select2/dist/css/select2.min.css">
+        <style>
+.dropdown-container {
+    position: relative;
+    max-width: 300px;
+    margin-left: 10px;
+}
+
+.dropdown-header {
+    /* background-color: #f9f9f9; */
+    padding: 5px;
+    /* border: 1px solid #ccc; */
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+}
+
+.dropdown-header::after {
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.dropdown-list {
+    position: absolute;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: white;
+    transition: max-height 0.1s ease;
+    z-index: 100;
+}
+
+.dropdown-list.active {
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#search {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+}
+
+.country-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.country-item:hover {
+    background-color: #f0f0f0;
+}
+
+.flag {
+    width: 30px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.country-name {
+    font-size: 14px;
+}
+
+/* Responsive for smaller devices */
+@media (max-width: 768px) {
+    .dropdown-container {
+        /* width: 100%; */
+    }
+}
+        </style>
     <div class="card bg-white p-0">
         <div class="card-header">
                 <h3>SMS Verifications </h3>
-                <p class="m-0">Get USA phone number to receive OTP for <a href="index?p=rentals&network=1&action=new">short term</a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
-                <p class="text-muted m-0">To view rented numbers <a href="index?p=rentals" class="btn-sm">click here</a>.</p>
+                <p class="m-0">Get USA phone number to receive OTP for <a data-url="index?p=rentals&network=1&action=new">short term</a> or <a data-url="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
+                <p class="text-muted m-0">To view rented numbers <a data-url="index?p=rentals" class="btn-sm">click here</a>.</p>
                 <form class="position-relative">
                     <input type="text" 
                     data-search-list="search-items-details" 
@@ -23,8 +105,10 @@
                                 <?php if($number_type == "short_term"){ echo 'Short Term Number '.$network; }else{ echo " Short term Numbers"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term Number 2</a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Short Term Number 3 (other Countries)</a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Short Term Number 4 (other Countries)</a></li>
                             </ul>
                         </div>
                    
@@ -33,15 +117,53 @@
                             <i class="ti ti-phone"></i> <?php if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; }else{ echo "Long Term Number"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">Long Term Number <span class="text-primary">(3days)</span> </a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=long_term">Long Term Number <span class="text-primary">(30days)</span></a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&type=long_term">LTR (Network 2) <span class="text-primary">(30days)</span></a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&action=new&type=3days">Long Term Number (USA) <span class="text-primary">(3days)</span> </a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&action=new&type=long_term">Long Term Number (USA) <span class="text-primary">(30days)</span></a></li>
+                                <li><a class="dropdown-item" data-url="index?p=rentals&network=2&action=new&type=long_term">LTR (Network 2) (USA) <span class="text-primary">(30days)</span></a></li>
                             </ul>
                         </div>
                     </div>
+
+                        <?php if($countries && is_array($countries)){ ?>
+
+                            <div class="dropdown-container">
+                                <div class="dropdown-header btn btn-sm btn-light-primary" onclick="toggleDropdown()">
+                                <?php if(isset($_GET['name']) && $_GET['name'] != "") {
+                                     echo '<img src="'.($r->getCountryCode($_GET['name'])  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($_GET['name'])).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" class="flag">';
+                                     echo '<span class="country-name">' . $_GET['name'] . '</span>';
+                                     
+                                }else{
+                                    echo "Select a country";
+                                }    
+                                ?>
+                                </div>
+                                <div class="dropdown-list" id="country-list">
+                                    <input type="text" id="search" class="form-control" placeholder="Search for a country..." onkeyup="filterCountries()">
+                                    <div class="country-items">
+                                        <?php
+                                        foreach ($countries as $singleCountry) {
+                                            $singleCountry = (array)$singleCountry;
+                                            $countryName = $singleCountry['name'] ?? $singleCountry['country'];
+                                            $code = $r->getCountryCode($countryName);
+                                            $countryID = $singleCountry['id'] ?? $singleCountry['ID'];
+                                            $flagUrl = "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24";
+                                            echo '<a data-url="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item" onclick="selectCountry(\'' . $countryName . '\')">';
+                                            echo '<img src="'.($r->getCountryCode($singleCountry['name'])  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($singleCountry['name'])).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag" data-code="' . $code . '">';
+                                            echo '<span class="country-name">' . $countryName . '</span>';
+                                            echo '</a>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } ?>
                 </div>
+
+               
+
                 <?php 
-                    if($number_type == "short_term" && $network == 1) require_once "pages/rentals/short.php"; 
+                    if($number_type == "short_term" && ($network == 3 || $network == 4) && ($broker == "anosim" || $broker == "sms_activation")) require_once "pages/rentals/anosim.php"; 
+                    if($number_type == "short_term" && $network == 1 && $broker == "daisysms") require_once "pages/rentals/short.php"; 
                     if($number_type == "long_term" || $number_type == '3days' || $network == 2) require_once "pages/rentals/long.php";
                 ?>
                 <!-- table end -->

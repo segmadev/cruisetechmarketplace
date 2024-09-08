@@ -2,9 +2,11 @@
     $script[] = "modal";
     $script[] = "fetcher";
     $number_type = htmlspecialchars($_GET['type'] ?? "short_term");
+    $countryCode = htmlspecialchars($_GET['countryCode'] ?? 98);
+    $countries  = null;
     $network = 1;
-    // var_dump($r->nonResuse("GMail", "12259075113"));
-    // exit();
+    var_dump($r->get_settings("anosim_API"));
+    exit();
     if(isset($_GET['network'])) $network = htmlspecialchars((int)$_GET['network'] ?? 1);
     if($number_type == "short_term" && $network == 1) {
         $broker = "daisysms";
@@ -13,6 +15,16 @@
     if($number_type == "short_term" && $network == 2) {
         $broker = "nonvoipusnumber";
         $rental_services = $r->nonGetservices("short_term");
+    }
+    if($number_type == "short_term" && $network == 3 && $countryCode != "") {
+        $broker = "anosim";
+        $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
+        $countries = (array)$r->anosmsCountries();
+    }
+    if($number_type == "short_term" && $network == 4 && $countryCode != "") {
+        $broker = "sms_activation";
+        $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
+        $countries = $r->smsActivationCountries();
     }
     if($number_type == "long_term") {
         $broker = "nonvoipusnumber";
