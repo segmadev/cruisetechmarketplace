@@ -189,13 +189,11 @@
            
             if($isExpired == true && (int)$order['status'] == 1) {
                 $this->closeRental($order['userID'], $order['ID'], 0);
-                var_dump($isExpired);
-                exit();
             }
             
-            // if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
-            //     $this->refundOrder($orderID);
-            // }
+            if($isExpired && $this->getall("number_codes", "orderID = ?", [$order['accountID']], fetch: "") <= 0) {
+                $this->refundOrder($orderID);
+            }
             return $this->getall("number_codes", "orderID = ? ORDER BY date desc", [$order['accountID']], fetch: "all");
         }
 

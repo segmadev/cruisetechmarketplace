@@ -22,7 +22,7 @@ if($rent['expire_date'] != "" && $rent['expire_date'] != "0000-00-00 00:00:00") 
     <div class='d-flex gap-2'>
         <a href="index?p=rentals&action=new" class="btn btn-sm btn-primary"><i class="ti ti-phone"></i> Get a new number</a>
         <?php if((int)$rent['status'] == 1) { ?>
-            <a onclick="return confirmRedirect('Are you sure you want to close this number?')" href="index?p=rentals&action=view&&close=true&orderID=<?= $rent['ID'] ?>&accountID=<?= $rent['accountID'] ?>" class="btn btn-sm btn-dark"><i class="ti ti-danger"></i> Close Number</a>
+            <a onclick="return confirmRedirect('Are you sure you want to close this number?')" href="index?p=rentals&action=view&close=true&orderID=<?= $rent['ID'] ?>&accountID=<?= $rent['accountID'] ?>" class="btn btn-sm btn-dark"><i class="ti ti-danger"></i> Close Number</a>
             <?php } ?>
             <a href="index?p=rentals" class="btn btn-sm btn-outline-primary"><i class="ti ti-eye"></i> View order numbers</a>
         </div>
