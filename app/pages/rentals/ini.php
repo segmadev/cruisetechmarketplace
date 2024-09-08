@@ -5,8 +5,6 @@
     $countryCode = htmlspecialchars($_GET['countryCode'] ?? 98);
     $countries  = null;
     $network = 1;
-    var_dump($r->get_settings("anosim_API"));
-    exit();
     if(isset($_GET['network'])) $network = htmlspecialchars((int)$_GET['network'] ?? 1);
     if($number_type == "short_term" && $network == 1) {
         $broker = "daisysms";
