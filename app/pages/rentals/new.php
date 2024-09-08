@@ -83,8 +83,8 @@
     <div class="card bg-white p-0">
         <div class="card-header">
                 <h3>SMS Verifications </h3>
-                <p class="m-0">Get phone number to receive OTP for <a data-url="index?p=rentals&network=1&action=new">short term</a> or <a data-url="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
-                <p class="text-muted m-0">To view rented numbers <a data-url="index?p=rentals" class="btn-sm">click here</a>.</p>
+                <p class="m-0">Get phone number to receive OTP for <a href="index?p=rentals&network=1&action=new">short term</a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
+                <p class="text-muted m-0">To view rented numbers <a href="index?p=rentals" class="btn-sm">click here</a>.</p>
                 <form class="position-relative">
                     <input type="text" 
                     data-search-list="search-items-details" 
@@ -106,9 +106,9 @@
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
-                                <li><a class="dropdown-item" data-url="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
-                                <li><a class="dropdown-item" data-url="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Short Term Number 3 (other Countries)</a></li>
-                                <li><a class="dropdown-item" data-url="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Short Term Number 4 (other Countries)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Short Term Number 3 (other Countries)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Short Term Number 4 (other Countries)</a></li>
                             </ul>
                         </div>
                    
@@ -119,7 +119,7 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">Long Term Number (USA) <span class="text-primary">(3days)</span> </a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new&type=long_term">Long Term Number (USA) <span class="text-primary">(30days)</span></a></li>
-                                <li><a class="dropdown-item" data-url="index?p=rentals&network=2&action=new&type=long_term">LTR (Network 2) (USA) <span class="text-primary">(30days)</span></a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&type=long_term">LTR (Network 2) (USA) <span class="text-primary">(30days)</span></a></li>
                             </ul>
                         </div>
                     </div>
@@ -148,7 +148,7 @@
                                             $code = $r->getCountryCode($countryName);
                                             $countryID = $singleCountry['id'] ?? $singleCountry['ID'];
                                             $flagUrl = "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24";
-                                            echo '<a data-url="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item" onclick="selectCountry(\'' . $countryName . '\')">';
+                                            echo '<a href="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item" onclick="selectCountry(\'' . $countryName . '\')">';
                                             echo '<img src="'.($r->getCountryCode($countryName)  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($countryName)).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag">';
                                             echo '<span class="country-name">' . $countryName . '</span>';
                                             echo '</a>';
