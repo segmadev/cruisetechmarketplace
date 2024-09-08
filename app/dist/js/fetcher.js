@@ -136,9 +136,13 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
     }
 
     start =  parseInt(start) + parseInt(limit);
-    setTimeout(function() {
+    if(document.getElementById(displayId)){
+      console.log("True gt here");
+      setTimeout(function() {
         fetchData(what, displayId, limit, start, path, isReplace);
     }, parseInt(interval)); 
+    }
+    
   });
 }
 

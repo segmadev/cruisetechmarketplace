@@ -47,28 +47,28 @@
 
 <footer class="d-flex justify-content-center bottom-nav" style="margin-top: 50px">
   <div class="col-11 shadow d-flex justify-content-around p-1 rounded botton-navs bg-light-primary">
-    <a href="index" class="btn btn-sm p-2 m-0 <?php if ($page == "dashboard") {
+    <a data-url="index" class="btn btn-sm p-2 m-0 <?php if ($page == "dashboard") {
                                   echo "btn-primary";
                                 } ?>"><i class='ti ti-home fs-6'></i>
                               <h6 class="p-0 m-0 fs-2">Home</h6>    
                               </a>
 
-                              <a href="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action != "list") {
+                              <a data-url="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action != "list") {
                                   echo "btn-primary";
                                 } ?>"><i class='ti ti-phone fs-6'></i>
                               <h6 class="p-0 m-0 fs-2">Number</h6>    
                               </a>
-                              <a href="index?p=rentals" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action == "list") {
+                              <a data-url="index?p=rentals" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action == "list") {
                                   echo "btn-primary";
                                 } ?>"><i class='ti ti-inbox fs-6'></i>
                               <h6 class="p-0 m-0 fs-2">Active No.</h6>    
                               </a>
-    <a href="index?p=orders&type=account" class="btn btn-sm <?php if ($page == "orders") {
+    <a data-url="index?p=orders&type=account" class="btn btn-sm <?php if ($page == "orders") {
                                               echo "btn-primary";
                                             } ?>"><i class='fs-6 ti ti-social'></i>
                                           <h6 class="p-0 m-0 fs-2">Accounts</h6>  
                                           </a>
-    <a href="index?p=deposit" class="btn btn-sm <?php if ($page == "deposit") {
+    <a data-url="index?p=deposit" class="btn btn-sm <?php if ($page == "deposit") {
                                           echo "btn-primary";
                                         } ?>"><i class='fs-6 ti ti-wallet'></i>
                                       <h6 class="p-0 m-0 fs-2">Wallet</h6>    

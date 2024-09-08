@@ -24,7 +24,7 @@
     <script src="../dist/js/datatable/datatable-basic.init.js"></script>
 <?php } ?>
 <?php if (in_array("fetcher", $script)) { ?>
-    <script src="../dist/js/fetcher.js?n=109"></script>
+    <script src="../dist/js/fetcher.js?n=12209"></script>
 <?php } ?>
 <?php if(in_array('chat', $script)){ ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/plupload/3.1.5/plupload.full.min.js"></script>

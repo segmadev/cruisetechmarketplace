@@ -148,7 +148,7 @@
                                             $countryID = $singleCountry['id'] ?? $singleCountry['ID'];
                                             $flagUrl = "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24";
                                             echo '<a data-url="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item" onclick="selectCountry(\'' . $countryName . '\')">';
-                                            echo '<img src="'.($r->getCountryCode($singleCountry['name'])  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($singleCountry['name'])).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag" data-code="' . $code . '">';
+                                            echo '<img src="'.($r->getCountryCode($singleCountry['name'])  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($singleCountry['name'])).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag">';
                                             echo '<span class="country-name">' . $countryName . '</span>';
                                             echo '</a>';
                                         }
