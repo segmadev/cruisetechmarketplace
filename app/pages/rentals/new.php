@@ -23,8 +23,9 @@
 .dropdown-header::after {
     content: '▼';
     position: absolute;
-    right: 10px;
+    right: 7px;
     top: 50%;
+    font-size: 9px;
     transform: translateY(-50%);
 }
 
@@ -33,23 +34,25 @@
     width: 100%;
     max-height: 0;
     overflow: hidden;
-    border: 1px solid #ccc;
     background-color: white;
     transition: max-height 0.1s ease;
     z-index: 100;
 }
 
 .dropdown-list.active {
+    border: 1px solid #ccc;
     max-height: 300px;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-#search {
+.dropdown-container #search {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
     border-bottom: 1px solid #ccc;
+    position: sticky;
+    border-radius: 0px!important;
 }
 
 .country-item {
@@ -107,8 +110,8 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Short Term Number 3 (other Countries)</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Short Term Number 4 (other Countries)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Germany & Netherlands (Short Term)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Other Countries (Short Term)</a></li>
                             </ul>
                         </div>
                    
@@ -126,29 +129,29 @@
 
                         <?php if($countries && is_array($countries)){ ?>
 
-                            <div class="dropdown-container">
-                                <div class="dropdown-header btn btn-sm btn-light-primary" onclick="toggleDropdown()">
+                            <div class="dropdown-container mb-2">
+                                <div class="dropdown-header btn btn-sm btn-light-danger" onclick="toggleDropdown()">
                                 <?php if(isset($_GET['name']) && $_GET['name'] != "") {
                                      echo '<img src="'.($r->getCountryCode($_GET['name'])  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($_GET['name'])).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" class="flag">';
                                      echo '<span class="country-name">' . $_GET['name'] . '</span>';
-                                     
                                 }else{
                                     echo "Select a country";
                                 }    
                                 ?>
                                 </div>
                                 <div class="dropdown-list" id="country-list">
-                                    <input type="text" id="search" class="form-control" placeholder="Search for a country..." onkeyup="filterCountries()">
+                                    <input type="text" id="search" class="searchcountries form-control" placeholder="Search for a country..." onkeyup="filterCountries()">
                                     <div class="country-items">
                                         <?php
                                         foreach ($countries as $singleCountry) {
                                             $singleCountry = (array)$singleCountry;
                                             $countryName = $singleCountry['name'] ?? $singleCountry['country'];
-                                            if($countryName == "SouthAfrica") continue;
+                                            if($network == "3" && ($countryName != "Germany" && $countryName != "Netherlands")) continue;
+                                            if($network == "4" && $countryName == "Germany") continue;
                                             $code = $r->getCountryCode($countryName);
                                             $countryID = $singleCountry['id'] ?? $singleCountry['ID'];
                                             $flagUrl = "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24";
-                                            echo '<a href="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item" onclick="selectCountry(\'' . $countryName . '\')">';
+                                            echo '<a href="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item text-black" onclick="selectCountry(\'' . $countryName . '\')">';
                                             echo '<img src="'.($r->getCountryCode($countryName)  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($countryName)).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag">';
                                             echo '<span class="country-name">' . $countryName . '</span>';
                                             echo '</a>';
