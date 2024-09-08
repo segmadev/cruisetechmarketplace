@@ -53,7 +53,7 @@
                               <h6 class="p-0 m-0 fs-2">Home</h6>    
                               </a>
 
-                              <a data-url="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action != "list") {
+                              <a href="index?p=rentals&action=new" class="btn btn-sm p-2 m-0 <?php if ($page == "rentals" && $action != "list") {
                                   // echo "btn-primary";
                                 } ?>"><i class='ti ti-phone fs-6'></i>
                               <h6 class="p-0 m-0 fs-2">Number</h6>    

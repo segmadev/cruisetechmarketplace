@@ -105,7 +105,7 @@
                                 <?php if($number_type == "short_term"){ echo 'Short Term Number '.$network; }else{ echo " Short term Numbers"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" data-url="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
                                 <li><a class="dropdown-item" data-url="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
                                 <li><a class="dropdown-item" data-url="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Short Term Number 3 (other Countries)</a></li>
                                 <li><a class="dropdown-item" data-url="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Short Term Number 4 (other Countries)</a></li>
@@ -117,8 +117,8 @@
                             <i class="ti ti-phone"></i> <?php if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; }else{ echo "Long Term Number"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" data-url="index?p=rentals&action=new&type=3days">Long Term Number (USA) <span class="text-primary">(3days)</span> </a></li>
-                                <li><a class="dropdown-item" data-url="index?p=rentals&action=new&type=long_term">Long Term Number (USA) <span class="text-primary">(30days)</span></a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">Long Term Number (USA) <span class="text-primary">(3days)</span> </a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&type=long_term">Long Term Number (USA) <span class="text-primary">(30days)</span></a></li>
                                 <li><a class="dropdown-item" data-url="index?p=rentals&network=2&action=new&type=long_term">LTR (Network 2) (USA) <span class="text-primary">(30days)</span></a></li>
                             </ul>
                         </div>

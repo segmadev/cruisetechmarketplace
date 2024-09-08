@@ -54,7 +54,7 @@ $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
                     </p>
                   </nav>
                   <hr>
-                  <a data-url="index?p=rentals&action=new" class="btn btn-primary">Get Number.</a>
+                  <a href="index?p=rentals&action=new" class="btn btn-primary">Get Number.</a>
                 </div>
                 <div class="col-3">
                   <div class="text-center mb-n5">  

@@ -6,7 +6,7 @@
                     </p>
                   </nav>
                   <div>
-                  <a data-url="index?p=rentals&action=new" class="btn btn-primary">Get a Number.</a>
+                  <a href="index?p=rentals&action=new" class="btn btn-primary">Get a Number.</a>
                   </div>
 
 </div>
