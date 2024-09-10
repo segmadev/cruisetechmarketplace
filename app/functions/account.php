@@ -105,6 +105,7 @@ class Account extends user
     function buy_account($userID, $accountID, $qty, array $logins = []) {
         $account = $this->getall("account", "ID = ?", [$accountID]);
         $useCart = false;
+        $qty = (int)$qty;
         if(count($logins) > 0) { 
           $useCart = true;
           $qty = count($logins);
