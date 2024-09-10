@@ -367,7 +367,11 @@
         function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false, $countryID = null) {
             if($fromCookie) {
                 $data = $this->getCookieValue($type."service".$noType.($id ?? ''));
-                if($data != null) return $data;
+                var_dump($data);
+                if($data != null) {
+                    echo "got here";
+                    return $data;
+                }
             }
             if($type == "daisysms") {
                 $url = $this->base_url.$this->endpoints['getServices'];
@@ -379,9 +383,10 @@
                     $services = (array)$services['187'];
                 }
                 $this->setCookieValue($type."service".$noType.($id ?? ''), $services);
+                // exit();
                 return $services;
             }
-
+            
             if($type == "nonvoipusnumber") {
                 $data = $this->nonGetservices($noType, $id);
                 // var_dump($noType);
@@ -390,13 +395,15 @@
                 $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
                 return $data;
             }
-
+            
             if($type == "anosim") {
                 $data = $this->anosimGetServices($countryID ?? null, id: $id ?? "");
+                $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
                 return $data;
             }
             if($type == "sms_activation") {
                 $data = $this->smsActivationGetService($countryID, $id);
+                $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
                 return $data;
             }
            

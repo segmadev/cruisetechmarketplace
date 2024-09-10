@@ -93,15 +93,21 @@ if (!$account || $account == "") {
         if (currentValue > parseInt(<?= $a->get_num_of_login($account['ID']) ?>)) return;
         qtynumber.value = currentValue;
         document.getElementById("DisplayAmount").innerHTML = "<?= htmlspecialchars(currency ?? "N") ?>" + (parseInt(amount) * currentValue).toLocaleString('en-US');
+        document.getElementById("DisplayAmount").innerHTML += "<br><b>Quantity: "+qtynumber.value+"</b>";
     });
     minus.addEventListener("click", function () {
         currentValue = parseInt(qtynumber.value) - 1;
         if (currentValue <= 0) return;
         qtynumber.value = currentValue;
         document.getElementById("DisplayAmount").innerHTML = "<?= htmlspecialchars(currency ?? "N") ?>" + (parseInt(amount) * currentValue).toLocaleString('en-US');
+        document.getElementById("DisplayAmount").innerHTML += "<br><b>Quantity: "+qtynumber.value+"</b>";
     });
 
 
+    qtynumber.addEventListener("input", function() {
+        document.getElementById("DisplayAmount").innerHTML = "<?= htmlspecialchars(currency?? "N")?>" + (parseInt(parseInt(amount) * parseInt(qtynumber.value)).toLocaleString('en-US') || 0);
+        document.getElementById("DisplayAmount").innerHTML += "<br><b>Quantity: "+qtynumber.value+"</b>";
+    });
 
     document.addEventListener("DOMContentLoaded", function() {
         var content = document.getElementById("accountcontent");

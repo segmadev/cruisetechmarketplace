@@ -45,15 +45,21 @@ function selectCountry(countryName) {
 }
 
 // Close dropdown when clicking outside
-window.onclick = function(event) {
-    let dropdownList = document.getElementById('country-list');
-    let dropdownContainer = document.querySelector('.dropdown-container');
-    let searchInput = document.getElementById('search');
-    
-    // Check if the click is outside the dropdown or search input
-    if (!dropdownContainer.contains(event.target) && !searchInput.contains(event.target)) {
-        if (dropdownList.classList.contains('active')) {
-            dropdownList.classList.remove('active');
+
+try {
+    window.onclick = function(event) {
+        let dropdownList = document.getElementById('country-list');
+        let dropdownContainer = document.querySelector('.dropdown-container');
+        let searchInput = document.getElementById('search');
+        
+        // Check if the click is outside the dropdown or search input
+        if (!dropdownContainer.contains(event.target) && !searchInput.contains(event.target)) {
+            if (dropdownList.classList.contains('active')) {
+                dropdownList.classList.remove('active');
+            }
         }
-    }
-};
+    };
+} catch (error) {
+    
+}
+
