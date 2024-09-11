@@ -19,11 +19,11 @@
         $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
         $countries = (array)$r->anosmsCountries();
     }
-    if($number_type == "short_term" && $network == 4 && $countryCode != "") {
-        $broker = "sms_activation";
-        $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
-        $countries = $r->smsActivationCountries();
-    }
+    // if($number_type == "short_term" && $network == 4 && $countryCode != "") {
+    //     $broker = "sms_activation";
+    //     $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
+    //     $countries = $r->smsActivationCountries();
+    // }
     if($number_type == "long_term") {
         $broker = "nonvoipusnumber";
         $rental_services = $r->nonGetservices("long_term", network: $network);

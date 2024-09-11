@@ -367,7 +367,6 @@
         function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false, $countryID = null) {
             if($fromCookie) {
                 $data = $this->getCookieValue($type."service".$noType.($id ?? ''));
-                var_dump($data);
                 if($data != null) {
                     echo "got here";
                     return $data;

@@ -111,7 +111,7 @@
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Germany & Netherlands (Short Term)</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Other Countries (Short Term)</a></li>
+                                <!-- <li><a class="dropdown-item" href="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Other Countries (Short Term)</a></li> -->
                             </ul>
                         </div>
                    
