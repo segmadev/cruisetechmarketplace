@@ -153,7 +153,17 @@ function iniForm(element, action = "passer") {
 
 function runjax(request, event, $inputs, fd, action = "passer") {
     if(event.srcElement.children.custommessage) {
-        event.srcElement.children.custommessage.innerHTML = "<div class='flex bg-light-warning text-warning rounded ps-2' style='width: 160px'><b>Please Wait...</b></div>";
+        event.srcElement.children.custommessage.innerHTML = `<div 
+        style='min-height: 100px;'
+        class="loading-spinner-container">
+        <div 
+        style='border: 4px solid rgba(0, 0, 0, 0.1);
+          border-top: 4px solid #fa5a15;
+          width: 40px;
+          height: 40px;'
+        class="spinner"></div>
+      </div>`;
+        // "<div class='flex bg-light-warning text-warning rounded ps-2' style='width: 160px'><b>Please Wait...</b></div>";
     }
     // return ;
     request = $.ajax({

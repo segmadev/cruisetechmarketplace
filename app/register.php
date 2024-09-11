@@ -22,6 +22,34 @@ require_once "include/auth-ini.php"
   <link rel="shortcut icon" type="image/png" href="<?= $favicon ?>" />
   <!-- Core Css -->
   <link  id="themeColors"  rel="stylesheet" href="dist/css/style-orange.min.css" />
+  <style>
+       
+            
+          /* Center the spinner in the container */
+          .loading-spinner-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          min-height: 100px; /* Adjust based on the size of your modal */
+      }
+  
+      /* Spinner Animation */
+      .spinner {
+          border: 4px solid rgba(0, 0, 0, 0.1);
+          border-top: 4px solid #fa5a15;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+      }
+  
+      /* Spinner Keyframes */
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+      </style>
 </head>
 
 <body>
@@ -82,7 +110,7 @@ require_once "include/auth-ini.php"
   <script src="dist/js/sidebarmenu.js"></script>
 
   <script src="dist/js/custom.js"></script>
-  <script src="dist/js/my.js?n=299"></script>
+  <script src="dist/js/my.js?n=2799"></script>
 </body>
 
 <!-- Mirrored from demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/html/main/authentication-login2.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 14 Aug 2023 16:11:04 GMT -->
