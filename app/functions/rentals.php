@@ -368,7 +368,6 @@
             if($fromCookie) {
                 $data = $this->getCookieValue($type."service".$noType.($id ?? ''));
                 if($data != null) {
-                    echo "got here";
                     return $data;
                 }
             }
