@@ -1108,4 +1108,21 @@ function iniSearch(elements = null) {
 });
 }
 
+    function togglePassword(inputId, button) {
+        var input = document.getElementById(inputId);
+        var icon = button.querySelector('i'); // Find the icon inside the button
+
+        if (input.type === "password") {
+            input.type = "text"; // Show the password
+            icon.classList.remove('fa-eye'); // Remove the "eye" icon
+            icon.classList.add('fa-eye-slash'); // Add the "eye-slash" icon
+        } else {
+            input.type = "password"; // Hide the password
+            icon.classList.remove('fa-eye-slash'); // Remove the "eye-slash" icon
+            icon.classList.add('fa-eye'); // Add the "eye" icon
+        }
+    }
+
+
+
 iniSearch();

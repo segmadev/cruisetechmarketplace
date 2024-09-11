@@ -226,22 +226,24 @@
             }
         }
 
-        function numberExpired($date) : bool {
-            if($date == null) return true;
-            $givenDateTime = new DateTime($date);
-            $currentDateTime = new DateTime();
-
-            // Compare the given date/time with the current date/time
-            if ($currentDateTime > $givenDateTime) {
-                return true; // The given date/time has passed
-            } else {
-                return false; // The given date/time has not passed
+        function numberExpired($date, $timeZone = null) : bool {
+            if ($date == null) {
+                return true;
             }
-            // $diff = $this->datediffe($date, date('Y-m-d H:i:s'), "m");
-            // $rental_expire_duration = $this->get_settings("rental_number_expire_time");
-            // if($diff <= $rental_expire_duration) return false;
-            // return true;
+        
+            // Use the default timezone if none is provided
+            $timeZone = $timeZone ? new DateTimeZone($timeZone) : new DateTimeZone(date_default_timezone_get());
+        
+            // Create a DateTime object with the given date and the specified (or default) timezone
+            $givenDateTime = new DateTime($date, $timeZone);
+        
+            // Create a DateTime object for the current time in the specified (or default) timezone
+            $currentDateTime = new DateTime('now', $timeZone);
+        
+            // Compare the given date/time with the current date/time
+            return $currentDateTime > $givenDateTime; // Return true if the given date/time has passed, false otherwise
         }
+        
 
 
         protected function rentNumber($serviceCode, $cost, $broker = "daisysms", $countryCode = "") {
@@ -472,13 +474,20 @@
         }
 
         function nonActivateNumber($userID, $orderID) {
-            $order = $this->getall("orders", "userID = ? and orderID = ? and type != ? and broker_name = ?", array($userID, $orderID, "short_term", ""));
+            $order = $this->getall("orders", "userID = ? and ID = ? and type != ? and broker_name = ?", array($userID, $orderID, "short_term", "nonvoipusnumber"));
             if(!is_array($order)) return false;
-            $service = $this->nonGetservices($order['type'], $order['serviceCode']);
-            if(!is_array($service) || count($service) == 0) return false;
-            $service = (array)$service[0];
-            $data = ["service"=>$service['name'], "number"=>$order['number'], "order_id"=>$orderID];
+            $isExpired = $this->numberExpired($order['activate_expire_date'], "UTC");
+            if(!$isExpired) return ;
+            $data = ["service"=>$order['serviceName'], "number"=>$order['loginIDs'], "order_id"=>$orderID];
             $request = $this->nonAPiCall($this->non_end_points['activate'], $data);
+            $request = (array)$request;
+            if($request['status'] != "success") return $this->message("We are having issue activating your number please try again.", "error");
+            $message = (array)$request['message'];
+            if(isset($message[0])) $message = (array)$message[0];
+            if(isset($message['end_on'])) {
+                $this->update("orders", ["activate_expire_date"=>htmlspecialchars($message['end_on'])], "ID = '$orderID'", "Number Activated." );
+                return ;
+            }
         }
 
         private function nonAPiCall($url, array $data = []) {
@@ -513,10 +522,12 @@
                 $data = $this->getall("orders", "loginIDs = ?", [$number]);
                 if(!is_array($data)) return ;
                 $id = $data['accountID'];
+                $orderID = $data['ID'];
                 if($this->newCode($id, $code, $message['sender'] ?? "", $message['number'])) {
                     $this->nonResuse($data['serviceName'], $number);
                     return json_encode(["success"]);
                 }
+                $this->update("orders", ["activate_expire_date"=>""], "ID ='$orderID'");
             }
         }
 

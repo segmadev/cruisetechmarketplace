@@ -85,44 +85,47 @@
 </html>
 <script>
 
-  // Function to apply style changes
-  function modifyIconButton(observer) {
-      // Select the icon button based on its class
-      const iconButton = document.querySelector('.wrap__Pbshn .button__HGCNV');
-      
-      // Check if the button exists on the page
-      if (iconButton) {
-          // Reduce the size and push the button up more
-          iconButton.style.zoom = "0.55"; // Reduce size to 25% (4 times smaller)
-          iconButton.style.marginTop = "-200px"; // Push it up by 200px (4 times higher)
+// Function to apply style changes on small screens
+function modifyIconButton(observer) {
+    // Check if the viewport width is small (mobile view)
+    if (window.innerWidth <= 768) {
+        // Select the icon button based on its class
+        const iconButton = document.querySelector('.wrap__Pbshn .button__HGCNV');
 
-          // console.log("Icon button detected and modified");
+        // Check if the button exists on the page
+        if (iconButton) {
+            // Reduce the size and push the button up more
+            iconButton.style.zoom = "0.55"; // Reduce size to 25% (4 times smaller)
+            iconButton.style.marginTop = "-200px"; // Push it up by 200px (4 times higher)
 
-          // Stop observing once the changes are applied
-          observer.disconnect();
-          
-          // Clear the interval fallback if it's running
-          // clearInterval(fallbackInterval);
-      }
-  }
+            // console.log("Icon button detected and modified for mobile view");
 
-  // Set up a MutationObserver to detect when the icon button appears
-  const observer = new MutationObserver((mutationsList, observer) => {
-      for (const mutation of mutationsList) {
-          if (mutation.type === 'childList') {
-              // Call the function to modify the icon button when it appears
-              modifyIconButton(observer);
-          }
-      }
-  });
+            // Stop observing once the changes are applied
+            observer.disconnect();
 
-  // Start observing the document for changes in the DOM
-  observer.observe(document.body, { childList: true, subtree: true });
+            // Clear the interval fallback if it's running
+            clearInterval(fallbackInterval);
+        }
+    }
+}
 
-  // Fallback with setInterval to stop checking when the button is detected
-  const fallbackInterval = setInterval(() => {
-      modifyIconButton(observer);
-  }, 1000);
+// Set up a MutationObserver to detect when the icon button appears
+const observer = new MutationObserver((mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            // Call the function to modify the icon button when it appears and only for mobile
+            modifyIconButton(observer);
+        }
+    }
+});
+
+// Start observing the document for changes in the DOM
+observer.observe(document.body, { childList: true, subtree: true });
+
+// Fallback with setInterval to stop checking when the button is detected
+const fallbackInterval = setInterval(() => {
+    modifyIconButton(observer);
+}, 1000);
 
 
  modalelements = document.querySelectorAll('[data-url]');

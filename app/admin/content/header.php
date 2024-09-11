@@ -116,7 +116,7 @@ require_once "../include/ini-session.php";
                                 <span class="d-flex">
                                     <i class="ti ti-layout-grid"></i>
                                 </span>
-                                <span class="hide-menu">Platfroms</span>
+                                <span class="hide-menu">Platforms</span>
                             </a>
                             <ul aria-expanded="false" class="collapse first-level">
                                 <li class="sidebar-item">
@@ -132,7 +132,7 @@ require_once "../include/ini-session.php";
                                         <div class="round-16 d-flex align-items-center justify-content-center">
                                             <i class="ti ti-circle"></i>
                                         </div>
-                                        <span class="hide-menu">List of platfroms</span>
+                                        <span class="hide-menu">List of Platforms</span>
                                     </a>
                                 </li>
                             </ul>

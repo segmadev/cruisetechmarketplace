@@ -16,16 +16,25 @@ $countDuration = ($rent['expiration'] ?? (int)$d->get_settings("rental_number_ex
 if($rent['expire_date'] != "" && $rent['expire_date'] != "0000-00-00 00:00:00") {
     $rent['date'] = $rent['expire_date'];
 }
-
+$activateHtmlCode = "";
+if(!$r->numberExpired($rent['expire_date'])) {
+    $activateHtmlCode = "<b class='text-success'>No Active for code</b>";
+}
+if(!$r->numberExpired($rent['expire_date']) && $r->numberExpired($rent['activate_expire_date'], "UTC") && ($rent['type'] == "3days" || $rent['type'] == "long_term")) {
+    $activateHtmlCode = "<a href='index?p=rentals&action=view&activate=true&orderID=".$rent['ID'] ."&accountID=".$rent['accountID'] ."' class='w-100 btn btn-sm btn-success'>Activate for Code</a>";
+}
 ?>
-<div class="card card-body bg-light">
-    <div class='d-flex gap-2'>
+<div class="card card-body bg-light w-100">
+    <div class='d-flex gap-1 w-100'>
         <a href="index?p=rentals&action=new" class="btn btn-sm btn-primary"><i class="ti ti-phone"></i> Get a new number</a>
         <?php if((int)$rent['status'] == 1) { ?>
             <a onclick="return confirmRedirect('Are you sure you want to close this number?')" href="index?p=rentals&action=view&close=true&orderID=<?= $rent['ID'] ?>&accountID=<?= $rent['accountID'] ?>" class="btn btn-sm btn-dark"><i class="ti ti-danger"></i> Close Number</a>
             <?php } ?>
             <a href="index?p=rentals" class="btn btn-sm btn-outline-primary"><i class="ti ti-eye"></i> View order numbers</a>
+            <div  class="col-12 col-md-2 col-sm-4 col-lg-2 d-md-block d-sm-block d-none"><?= $activateHtmlCode ?></div>
         </div>
+        <div style="max-width: 300px!important" class="d-sm-none col-sm-2 col-12 col-xl-2 col-md-2 d-md-none m-2"><?= $activateHtmlCode ?></div>
+        
 <hr>
     <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
 <div 

@@ -131,30 +131,47 @@ class content extends database
 
     function input()
     {
-
         $info = "";
         $onchange = "";
-        // var_dump($this->data);
+    
+        // Handle file input type with image preview
         if (isset($this->data['path']) && $this->data['input_type'] == "file") {
             $path = "";
             if (isset($this->datas["input_data"][$this->key])) {
                 $path = $this->data['path'] . $this->datas["input_data"][$this->key];
             }
             $onchange = "onchange=\"showPreview(event, 'image-preview-" . $this->key . "')\"";
-            $info .= "<div id= 'image-preview-" . $this->key . "' class='card shadow-md w-30 h-20 bg-gray p-3'><img src='$path?n=".rand(10, 100)."' style='width: 100px' alt=''></div>";
+            $info .= "<div id='image-preview-" . $this->key . "' class='card shadow-md w-30 h-20 bg-gray p-3'><img src='$path?n=" . rand(10, 100) . "' style='width: 100px' alt=''></div>";
         }
-
+    
         $required = "";
         if ($this->data['is_required']) {
             $required = "required";
         }
+    
+        // Build the input field with input-group for Bootstrap styling
+        $info .= "<div class='input-group'>";
         $info .= "<input $onchange name='" . $this->key . "' value='" . $this->data['value'] . "' id='" . $this->data['id'] . "' type='" . $this->data['input_type'] . "' class='form-control " . $this->data['class'] . "' placeholder='" . $this->data['placeholder'] . "'" . $this->data['atb'];
+    
+        // Add validation if present
         if (isset(Regex[$this->key]['value'])) {
-            $info .= "data-validation-required-message='" . Regex[$this->key]['error_message'] . "' aria-invalid='false'";
+            $info .= " data-validation-required-message='" . Regex[$this->key]['error_message'] . "' aria-invalid='false'";
         }
+    
+        // Add required attribute if necessary
         $info .= " $required/>";
+    
+        // If input type is password, add the icon button for show/hide functionality
+        if ($this->data['input_type'] == "password") {
+            $info .= "<button class='btn btn-primary' type='button' id='toggle-password-" . $this->key . "' onclick='togglePassword(\"" . $this->data['id'] . "\", this)'>";
+            $info .= "<i class='fa fa-eye' id='icon-" . $this->key . "'></i>"; // Bootstrap icon for "eye"
+            $info .= "</button>";
+        }
+    
+        $info .= "</div>"; // End of input-group
         return $info;
     }
+    
 
     function get_value($datas, $key)
     {

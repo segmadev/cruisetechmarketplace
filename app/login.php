@@ -48,16 +48,12 @@ require_once "include/auth-ini.php"; ?>
                     <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
                   </div>
                   <form id="foo" action="auth">
-                    <div class="mb-3">
-                      <label for="exampleInputEmail1" class="form-label">Email</label>
-                      <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                    </div>
-                    <div class="mb-4">
-                      <label for="exampleInputPassword1" class="form-label">Password</label>
-                      <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-                    </div>
-
                     <?php 
+                      $login_form = [
+                        "email" => ["input_type"=>"email", "is_required"=>false, "global_class"=>"w-100", "class"=>"w-100"],
+                        "password" => ["input_type"=>"password", "global_class"=>"w-100", "class"=>"w-90"],
+                    ];
+                     echo $c->create_form($login_form);
                       if(isset($_GET['urlgoto']) && !empty($_GET['urlgoto']))  {
                         $urlgoto = $_GET['urlgoto'];
                         echo "<input type='hidden' value='$urlgoto' name='urlgoto'>";
@@ -108,7 +104,7 @@ require_once "include/auth-ini.php"; ?>
     <script src="dist/js/sidebarmenu.js"></script>
     
     <script src="dist/js/custom.js"></script>
-    <script src="dist/js/my.js?n=2"></script>
+    <script src="dist/js/my.js?n=244"></script>
   </body>
 
 <!-- Mirrored from demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/html/main/authentication-login2.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 14 Aug 2023 16:11:04 GMT -->
