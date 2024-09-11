@@ -11,27 +11,48 @@
         width: 100px;
     }
 
-    /* Scope the animation to .platform-logos container */
-.platform-logos {
-    overflow: hidden; /* Ensures logos stay within viewable area */
+
+    /* Container to control overflow and positioning */
+.platform-logos-container {
+    overflow: hidden;
+    width: 100%; /* Ensures the container is full-width */
     position: relative;
+}
+
+/* Make logos container scrollable and auto-scrolling */
+.platform-logos {
+    display: flex;
+    overflow-x: auto; /* Allow manual scrolling */
+    white-space: nowrap; /* Prevent logos from wrapping */
+    padding: 10px;
+    scroll-behavior: smooth; /* Smooth scrolling for manual scroll */
+    animation: scrollLogos 20s linear infinite; /* Automatic scrolling */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+.platform-logos::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.platform-logos {
+    scrollbar-width: none; /* For Firefox */
+}
+
+/* Automatic scrolling keyframes */
+@keyframes scrollLogos {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 }
 
 /* Specific to platform logos only */
 .platform-logos .platform-logo {
     display: inline-block;
-    animation: platformMoveLeft 5s linear infinite; /* Adjust time as needed */
-    will-change: transform;
-}
-
-/* Keyframes scoped specifically to platform logo animation */
-@keyframes platformMoveLeft {
-    0% {
-        transform: translateX(100%);
-    }
-    100% {
-        transform: translateX(-100%);
-    }
+    margin-right: 16px; /* Adjust spacing between logos */
 }
 
 /* Responsive design scoped for .platform-logo */
@@ -49,6 +70,7 @@
     }
 }
 
+
 </style>
 <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
                 <div class="mx-auto mb-6 w-full space-y-1 text-center sm:w-1/2 lg:w-1/3">
@@ -57,13 +79,17 @@
                         Platforms</h2>
                     <p class="text-pretty leading-tight text-neutral-600 dark:text-neutral-400">We sell account for all your favourite Platforms. Below are some of them</p>
                 </div>
-                <div class="platform-logos flex flex-col items-center justify-center gap-y-2 sm:flex-row sm:gap-x-12 sm:gap-y-0 lg:gap-x-24">
-                    <?php 
-                        foreach($platforms as $platform) {
-                    ?>
-                    <img class="platform-logo gray-image mx-auto h-auto w-32 py-3 sm:mx-0 lg:w-40 lg:py-5" src="app/assets/images/icons/<?= $platform['icon'] ?>" alt="" srcset="">
-                    <?php } ?>
+                <div class="platform-logos-container">
+                    <div class="platform-logos flex items-center gap-x-8 overflow-x-auto">
+                        <?php 
+                            foreach($platforms as $platform) {
+                        ?>
+                        <img class="platform-logo gray-image h-auto w-32 py-3 lg:w-40 lg:py-5" src="app/assets/images/icons/<?= $platform['icon'] ?>" alt="">
+                        <?php } ?>
+                    </div>
                 </div>
+
+
 
             </section>
 
