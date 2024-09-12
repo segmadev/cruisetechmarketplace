@@ -23,6 +23,33 @@ require_once "../include/ini-session.php";
         table li {
             list-style: none;
         }
+
+            
+            
+          /* Center the spinner in the container */
+          .loading-spinner-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+          min-height: 100px; /* Adjust based on the size of your modal */
+      }
+  
+      /* Spinner Animation */
+      .spinner {
+          border: 4px solid rgba(0, 0, 0, 0.1);
+          border-top: 4px solid #fa5a15;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+      }
+  
+      /* Spinner Keyframes */
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
     </style>
 </head>
 
