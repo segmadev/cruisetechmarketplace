@@ -25,6 +25,8 @@ class accounts extends Account
             $preview_link = $_POST['preview_link'][$key] ?? "";
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
             if($check > 0) continue;
+            $check = $this->getall("logininfo", "accountID = ? and username = ?", [$accountID, $username], fetch: "");
+            if($check > 0) continue;
             $this->quick_insert("logininfo", [
                 "accountID" => $accountID,
                 "login_details" => $value,
@@ -39,7 +41,7 @@ class accounts extends Account
 
     function update_login_info($ID, $value, $accountID, $username, $preview_link) {
         $ID = htmlspecialchars($ID);
-        $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details = ?", [$ID, $accountID, $value]);
+        $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details", [$ID, $accountID, $value]);
         if(is_array($check) && $check['login_details'] != $value) {
            return $this->message("Account with this details already exits for this account", "error");
         }
