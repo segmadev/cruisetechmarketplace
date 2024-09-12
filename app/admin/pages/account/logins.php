@@ -29,10 +29,10 @@
     }
 
     add_login();
-    function auto_fill(data, urlPattern, dataPattern) {
+    function auto_fill(data, urlPattern, dataPattern, spliter) {
     // Remove any login cards that are not filled (empty fields)
     remove_empty_logins();
-    let patterns = dataPattern.split('|');
+    let patterns = dataPattern.split(spliter);
     let mismatchedRows = [];  // Array to collect mismatched rows
     console.log(patterns)
     var usernamePosition = findPosition(patterns);
@@ -42,7 +42,7 @@
     }
     data.forEach((item, index) => {
         // Split the data by the delimiter
-        let details = item.split('|');
+        let details = item.split(spliter);
         
         // Check if the number of fields matches the pattern (allow optional fields)
         if (details.length < patterns.length - 1) {
@@ -81,6 +81,7 @@
             let fileInput = document.getElementById("data-file");
             let urlPattern = document.getElementById("url-pattern").value.trim();
             let dataPattern = document.getElementById("data-pattern").value.trim();
+            let spliter = document.getElementById("data-spliter").value.trim();
 
             if (fileInput.files.length === 0 || !urlPattern || !dataPattern) {
                 alert("Please upload a file and fill in the URL pattern and data pattern.");
@@ -97,7 +98,7 @@
                 let data = text.split("\n").map(line => line.trim()).filter(line => line);
 
                 // Call auto_fill to automatically populate the form fields
-                auto_fill(data, urlPattern, dataPattern);
+                auto_fill(data, urlPattern, dataPattern, spliter);
 
                 // Clear the file input
                 fileInput.value = '';

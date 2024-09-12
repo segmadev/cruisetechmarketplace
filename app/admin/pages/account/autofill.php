@@ -17,6 +17,10 @@
                     <label for='data-pattern'>Data Pattern:</label>
                     <input id='data-pattern' class='form-control' type='text' placeholder='Enter data pattern (e.g., username|password|2fa key|Mail|mail pass|Recovery mail|additional info)' value='username|password|2fa key|Mail|mail pass|Recovery mail|additional info' />
                 </div>
+                <div class='mb-3'>
+                    <label for='data-spliter'>Pattern spliter:</label>
+                    <input id='data-spliter' class='form-control' type='text' placeholder='(e.g.(, | , :)' value='|' />
+                </div>
                 <!-- File input for user to upload data -->
                 <div class='mb-3'>
                     <label for='data-file'>Upload Login Data File:</label>
