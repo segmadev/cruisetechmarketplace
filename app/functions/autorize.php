@@ -24,7 +24,7 @@ class autorize extends database
             return null;
         }
 
-        $info['password'] = password_hash($info['password'], PASSWORD_DEFAULT);
+        $info['password'] = password_hash(trim($info['password']), PASSWORD_DEFAULT);
         unset($info['confrim_password']);
         $info['ip_address'] = $this->get_visitor_details()['ip_address'];
         // check referral code if active.
@@ -63,6 +63,7 @@ class autorize extends database
 
     function isValidName($name) {
         // Check if the name contains only letters, spaces, or hyphens
+        $name = trim($name);
         return preg_match("/^[a-zA-Z'-]{1,30}$/", $name);
     }
 
