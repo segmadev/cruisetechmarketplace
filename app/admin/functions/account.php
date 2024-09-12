@@ -25,8 +25,10 @@ class accounts extends Account
             $preview_link = $_POST['preview_link'][$key] ?? "";
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
             if($check > 0) continue;
-            $check = $this->getall("logininfo", "accountID = ? and username = ?", [$accountID, $username], fetch: "");
-            if($check > 0) continue;
+            if($username != ""){
+                $check = $this->getall("logininfo", "accountID = ? and username = ?", [$accountID, $username], fetch: "");
+                if($check > 0) continue;
+            }
             $this->quick_insert("logininfo", [
                 "accountID" => $accountID,
                 "login_details" => $value,
