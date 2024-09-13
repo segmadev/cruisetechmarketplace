@@ -84,19 +84,18 @@
 
 </html>
 <script>
-
 // Function to apply style changes on small screens
 function modifyIconButton(observer) {
     // Check if the viewport width is small (mobile view)
     if (window.innerWidth <= 768) {
-        // Select the icon button based on its class
-        const iconButton = document.querySelector('.wrap__Pbshn .button__HGCNV');
+        // Use querySelector to find the button with the class containing 'button' and 'icon'
+        const iconButton = document.querySelector('[class*="wrap__"][class*="button__"]');
 
         // Check if the button exists on the page
         if (iconButton) {
             // Reduce the size and push the button up more
-            iconButton.style.zoom = "0.55"; // Reduce size to 25% (4 times smaller)
-            iconButton.style.marginTop = "-200px"; // Push it up by 200px (4 times higher)
+            iconButton.style.zoom = "0.55"; // Reduce size to 55%
+            iconButton.style.marginTop = "-200px"; // Push it up by 200px
 
             // console.log("Icon button detected and modified for mobile view");
 
@@ -126,7 +125,6 @@ observer.observe(document.body, { childList: true, subtree: true });
 const fallbackInterval = setInterval(() => {
     modifyIconButton(observer);
 }, 1000);
-
 
  modalelements = document.querySelectorAll('[data-url]');
     iniModal(modalelements)

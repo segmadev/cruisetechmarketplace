@@ -100,7 +100,19 @@ class users extends user
     function admin_transfer($transfer_from) {
         $data = $this->validate_form($transfer_from);
         if(!is_array($data)) { exit(); }
-        $transfer = $this->credit_debit($data['userID'], $data['amount'], $data['action_on'], $data['type'], $data['for'], 'admin');
+        if(isset($data['session_ID']) && $data['session_ID'] != "") {
+            $trans = $this->getall("transactions", "userID = ? and forID = ?", [$data['userID'], $data["session_ID"]]);
+            if(is_array($trans)) {
+                $amount = $this->money_format($trans['amount']);
+                $transType = $trans['action_type'];
+                $this->message("Session ID used already by same user, $transType with $amount", "error");
+                return;
+            }
+        }else{
+            $data['session_ID'] = "admin";
+        } 
+        
+        $transfer = $this->credit_debit($data['userID'], $data['amount'], $data['action_on'], $data['type'], $data['for'], $data['session_ID']);
         if($transfer)  $this->message("Done! You can reload page to see effect.", "success");
         else $this->message("OOPS! something went wrong", "error");
     }

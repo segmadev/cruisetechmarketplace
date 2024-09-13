@@ -50,6 +50,7 @@ $transfer_from = [
     "action_on"=>["type"=>"select", "options"=>["balance"=>"Balance"], "global_class"=>"w-100"],
     "amount"=>["input_type"=>"number", "global_class"=>"w-100"],
     "userID"=>["input_type"=>"hidden", "global_class"=>"w-100"],
+    "session_ID"=>["global_class"=>"w-100", "is_required"=>false],
     "for"=>["type"=>"textarea", "title"=>"Reason for Action", "is_required"=>false, "global_class"=>"w-100"],
 ];
 
