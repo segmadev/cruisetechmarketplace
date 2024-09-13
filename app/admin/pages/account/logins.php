@@ -32,6 +32,7 @@
     function auto_fill(data, urlPattern, dataPattern, spliter) {
     // Remove any login cards that are not filled (empty fields)
     remove_empty_logins();
+    if(spliter == 0) spliter = " ";
     let patterns = dataPattern.split(spliter);
     let mismatchedRows = [];  // Array to collect mismatched rows
     console.log(patterns)
