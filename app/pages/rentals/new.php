@@ -105,13 +105,16 @@
                     <div class="btn-group mb-2 print-ignore">
                             <button class="btn btn-sm <?php if($number_type == "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="ti ti-phone"></i> 
-                                <?php if($number_type == "short_term"){ echo 'Short Term Number '.$network; }else{ echo " Short term Numbers"; } ?>
+                                <?php if($number_type == "short_term"){ 
+                                        if(isset($_GET['networkName']) && $_GET['networkName'] != "") echo htmlspecialchars_decode($_GET['networkName']);
+                                        if(!isset($_GET['networkName']) || $_GET['networkName'] == "") echo 'Short Term Number '.$network; 
+                                    }else{ echo " Short term Numbers"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
-                                <li><a class="dropdown-item" href="index?p=rentals&action=new">Short Term Number 1 (USA)</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new">Short Term  Number 2 (USA)</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany">Germany & Netherlands (Short Term)</a></li>
-                                <!-- <li><a class="dropdown-item" href="index?p=rentals&network=4&action=new&name=England%20(UK)&countryCode=16">Other Countries (Short Term)</a></li> -->
+                                <li><a class="dropdown-item" href="index?p=rentals&action=new&networkName=Short Term Number 1 (USA)">Short Term Number 1 (USA)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&networkName=Short Term  Number 2 (USA)">Short Term  Number 2 (USA)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany&networkName=<?= htmlspecialchars('Germany and Netherlands (Short Term)') ?>">Germany & Netherlands (Short Term)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=5&action=new&countryCode=16&symbol=GB&name=England&networkName=Other Countries (Short Term)">Other Countries (Short Term)</a></li>
                             </ul>
                         </div>
                    
@@ -145,7 +148,7 @@
                                         <?php
                                         foreach ($countries as $singleCountry) {
                                             $singleCountry = (array)$singleCountry;
-                                            $countryName = $singleCountry['name'] ?? $singleCountry['country'];
+                                            $countryName = $singleCountry['name'] ?? $singleCountry['country'] ?? $singleCountry['eng'];
                                             if($network == "3" && ($countryName != "Germany" && $countryName != "Netherlands")) continue;
                                             if($network == "4" && $countryName == "Germany") continue;
                                             $code = $r->getCountryCode($countryName);
@@ -166,7 +169,7 @@
                
 
                 <?php 
-                    if($number_type == "short_term" && ($network == 3 || $network == 4) && ($broker == "anosim" || $broker == "sms_activation")) require_once "pages/rentals/anosim.php"; 
+                    if($number_type == "short_term" && ($network == 3 || $network == 4 || $network == 5)) require_once "pages/rentals/anosim.php"; 
                     if($number_type == "short_term" && $network == 1 && $broker == "daisysms") require_once "pages/rentals/short.php"; 
                     if($number_type == "long_term" || $number_type == '3days' || $network == 2) require_once "pages/rentals/long.php";
                 ?>

@@ -1484,6 +1484,7 @@ function getCookieValue($name) {
             return $value;
         }
     }
+   
     return null; // Return null if the cookie does not exist
 }
 

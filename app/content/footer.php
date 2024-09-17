@@ -84,47 +84,30 @@
 
 </html>
 <script>
-// Function to apply style changes on small screens
-function modifyIconButton(observer) {
-    // Check if the viewport width is small (mobile view)
+// Function to adjust jdiv button on mobile view
+function adjustJdivButtonOnMobile() {
+    // Check if the viewport is mobile size (width <= 768px)
     if (window.innerWidth <= 768) {
-        // Use querySelector to find the button with the class containing 'button' and 'icon'
-        const iconButton = document.querySelector('[class*="wrap__"][class*="button__"]');
-
-        // Check if the button exists on the page
-        if (iconButton) {
-            // Reduce the size and push the button up more
-            iconButton.style.zoom = "0.55"; // Reduce size to 55%
-            iconButton.style.marginTop = "-200px"; // Push it up by 200px
-
-            // console.log("Icon button detected and modified for mobile view");
-
-            // Stop observing once the changes are applied
-            observer.disconnect();
-
-            // Clear the interval fallback if it's running
-            clearInterval(fallbackInterval);
-        }
+        // Select the jdiv element with the zoom style
+        const jdivButton = document.querySelector('jdiv[style*="zoom"]');
+        mainjdivButton = document.querySelector('[class*="button__"]');
+        // console.log(jdivButton);
+        // If the jdivButton exists, modify its style
+        if (jdivButton)  jdivButton.style.zoom = "0.57";  // Reduce the zoom
+        if(mainjdivButton) mainjdivButton.style.marginTop  = "-150px";  // Push the button up
     }
 }
 
-// Set up a MutationObserver to detect when the icon button appears
-const observer = new MutationObserver((mutationsList, observer) => {
-    for (const mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-            // Call the function to modify the icon button when it appears and only for mobile
-            modifyIconButton(observer);
-        }
-    }
-});
+// Call the function initially
+adjustJdivButtonOnMobile();
 
-// Start observing the document for changes in the DOM
-observer.observe(document.body, { childList: true, subtree: true });
+// Add an event listener to handle screen resizing
+// window.addEventListener('resize', adjustJdivButtonOnMobile);
 
-// Fallback with setInterval to stop checking when the button is detected
 const fallbackInterval = setInterval(() => {
-    modifyIconButton(observer);
+  adjustJdivButtonOnMobile();
 }, 1000);
+
 
  modalelements = document.querySelectorAll('[data-url]');
     iniModal(modalelements)

@@ -17,7 +17,7 @@ if($rent['expire_date'] != "" && $rent['expire_date'] != "0000-00-00 00:00:00") 
     $rent['date'] = $rent['expire_date'];
 }
 $activateHtmlCode = "";
-if(!$r->numberExpired($rent['expire_date'])) {
+if(!$r->numberExpired($rent['expire_date']) && $rent['status'] == 1) {
     $activateHtmlCode = "<b class='text-success'>No Active for code</b>";
 }
 if(!$r->numberExpired($rent['expire_date']) && $r->numberExpired($rent['activate_expire_date'], "UTC") && ($rent['type'] == "3days" || $rent['type'] == "long_term")) {

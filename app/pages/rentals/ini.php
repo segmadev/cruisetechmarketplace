@@ -5,6 +5,9 @@
     $countryCode = htmlspecialchars($_GET['countryCode'] ?? 98);
     $countries  = null;
     $network = 1;
+    // $r->smsActivateTwoGetServices(countryCode: "16", serviceCode: "wa");
+    // $r->smsActivateTwoGetServices(countryCode: "16", serviceCode: "wa");
+
     if(isset($_GET['network'])) $network = htmlspecialchars((int)$_GET['network'] ?? 1);
     if($number_type == "short_term" && $network == 1) {
         $broker = "daisysms";
@@ -24,6 +27,12 @@
     //     $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
     //     $countries = $r->smsActivationCountries();
     // }
+
+    if($number_type == "short_term" && $network == 5 && $countryCode != "") {
+        $broker = "sms_activate_two";
+        $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
+        $countries = $r->smsActicateTwoCountries();
+    }
     if($number_type == "long_term") {
         $broker = "nonvoipusnumber";
         $rental_services = $r->nonGetservices("long_term", network: $network);

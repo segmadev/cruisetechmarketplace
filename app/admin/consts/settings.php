@@ -76,12 +76,14 @@
         "nonvoipusnumber_password"=>["input_type"=>"password", "is_required"=>false],
         "added_value_amount_daisysms_short_term"=>["title"=>"Added Value Amount for dailysms (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_anosim_short_term"=>["title"=>"Added Value Amount for Anosim (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
+        "added_value_amount_sms_activate_two_short_term"=>["title"=>"Added Value Amount for sms-activate.io (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_sms_activation_short_term"=>["title"=>"Added Value Amount for sms activation service (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_short_term"=>["title"=>"Added Value Amount for nonvoipusnumber short (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_long_term"=>[ "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_3days"=>[ "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "notification_email"=>["input_type"=>"email", "description"=>"Active email to get notification on low balance"],
-        "notify_low_balance_amount"=>["is_required"=>false, "description"=>"At what balance do you want to get notifications. Set to (0)zero to turn off notifications"]
+        "notify_low_balance_amount"=>["is_required"=>false, "description"=>"At what balance do you want to get notifications. Set to (0)zero to turn off notifications"],
+        "notify_low_balance_amount_sms_activate_two"=>["is_required"=>false, "description"=>"At what balance do you want to get notifications."]
     ];
     $rentals_settings['input_data'] = $s->getdata($rentals_settings);
     $rentals_settings['input_data']['rentals_API'] = "--placeholder";

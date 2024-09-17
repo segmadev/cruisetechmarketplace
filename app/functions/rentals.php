@@ -10,11 +10,13 @@
         protected $anosim_end_points;
         public $brokers;
         public $sms_end_points;
+        public $sms_activate_Two_services;
         // protected $API_header;
         public function __construct() {
             // Call the parent constructor to initialize user properties
             parent::__construct();
             // Initialize rentals specific properties
+            $this->sms_activate_Two_services = [];
             $this->base_url = $this->get_settings('rentals_base_url');
             $this->API_code = $this->get_settings('rentals_API');
             $this->endpoints = ["getServices"=>"handler_api.php?api_key=".$this->API_code."&action=getPricesVerification"];
@@ -43,6 +45,7 @@
             ];
             $this->sms_end_points = [
                 "base_url"=>"https://sms-activation-service.pro/stubs/handler_api",
+                "sms_activate_two_base_url"=>"https://api.sms-activate.org/stubs/handler_api.php"
             ];
             $this->non_auth = [
                 "email"=>$this->get_settings("nonvoipusnumber_email"),
@@ -88,7 +91,7 @@
                 return $this->message("Service(s) not available.", "error", 'json');
             }
             $cost = $service['cost'] ?? $service['price'];
-            if(isset($service['available']) && (int)$service['available'] <= 0){
+             if(isset($service['available']) && (int)$service['available'] <= 0){
                 return $this->message("No Number available you can try another network.", "error", 'json');
             }
             $valuedPrice = $this->valuedPrice($noType, $broker, $cost);
@@ -118,6 +121,10 @@
             }
             if($broker == "daisysms" || $broker == "sms_activation") {
                 $rentNumber['expiration'] = ((int)$this->get_settings('rental_number_expire_time') * 60);
+            }
+
+            if($broker == "sms_activate_two") {
+                $rentNumber['expiration'] = (20 * 60);
             }
 
             if(isset($rentNumber['expiration']) && $rentNumber['expiration'] != "") {
@@ -184,6 +191,7 @@
             if($order['order_type'] != 'rentals' || $order['accountID'] == "") return;
             $isExpired = $this->numberExpired($order['expire_date']);
             if(!$isExpired && $order['broker_name'] == "daisysms") $this->requestCodeNumber($order['accountID']); 
+            if(!$isExpired && $order['broker_name'] == "sms_activate_two") $this->smsActivateTwoRequestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "anosim") $this->anosimRequestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "sms_activation") $this->smsActivationrequestCodeNumber($order['accountID']); 
            
@@ -208,6 +216,10 @@
             if($order['broker_name'] == "daisysms") {
                 $marked = true;
                 if($this->makeNumberAsDone($order['accountID']) == false) $marked = false;
+            }
+            if($order['broker_name'] == "sms_activate_two") {
+                $marked = true;
+                if($this->smsActivateTwoMakeNumberAsDone($order['accountID']) == false) $marked = false;
             }
             if($order['broker_name'] == "sms_activation") {
                 $marked = true;
@@ -286,15 +298,32 @@
             if($broker == "anosim") {
                 return $this->anosimRentNumber($serviceCode);
             }
+
+            if($broker == "sms_activate_two") {
+                $request =  $this->smsActivateTwoGetNumber($serviceCode, $countryCode, $cost);
+                if(!is_array($request)) {
+                    return $this->message("Number not available or Something went wrong. <br> Try agin later", "error", "json");
+                }
+            }
         }
 
-        function handleBalance() {
+        function handleBalance($broker = "daisysms") {
             if($this->get_settings("notification_email") == "" || (float)$this->get_settings("notify_low_balance_amount") <= 0) return;
-            $api_url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getBalance";
-            $result = $this->api_call($api_url, isRaw: true);
-            $result = $this->handleRentailException($result);
+            if($broker == "daisysms") {
+                $api_url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getBalance";
+                $result = $this->api_call($api_url, isRaw: true);
+                $result = $this->handleRentailException($result);
+                // var_dump($result);
+            }
+            if($broker == "sms_activate_two") {
+                $api_url = $this->smsActivateTwoAPI("&action=getBalance", isRaw: true);
+                $result = $this->handleRentailException($api_url);
+            }
+            if($broker == "nonvoipusnumber") $result = $this->nonGetBalance();
+            if($broker == "anosim") $result = $this->anosimGetBalance();
             if(!is_array($result) || !isset($result['balance'])) return ;
-            if((float)$result['balance'] > (float)$this->get_settings("notify_low_balance_amount")) return ;
+            $notifyBalance =  $this->get_settings("notify_low_balance_amount_$broker") ? $this->get_settings("notify_low_balance_amount_$broker") : $this->get_settings("notify_low_balance_amount");
+            if((float)$result['balance'] > (float)$notifyBalance) return ;
             $message = "You have a low balance on ".str_replace('stubs/', '', $this->base_url).". Current balance is <b>".$this->money_format($result['balance'], "USD")."</b>";
             $smessage = $this->get_email_template("default")['template'];
             $smessage = $this->replace_word(['${first_name}' => "Admin", '${message_here}' => $message, '${website_url}' => $this->get_settings("website_url")], $smessage);
@@ -303,6 +332,20 @@
         protected function requestCodeNumber($id) {
             $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getStatus&id=$id";
             $result = $this->api_call($url, isRaw: true);
+            $result = $this->handleRentailException($result);
+            if(!is_array($result) || !isset($result['serviceCode'])) return ;
+            if($result['serviceCode'] == "STATUS_CANCEL") return ;
+            if($result['serviceCode'] == "STATUS_WAIT_CODE") return ;
+            $code = $result['serviceCode'];
+            if($this->newCode($id, $code)) return true;
+            return ;
+        }
+
+
+
+        protected function smsActivateTwoRequestCodeNumber($id) {
+            $url = "&action=getStatus&id=$id";
+            $result = $this->smsActivateTwoAPI($url, isRaw: true);
             $result = $this->handleRentailException($result);
             if(!is_array($result) || !isset($result['serviceCode'])) return ;
             if($result['serviceCode'] == "STATUS_CANCEL") return ;
@@ -327,6 +370,16 @@
                 return false;
             }
             return $this->message("Number status updated.", "success", "json");
+        } 
+
+        protected function smsActivateTwoMakeNumberAsDone($id, $status = 0) {
+            $url = "&action=setStatus&id=$id&status=8";
+            $request = $this->smsActivateTwoAPI($url, isRaw: true);
+            if($request == "EARLY_CANCEL_DENIED" || $request == "CANNOT_BEFORE_2_MIN") {
+                $this->message("You can not cancel this number at the moment", "error");
+                return false;
+            }
+            return $this->message("Number status updated.", "success", "json");
         }
 
         protected function refundOrder($orderID) {
@@ -346,9 +399,15 @@
             if($results[0] == "BAD_KEY") return $this->message("int: We can not take orders.", "error", "json");
             if($results[0] == "") return $this->message("This service is currently down at the moment.", "error", "json");
             // get code errors handler
-            if($results[0] == "STATUS_OK") return ["serviceCode"=>$results[1]];
+            if($results[0] == "STATUS_OK") {
+                return ["serviceCode"=>$results[1]];
+            }
             if($results[0] == "STATUS_WAIT_CODE") return ["serviceCode"=>"STATUS_WAIT_CODE"];
             if($results[0] == "STATUS_CANCEL") return ["serviceCode"=>"STATUS_CANCEL"];
+
+            // get balance
+            if($results[0] == "ACCESS_BALANCE") return ["balance"=>$results[1]];
+
             // booking numbers errors handlers
             if($results[0] == "ACCESS_NUMBER") return ["ID"=>$results[1],"ACCESS_NUMBER"=>$results[2]];
             if($results[0] == "MAX_PRICE_EXCEEDED" || $results[0] = "WRONG_MAX_PRICE") return $this->message("Please refresh this page and try again.", "error", "json");
@@ -358,13 +417,14 @@
             // mark number as done
             if($results[0] == "ACCESS_ACTIVATION") return ["status"=>true];
             if($results[0] == "NO_ACTIVATION") return $this->message("Number not found.", "error", "json");
-            // get balance
-            if($results[0] == "ACCESS_BALANCE") return ["balance"=>$results[1]];
+            
         }
 
         function valuedPrice($noType, $broker, $amount) {
             // echo "added_value_amount_".$broker."_".$noType;
-            return round($this->convertDollarToNGN((float)$amount) + (float)$this->get_settings("added_value_amount_".$broker."_".$noType), 2);
+            $currency = null;
+            if($broker == "sms_activate_two") $currency = "RUB";
+            return round($this->convertDollarToNGN((float)$amount, $currency) + (float)$this->get_settings("added_value_amount_".$broker."_".$noType), 2);
         }
         function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false, $countryID = null) {
             if($fromCookie) {
@@ -406,11 +466,16 @@
                 $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
                 return $data;
             }
+            if($type == "sms_activate_two") {
+                $data = $this->smsActivteTwoGetService($countryID, $id);
+                // $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
+                return $data;
+            }
            
         }
 
-        protected function getExchangeRate() {
-            $exchangeRate = $this->getall("settings", "meta_name = ?",["exchange_rate"]);
+        protected function getExchangeRate($currency = null) {
+            $exchangeRate = $this->getall("settings", "meta_name = ?",["exchange_rate$currency"]);
             if (!is_array($exchangeRate) || !isset($exchangeRate['meta_value'])) {
                 echo $this->message("This service is not available at the moment", "error");
                 die('Exchange rate not found.');
@@ -420,12 +485,13 @@
             $date = date('Y-m-d H:i:s');
             $lastUpdated = $exchangeRate['date'];
             $rate = $exchangeRate['meta_value'];
-            if((int)$this->datediffe($date, $lastUpdated, "m") >= (int)$this->get_settings("exchange_rate_update_interval") && $this->get_settings("fix_exchange_rate") != "yes") $rate = $this->setNewRate();
-            return $rate + 30;
+            if((int)$this->datediffe($date, $lastUpdated, "m") >= (int)$this->get_settings("exchange_rate_update_interval") && $this->get_settings("fix_exchange_rate") != "yes") $rate = $this->setNewRate($currency ?? "USD");
+            if($currency == "USD" || $currency == "") $rate = $rate + 30;
+            return $rate;
         }
 
-        protected function setNewRate(){
-            $url = "https://v6.exchangerate-api.com/v6/".$this->exchangeRateAPI."/latest/USD";
+        public function setNewRate($currency = "USD"){
+            $url = "https://v6.exchangerate-api.com/v6/".$this->exchangeRateAPI."/latest/$currency";
             $data = (array)$this->api_call($url);
             if (!isset($data['conversion_rates']->NGN)) {
                 echo $this->message("This service is not available at the moment", "error");
@@ -433,15 +499,23 @@
                 // exit();
             }
             $rate = $data['conversion_rates']->NGN;
-            $this->update("settings", ["meta_value"=>$rate, "date"=>date("Y-m-d H:i:s")], "meta_name = 'exchange_rate'");
+            if($currency == 'USD') $currency = "";
+            $this->create_settings(["exchange_rate$currency"=>""]);
+            $this->update("settings", ["meta_value"=>$rate, "date"=>date("Y-m-d H:i:s")], "meta_name = 'exchange_rate$currency'");
             return $rate;
         }
-        public function convertDollarToNGN($dollarAmount) {
-            $exchangeRate = $this->getExchangeRate();
+        public function convertDollarToNGN($dollarAmount, $currency = null) {
+            $exchangeRate = $this->getExchangeRate($currency);
             return $dollarAmount * $exchangeRate;
         }
 
         // nonvoipusnumber rental
+        function nonGetBalance() {
+            $request = $this->nonAPiCall($this->non_end_points['getBalance']);
+            $request = (array)$request;
+            if(isset($request[0])) $request = $request[0];
+            return $request;
+        }
         function nonGetservices($type, $id = null, $network = 1) {
             $data = ["type"=>$type, "id"=>$id, "network"=>$network];
             $request = $this->nonAPiCall($this->non_end_points['poducts'], $data);
@@ -543,6 +617,14 @@
             return $this->cleanAnosimData($services);
         }
 
+        function anosimGetBalance() {
+            $request = $this->anosimCallApi("balance",  method: "GET");
+            $request = (array)$request;
+            if($request[0]) $request = $request[0];
+            if(isset($request['accountBalanceInUSD'])) $request['balance'] = $request['accountBalanceInUSD'];
+            return $request;
+        }
+
          function anosimRentNumber($id) {
             $request = $this->anosimCallApi("order", "&productId=$id&amount=1&providerId=0", method: "POST");
             // if(!is_string($request) || trim($request) === '') return  $this->message("Number not available or Something went wrong. Try another network/service 1", "error", "json");
@@ -631,6 +713,38 @@
             if($service != null) return (array)$services[0];
             return $services;
         }
+        // sms-activate.io getService
+        function smsActivteTwoGetService($countryCode, $service = null) {
+            $services = $this->smsActivateTwoAPI("&action=getPrices&country=$countryCode&operator=any&service=$service&lang=en");
+            if(!isset($services->$countryCode)) return [];
+            $services = (array)$services->$countryCode;
+            if($service != null && isset($services[$service])) return (array)$services[$service];
+            return $services;
+            // if(!isset($services->services)) return [];
+            // if($service != null) return (array)$services[0];
+            // var_dump($services->services);
+            // return $services->services;
+        }
+        
+        function smsActivateTwoGetServices($countryCode, $serviceCode = null) { 
+            $services = $this->getCookieValue("sms_activate_two_services_".$countryCode);
+            if(($services == null || !is_array($services)) &&  isset($this->sms_activate_Two_services[$countryCode])) {
+                $services = $this->sms_activate_Two_services[$countryCode];
+            }
+            if($services == null || !is_array($services)) {
+                $services = $this->smsActivateTwoAPI("&action=getServicesList&country=$countryCode");
+                if(!isset($services->services)) return "unknown";
+                $services = (array)$services->services;
+                $this->sms_activate_Two_services[$countryCode] = $services;
+                $this->setCookieValue("sms_activate_two_services_".$countryCode, $services);
+            }
+            if($serviceCode != null) {
+               $service = array_search($serviceCode, array_column($services, 'code'));
+                $service = (array)$services[$service];
+                  return $service['name'];
+            }
+            return $services;
+        }
 
         protected function smsActivationrequestCodeNumber($id) {
             $result = $this->smsActivationAPI("&action=getStatus&id=$id&lang=en", isRaw: true);
@@ -645,6 +759,7 @@
 
         protected function smsActivationCancel($id, $status = 8) {
             $services = $this->smsActivationAPI("&action=setStatus&id=$id&status=$status&lang=en", isRaw: true);
+            var_dump($services);
             if($services == "EARLY_CANCEL_DENIED" || $services == "CANNOT_BEFORE_2_MIN") {
                 $this->message("You can not cancel this number at the moment", "error");
                 return false;
@@ -658,6 +773,7 @@
             return $this->handleRentailException($request);
 
         }
+
         function smsActivationCountries() {
             $countries = $this->getCookieValue("smsActivationCountries");
             if($countries!= "" && $countries != null) return unserialize(base64_decode($countries));
@@ -666,9 +782,32 @@
             return (array)$countries;
         }
 
+        function smsActicateTwoCountries() {
+            $countries = $this->getCookieValue("smsActivateTwoCountries");
+            if($countries!= "" && $countries!= null) return unserialize(base64_decode($countries));
+            $countries = $this->smsActivateTwoAPI("&action=getCountries&lang=en");
+            $this->setCookieValue("smsActivateTwoCountries", base64_encode(serialize($countries)));
+            return (array)$countries;
+        }
+
+        function smsActivateTwoGetNumber($service, $countryCode, $amount) {
+            $request = $this->smsActivateTwoAPI("&action=getNumberV2&service=$service&country=$countryCode&maxPrice=$amount");
+            if(!is_array($request)) $request = (array)$request;
+            if(isset($request[0])) $request = $request[0];
+            if(!isset($request['phoneNumber'])) return false;
+            $info =[];
+            $info['ID'] = $request['activationId'];
+            $info['ACCESS_NUMBER'] = $request['phoneNumber'];
+            $info['country'] = $request['countryCode'];
+            return $info;
+        }
+
          function smsActivationAPI($params, $method = "GET", $isRaw = false) {
-            
-            $url = $this->sms_end_points['base_url']."?api_key=".$this->get_settings("sms_activation_API").$params;
+            $url =  $this->sms_end_points['base_url']."?api_key=".$this->get_settings("sms_activation_API").$params;
+            return $this->api_call($url, method: $method, isRaw: $isRaw);
+         }
+         function smsActivateTwoAPI($params, $method = "GET", $isRaw = false) {
+            $url =  $this->sms_end_points['sms_activate_two_base_url']."?api_key=".$this->get_settings("sms_activate_two_API").$params;
             return $this->api_call($url, method: $method, isRaw: $isRaw);
          }
 

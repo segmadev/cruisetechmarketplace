@@ -17,6 +17,7 @@
                     <div class="dropdown flex d-flex g-2 w-100">
                         <select name="platform" class="form-control" style="width: 30%;" id="">
                             <option value="">All</option>
+                            <option value="loginsearch" <?php if(isset($_GET['platform']) && $_GET['platform'] == "loginsearch") { echo "selected"; } ?>>Search Logins</option>
                             <?php if ($platforms->rowCount() > 0) {
                                  foreach ($platforms as $row) {?>
                                     <option value="<?php echo $row['ID'];?>" <?php if(isset($_GET['platform']) && $_GET['platform'] == $row['ID']) { echo "selected"; } ?>><?php echo $row['name'];?></option>
@@ -38,7 +39,23 @@
                 </div>
             </form>
         </div>
-        <div class="border-top w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0" id="displayAccounts"></div>
+
+        <?php 
+            if(isset($_GET['platform']) && $_GET['platform'] == "loginsearch" && isset($_GET['s'])) {
+                $keyword = htmlspecialchars($_GET['s']);
+                $data = $a->getall("logininfo", "ID  LIKE CONCAT( '%',?,'%') or username  LIKE CONCAT( '%',?,'%')", [$keyword, $keyword], fetch: "all");
+                $i = 1;
+                echo '<div class="border-top w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0">';
+                foreach ($data as $value) {
+                    echo  $a->display_login_details($value, $i, "d-block");
+                    $i++;
+                }
+                // echo $body;
+                echo "</div>";
+                
+            }else { ?>
+                <div class="border-top w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0" id="displayAccounts"></div>
+          <?php  } ?>
 
     </div>
 </div>

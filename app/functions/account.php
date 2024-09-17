@@ -28,7 +28,8 @@ class Account extends user
         $data = [""];
         if(isset($_GET['s']) && $_GET['s'] != "") {
           $s = htmlspecialchars($_GET['s']);
-          $where .= "and title  LIKE CONCAT( '%',?,'%') or description  LIKE CONCAT( '%',?,'%')";
+          $where .= "and ID  LIKE CONCAT( '%',?,'%') or title  LIKE CONCAT( '%',?,'%') or description  LIKE CONCAT( '%',?,'%')";
+          $data[] = $s;
           $data[] = $s;
           $data[] = $s;
         }
@@ -286,7 +287,7 @@ class Account extends user
     }
 
     // login details 
-    function display_login_details($login, $index = 1) {
+    function display_login_details($login, $index = 1, $showAccount = 'd-none') {
     $stick = "success";
     $status = "Active";
     if ($login['sold_to'] != '') {
@@ -297,6 +298,7 @@ class Account extends user
         <div class='col-md-4 single-note-item all-category' id='displaylogin-".$login['ID']."'>
                         <div class='card card-body p-4'>
                             <span class='side-stick bg-$stick'></span>
+                            <h6 class='note-title text-truncate w-75 mb-0 fs-2'>ID ".$login['ID']."</h6>
                             <h6 class='note-title text-truncate w-75 mb-0'>Login $index</h6>
                             <p class='note-date fs-2 text-$stick'>$status</p>
                             
@@ -306,14 +308,14 @@ class Account extends user
                                 </p>
                             </div>
                             <div class='d-flex gap-1'>
-                            ".$this->get_login_btns($login)."
+                            ".$this->get_login_btns($login, $showAccount)."
                           </div>
                         </div>
                     </div>
         ";
     }
 
-    function get_login_btns($login) {
+    function get_login_btns($login, $showAccount = 'd-none') {
     $btn = $this->copy_text($login['login_details']);
     $id = $login['ID'];
       if($this->validate_admin()) {
@@ -321,6 +323,13 @@ class Account extends user
         $id = $login['ID'];
         $btn .=
         "<a 
+        target='_blank'
+        href='index?p=account&action=edit&id=".$login['accountID']."' 
+        class='link me-1 btn btn-sm btn-outline-dark $showAccount'>
+           Open Account
+        </a>
+        "
+        ."<a 
         $modal_attributes
         href='index?p=account&action=edit&id=$id' 
         class='link me-1 btn btn-sm btn-outline-primary'>

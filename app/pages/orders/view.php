@@ -39,6 +39,8 @@ if (!$order || $order == "") {
         $login = $d->getall("logininfo", "ID = ?", [$login]);
         ?>
                 <hr>
+                <div class="fs-2">ID: <?=$login['ID']?></div>
+
                 <div class=""><b>Login <?php echo $i;
         $i++ ?>: </b> <?=$login['login_details']?></div>
             <?php
