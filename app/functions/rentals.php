@@ -792,6 +792,7 @@
 
         function smsActivateTwoGetNumber($service, $countryCode, $amount) {
             $request = $this->smsActivateTwoAPI("&action=getNumberV2&service=$service&country=$countryCode&maxPrice=$amount");
+            // var_dump($request);
             if(!is_array($request)) $request = (array)$request;
             if(isset($request[0])) $request = $request[0];
             if(!isset($request['phoneNumber'])) return false;
@@ -808,7 +809,8 @@
          }
          function smsActivateTwoAPI($params, $method = "GET", $isRaw = false) {
             $url =  $this->sms_end_points['sms_activate_two_base_url']."?api_key=".$this->get_settings("sms_activate_two_API").$params;
-            return $this->api_call($url, method: $method, isRaw: $isRaw);
+            $request =  $this->api_call($url, method: $method, isRaw: $isRaw);
+            return $request;
          }
 
          function getCountryCode($countryName) {

@@ -114,7 +114,7 @@
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new&networkName=Short Term Number 1 (USA)">Short Term Number 1 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&networkName=Short Term  Number 2 (USA)">Short Term  Number 2 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany&networkName=<?= htmlspecialchars('Germany and Netherlands (Short Term)') ?>">Germany & Netherlands (Short Term)</a></li>
-                                <li><a class="dropdown-item" href="index?p=rentals&network=5&action=new&countryCode=16&symbol=GB&name=England&networkName=Other Countries (Short Term)">Other Countries (Short Term)</a></li>
+                                <!-- <li><a class="dropdown-item" href="index?p=rentals&network=5&action=new&countryCode=16&symbol=GB&name=England&networkName=All Countries (Short Term)">All Countries (Short Term)</a></li> -->
                             </ul>
                         </div>
                    
@@ -149,6 +149,7 @@
                                         foreach ($countries as $singleCountry) {
                                             $singleCountry = (array)$singleCountry;
                                             $countryName = $singleCountry['name'] ?? $singleCountry['country'] ?? $singleCountry['eng'];
+                                            if($countryName == "USA") $countryName = "USA (Real)";
                                             if($network == "3" && ($countryName != "Germany" && $countryName != "Netherlands")) continue;
                                             if($network == "4" && $countryName == "Germany") continue;
                                             $code = $r->getCountryCode($countryName);
