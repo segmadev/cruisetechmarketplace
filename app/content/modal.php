@@ -51,13 +51,20 @@
     modalelements = document.querySelectorAll('[data-url]');
     iniModal(modalelements)
     function iniModal(modalelements){
-        modalelements.forEach(element => { 
-            element.style.cursor = 'pointer';
-            element.addEventListener('click', function(e){
-              console.log("it is me 2")
-            // e.preventDefault();
-            modalcontentv2(element);
-        })});
+        modalelements.forEach(element => {
+        element.style.cursor = 'pointer';
+
+        // Check if the event listener has already been added
+        if (!element.dataset.listenerAdded) {
+            element.addEventListener('click', function(e) {
+              console.log("it is me")
+                modalcontentv2(element);
+            });
+
+            // Mark that the listener has been added
+            element.dataset.listenerAdded = 'true';
+        }
+    });
     }
     
     function modalcontentv2(value) {

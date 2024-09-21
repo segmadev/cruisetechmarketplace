@@ -12,9 +12,9 @@
                 <input type="hidden" name="id" value="<?=  $key?>">
                 <input type="hidden" name="page" value="rentals">
                 <input type="hidden" name="type" value="<?= $number_type ?>">
-                <input type="hidden" name="broker" value="<?= $broker ?>">
+                <input type="hidden" name="broker" value="<?= base64_encode($broker) ?>">
                 <input type="hidden" name="network" value="<?= $network ?>">
-                <input type="hidden" name="maxPrice" value="<?= $service['maxPrice'] ?? 0 ?>">
+                <input type="hidden" name="maxPrice" value="<?= base64_encode($service['maxPrice'] ?? ($service['cost'] ?? $service['price'])) ?>">
                 <input type="hidden" name="countryCode" value="<?= $countryCode ?? "" ?>">
                 <input type="hidden" name="new_rent">
                 <input type="hidden" name="confirm" value="Are you sure you want to rent number for <?=$service['name']?>"> 

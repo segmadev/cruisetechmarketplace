@@ -19,30 +19,6 @@
     <div id="grouplist"></div>
   </div>
 </div>
-
-<script>
-  function search_div(keyword, id) {
-    // const div = document.getElementById(id);
-    // const children = div.querySelectorAll('*');
-
-    for (const a of document.getElementById(id).querySelectorAll('a')) {
-      const h6 = a.querySelector('h6');
-      if (h6.innerHTML.toLowerCase().includes(keyword.toLowerCase()) || keyword == "") {
-        // console.log(h6.innerHTML);
-        a.style.setProperty("display", "block", "important");
-      } else {
-        a.style.setProperty("display", "none", "important");
-      }
-    }
-  }
-</script>
-
-<?php require_once "content/foot.php"; ?>
-<script>
-  function getBrowserTheme() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  }
-</script>
 <br><br><br>
 
 <footer class="d-flex justify-content-center bottom-nav" style="margin-top: 50px">
@@ -76,7 +52,32 @@
 
     <!-- <a href="index?p=profile" class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Settings"><img src="<?= $u->get_profile_icon_link($userID) ?>" alt="" width="40" height="40"></a> -->
   </div>
+ 
 </footer>
+<script>
+  function search_div(keyword, id) {
+    // const div = document.getElementById(id);
+    // const children = div.querySelectorAll('*');
+
+    for (const a of document.getElementById(id).querySelectorAll('a')) {
+      const h6 = a.querySelector('h6');
+      if (h6.innerHTML.toLowerCase().includes(keyword.toLowerCase()) || keyword == "") {
+        // console.log(h6.innerHTML);
+        a.style.setProperty("display", "block", "important");
+      } else {
+        a.style.setProperty("display", "none", "important");
+      }
+    }
+  }
+</script>
+
+<?php require_once "content/foot.php"; ?>
+<script>
+  function getBrowserTheme() {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+</script>
+
 </body>
 <!--  footercdd nav -->
 
@@ -143,27 +144,27 @@ const fallbackInterval = setInterval(() => {
 // const fallbackInterval = setInterval(() => {
 //   adjustJdivButtonOnMobile();
 // }, 1000);
-if (typeof modalelements === 'undefined') {
-modalelements = document.querySelectorAll('[data-url]');
-iniModal(modalelements);
+// if (typeof modalelements === 'undefined') {
+// modalelements = document.querySelectorAll('[data-url]');
+// iniModal(modalelements);
 
-function iniModal(modalelements) {
-    modalelements.forEach(element => {
-        element.style.cursor = 'pointer';
+// function iniModal(modalelements) {
+//     modalelements.forEach(element => {
+//         element.style.cursor = 'pointer';
 
-        // Check if the event listener has already been added
-        if (!element.dataset.listenerAdded) {
-            element.addEventListener('click', function(e) {
-              console.log("it is me")
-                modalcontentv2(element);
-            });
+//         // Check if the event listener has already been added
+//         if (!element.dataset.listenerAdded) {
+//             element.addEventListener('click', function(e) {
+//               console.log("it is me")
+//                 modalcontentv2(element);
+//             });
 
-            // Mark that the listener has been added
-            element.dataset.listenerAdded = 'true';
-        }
-    });
-}
-}
+//             // Mark that the listener has been added
+//             element.dataset.listenerAdded = 'true';
+//         }
+//     });
+// }
+// // }
 
   </script>
 <?php ob_end_flush(); ?>

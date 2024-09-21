@@ -34,8 +34,12 @@ if(!$r->numberExpired($rent['expire_date']) && $r->numberExpired($rent['activate
             <div  class="col-12 col-md-2 col-sm-4 col-lg-2 d-md-block d-sm-block d-none"><?= $activateHtmlCode ?></div>
         </div>
         <div style="max-width: 300px!important" class="d-sm-none col-sm-2 col-12 col-xl-2 col-md-2 d-md-none m-2"><?= $activateHtmlCode ?></div>
-        
+
+        <?php if((int)$rent['status'] == 1) { ?>
+            <p><small><b class="text-danger">You can only close number after two(2) mins</b></small></p>
+            <?php } ?>
 <hr>
+
     <h6>Number: <b><?= $rent['loginIDs'] ?></b> <?= $c->copy_text($rent['loginIDs']) ?></h6>
 <div 
     data-status="<?= (int)$rent['status'] ?>"

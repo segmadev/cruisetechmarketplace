@@ -6,7 +6,7 @@ if(!$simplePage) {
       $service = $rent['serviceName'];
     }else if(isset($rent['serviceCode']) && $rent['serviceCode'] != "") {
           $service =  $r->getServices($rent['broker_name'], $rent['type'], $rent['serviceCode'], fromCookie: true);
-          $service = $service['name'];
+          $service = ($rent['broker_name'] == "sms_bower" || !isset($service['name'])) ? ($r->getKeyValue($rent['serviceCode'], 'countrie/services.json') ?? "") : ($service['name'] ?? "");
       }else{
           $service = "unknown";
       }    

@@ -84,6 +84,8 @@
         function newNumber($userID) {
             $data = $this->validate_form(["id"=>[], "broker"=>["is_required"=>false], "type"=>["is_required"=>false], "countryCode"=>["is_required"=>false], "maxPrice"=>["is_required"=>false]], showError: false);
             if(!is_array($data)) return $this->message("Invalid form data. Reload page and try again", "error", "json");
+            if(isset($data['maxPrice'])) $data['maxPrice'] = (float)base64_decode($data['maxPrice']);
+            $data['broker'] = base64_decode($data['broker']);
             $serviceCode = $data['id'];
             $broker = $data['broker'] ?? "daisysms";
             $noType = $data['type'] ?? "short_term";
@@ -98,10 +100,14 @@
                 return $this->message("Service(s) not available.", "error", 'json');
             }
             $cost = $service['cost'] ?? $service['price'] ?? $data['maxPrice'];
+            $valuedPrice = $this->valuedPrice($noType, $broker, $cost);
+            if(isset($data['maxPrice']) && $cost > $data['maxPrice']) {
+                $this->getServices($broker, $noType, countryID: $data['countryCode']);
+                return $this->message("The price has changed. The current price for ".($service['name'] ?? "this service")." is now: ".$this->money_format($valuedPrice).".<br> If you can purchase it at this price, <br> please reload this page and try again.", "error", 'json');
+            }
              if(isset($service['available']) && (int)$service['available'] <= 0){
                 return $this->message("No Number available you can try another network.", "error", 'json');
             }
-            $valuedPrice = $this->valuedPrice($noType, $broker, $cost);
             $user = $this->getall("users", "ID = ?", [$userID]);
             if(!is_array($user)) return $this->message("Unable to get user information.", "error", "json");
             if($user['balance'] < $valuedPrice) return $this->message("Insufficient balance", "error", "json");
@@ -111,7 +117,7 @@
                 "userID"=>$userID,
                 "accountID"=>"",
                 "serviceCode"=>$serviceCode,
-                "serviceName"=>$service['name'] ?? "",
+                "serviceName"=>($service['name'] ?? ($this->getKeyValue($serviceCode, 'countrie/services.json') ?? "")),
                 "loginIDs"=>"",
                 "amount"=>$valuedPrice,
                 "no_of_orders"=>1,
@@ -784,7 +790,7 @@
 
         protected function smsActivationCancel($id, $status = 8) {
             $services = $this->smsActivationAPI("&action=setStatus&id=$id&status=$status&lang=en", isRaw: true);
-            var_dump($services);
+            // var_dump($services);
             if($services == "EARLY_CANCEL_DENIED" || $services == "CANNOT_BEFORE_2_MIN") {
                 $this->message("You can not cancel this number at the moment", "error");
                 return false;

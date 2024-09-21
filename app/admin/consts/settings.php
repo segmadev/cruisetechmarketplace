@@ -71,6 +71,7 @@
         "rental_number_expire_time"=>["input_type"=>"number","title"=>"rental number expire time (In mins)", "description"=>"How long should it take for rented numbers to expire, value in mins."],
         "rentals_API"=>["input_type"=>"password", "title"=>"Daisysms API Key", "is_required"=>false],
         "anosim_API"=>["input_type"=>"password", "title"=>"Anosim API Key", "is_required"=>false],
+        "sms_bower_API"=>["input_type"=>"password", "title"=>"sms bower API API Key", "is_required"=>false],
         "sms_activation_API"=>["input_type"=>"password", "title"=>"sms activation service API API Key", "is_required"=>false],
         "nonvoipusnumber_email"=>["input_type"=>"password", "is_required"=>false],
         "nonvoipusnumber_password"=>["input_type"=>"password", "is_required"=>false],
