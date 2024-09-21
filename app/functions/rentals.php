@@ -329,7 +329,9 @@
                 $request =  $this->smsBowerGetNumber($serviceCode, $countryCode, $cost);
                 // var_dump($request);
                 if(!is_array($request)) {
-                    return $this->message("Number not available or Something went wrong. <br> Try again later", "error", "json");
+                    $more = "Try again later.";
+                    if($serviceCode == "wa" || $serviceCode == "tg") $more = "You can try another price.";
+                    return $this->message("Number not available or Something went wrong. <br> $more", "error", "json");
                 }
                 return $request;
             }
@@ -910,6 +912,34 @@
             // Get the minimum price from the filtered data
             $lowestPrice = $filteredData ? min(array_keys($filteredData)) : null;
             return $lowestPrice !== null ? $lowestPrice : 0;
+        }
+
+        function getKeyStats($data) {
+            // Filter keys where the value is greater than 20 and the key is less than or equal to 190
+            $filteredKeys = array_filter(array_keys($data), function($key) use ($data) {
+                return $data[$key] > 15 && $key <= 190;
+            });
+        
+            // Check if any keys meet the criteria
+            if (!empty($filteredKeys)) {
+                // Convert the keys to float for numeric operations
+                $filteredKeys = array_map('floatval', $filteredKeys);
+        
+                // Calculate the lowest, average, and highest key
+                $lowestKey = min($filteredKeys);
+                $highestKey = max($filteredKeys);
+                $averageKey = array_sum($filteredKeys) / count($filteredKeys);
+        
+                // Return the results, even if there are fewer than 3 keys
+                return [
+                    'lowest' => $lowestKey,
+                    'average' => $averageKey,
+                    'highest' => $highestKey
+                ];
+            } else {
+                // Return null if no keys meet the criteria
+                return null;
+            }
         }
 
 

@@ -11,7 +11,11 @@ if(count($rental_services) == 0 || $rental_services == "") {
             $key = ($network == 6) ? $key : $service["id"] ?? $key;
             if(!isset($service['id']) && !isset($service['ID'])) $service['id'] = $key;
             if($network == 6) {
-                $service['cost'] = $r->getLowestPrice((array)$service);
+                if($key != "wa" && $key != "tg") $service['cost'] = $r->getLowestPrice((array)$service);
+                if($key == "wa" || $key == "tg") {
+                    $service['cost'] = (array)$service;
+                    unset($service['cost']['id']);
+                }
                 if($service['cost'] == 0) continue;
                 $service['maxPrice'] = $service['cost'];
                 $service['name'] = $r->getKeyValue($key, 'countrie/services.json');
