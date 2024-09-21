@@ -57,7 +57,8 @@
                                 if(is_array($cost)) {
                                     $cost = $r->getKeyStats($cost);
                                     if($cost == null) {
-
+                                        echo ` <input type="hidden" name="maxPrice" value="0">`;
+                                        echo "<p class='text-danger'><small>Not Available.</small></p>";
                                     }else{
                                         $i = 1;
                                         foreach ($cost as $value => $price) {
