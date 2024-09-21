@@ -45,7 +45,8 @@
             ];
             $this->sms_end_points = [
                 "base_url"=>"https://sms-activation-service.pro/stubs/handler_api",
-                "sms_activate_two_base_url"=>"https://api.sms-activate.org/stubs/handler_api.php"
+                "sms_activate_two_base_url"=>"https://api.sms-activate.org/stubs/handler_api.php",
+                "sms_bower"=>"https://smsbower.online/stubs/handler_api.php",
             ];
             $this->non_auth = [
                 "email"=>$this->get_settings("nonvoipusnumber_email"),
@@ -81,16 +82,22 @@
             return $this->quick_insert("liked_services", ["userID"=>$userID, "serviceID"=>$serviceID]);
         }
         function newNumber($userID) {
-            $data = $this->validate_form(["id"=>[], "broker"=>["is_required"=>false], "type"=>["is_required"=>false], "countryCode"=>["is_required"=>false]], showError: false);
+            $data = $this->validate_form(["id"=>[], "broker"=>["is_required"=>false], "type"=>["is_required"=>false], "countryCode"=>["is_required"=>false], "maxPrice"=>["is_required"=>false]], showError: false);
             if(!is_array($data)) return $this->message("Invalid form data. Reload page and try again", "error", "json");
             $serviceCode = $data['id'];
             $broker = $data['broker'] ?? "daisysms";
             $noType = $data['type'] ?? "short_term";
-            $service = $this->getServices($broker, $noType, $serviceCode, countryID: $data['countryCode']);
+            if($broker == "sms_bower") {
+                $service['id'] = $data['id'];
+                $service['name'] = $this->getKeyValue($service['id'], 'countrie/services.json');
+                $service['cost'] = $data['maxPrice'];
+            }else{
+                $service = $this->getServices($broker, $noType, $serviceCode, countryID: $data['countryCode']);
+            }
             if(!is_array($service) ||count($service) == 0) {
                 return $this->message("Service(s) not available.", "error", 'json');
             }
-            $cost = $service['cost'] ?? $service['price'];
+            $cost = $service['cost'] ?? $service['price'] ?? $data['maxPrice'];
              if(isset($service['available']) && (int)$service['available'] <= 0){
                 return $this->message("No Number available you can try another network.", "error", 'json');
             }
@@ -119,7 +126,7 @@
                 $this->delete("orders", "ID = ?", [$orderID]);
                 return $rentNumber;
             }
-            if($broker == "daisysms" || $broker == "sms_activation") {
+            if($broker == "daisysms" || $broker == "sms_activation" || $broker == "sms_bower") {
                 $rentNumber['expiration'] = ((int)$this->get_settings('rental_number_expire_time') * 60);
             }
 
@@ -192,6 +199,7 @@
             $isExpired = $this->numberExpired($order['expire_date']);
             if(!$isExpired && $order['broker_name'] == "daisysms") $this->requestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "sms_activate_two") $this->smsActivateTwoRequestCodeNumber($order['accountID']); 
+            if(!$isExpired && $order['broker_name'] == "sms_bower") $this->smsBowerRequestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "anosim") $this->anosimRequestCodeNumber($order['accountID']); 
             if(!$isExpired && $order['broker_name'] == "sms_activation") $this->smsActivationrequestCodeNumber($order['accountID']); 
            
@@ -220,6 +228,10 @@
             if($order['broker_name'] == "sms_activate_two") {
                 $marked = true;
                 if($this->smsActivateTwoMakeNumberAsDone($order['accountID']) == false) $marked = false;
+            }
+            if($order['broker_name'] == "sms_bower") {
+                $marked = true;
+                if($this->smsBowerMakeNumberAsDone($order['accountID']) == false) $marked = false;
             }
             if($order['broker_name'] == "sms_activation") {
                 $marked = true;
@@ -259,6 +271,7 @@
 
 
         protected function rentNumber($serviceCode, $cost, $broker = "daisysms", $countryCode = "") {
+            
             // first check the balance
             if($broker == "daisysms") {
                 $url = $this->base_url."handler_api.php?api_key=".$this->API_code."&action=getNumber&service=$serviceCode&max_price=$cost";
@@ -302,8 +315,17 @@
             if($broker == "sms_activate_two") {
                 $request =  $this->smsActivateTwoGetNumber($serviceCode, $countryCode, $cost);
                 if(!is_array($request)) {
-                    return $this->message("Number not available or Something went wrong. <br> Try agin later", "error", "json");
+                    return $this->message("Number not available or Something went wrong. <br> Try again later", "error", "json");
                 }
+                return $request;
+            }
+            if($broker == "sms_bower") {
+                $request =  $this->smsBowerGetNumber($serviceCode, $countryCode, $cost);
+                // var_dump($request);
+                if(!is_array($request)) {
+                    return $this->message("Number not available or Something went wrong. <br> Try again later", "error", "json");
+                }
+                return $request;
             }
         }
 
@@ -346,6 +368,10 @@
         protected function smsActivateTwoRequestCodeNumber($id) {
             $url = "&action=getStatus&id=$id";
             $result = $this->smsActivateTwoAPI($url, isRaw: true);
+            return $this->handleCode($result, $id);
+        }
+
+        protected function handleCode($result, $id) {
             $result = $this->handleRentailException($result);
             if(!is_array($result) || !isset($result['serviceCode'])) return ;
             if($result['serviceCode'] == "STATUS_CANCEL") return ;
@@ -423,17 +449,10 @@
         function valuedPrice($noType, $broker, $amount) {
             // echo "added_value_amount_".$broker."_".$noType;
             $currency = null;
-            if($broker == "sms_activate_two") $currency = "RUB";
+            if($broker == "sms_activate_two" || $broker == "sms_bower") $currency = "RUB";
             return round($this->convertDollarToNGN((float)$amount, $currency) + (float)$this->get_settings("added_value_amount_".$broker."_".$noType), 2);
         }
-        function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false, $countryID = null) {
-            if($fromCookie) {
-                $data = $this->getCookieValue($type."service".$noType.($id ?? ''));
-                if($data != null) {
-                    return $data;
-                }
-            }
-            if($type == "daisysms") {
+        function daisysmsService($id = null) {
                 $url = $this->base_url.$this->endpoints['getServices'];
                 $services = $this->api_call($url);
                 if($services == null) return [];
@@ -442,36 +461,39 @@
                     $services = (array)$services[$id];
                     $services = (array)$services['187'];
                 }
-                $this->setCookieValue($type."service".$noType.($id ?? ''), $services);
-                // exit();
                 return $services;
-            }
-            
-            if($type == "nonvoipusnumber") {
-                $data = $this->nonGetservices($noType, $id);
-                // var_dump($noType);
-                if(!is_array($data)) return [];
-                $data = (array)$data[0];
-                $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
-                return $data;
-            }
-            
-            if($type == "anosim") {
-                $data = $this->anosimGetServices($countryID ?? null, id: $id ?? "");
-                $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
-                return $data;
-            }
-            if($type == "sms_activation") {
-                $data = $this->smsActivationGetService($countryID, $id);
-                $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
-                return $data;
-            }
-            if($type == "sms_activate_two") {
-                $data = $this->smsActivteTwoGetService($countryID, $id);
-                // $this->setCookieValue($type."service" . $noType . ($id ?? ''), $data);
-                return $data;
-            }
+        }
+
+        function getServices($type = "daisysms", $noType = "short_term", $id = null, $fromCookie = false, $countryID = null) {
+            $methods = [
+                "daisysms"=>["function"=>"daisysmsService", "params"=>[$id]],
+                "nonvoipusnumber"=>["function"=>"nonGetservices", "params"=>[$noType, $id]],
+                "anosim"=>["function"=>"anosimGetServices", "params"=>[$countryID ?? null, $id ?? ""]],
+                "sms_activation"=>["function"=>"smsActivationGetService", "params"=>[$countryID, $id]],
+                "sms_activate_two"=>["function"=>"smsActivteTwoGetService", "params"=>[$countryID, $id]],
+                "sms_bower"=>["function"=>"smsBowerServices", "params"=>[$countryID, $id]],
+            ];
            
+            if($fromCookie && !isset($_GET['currentprice'])) {
+                $data = $this->get_settings($type."service".$noType.($id ?? '').($countryID ?? ''), where: "catched_data", type: "all");
+                // var_dump($data);
+                if(is_array($data)) {
+                    $date = $data['date'];
+                    $data = $data['meta_value'];
+                    $diff = $this->datediffe(date('Y-m-d H:i:s'), $date, "m");
+                    if($diff < 10 && $data != null && $data != "[]" && $data != "") return (array)json_decode(base64_decode($data));
+                }
+                
+            }
+
+            $function = $methods[$type]['function'];
+            $params = $methods[$type]['params'];
+            if(method_exists($this, $function)) {
+                $result = call_user_func_array([$this, $function], $params);
+                $this->update_catched_data($type."service".$noType.($id ?? '').($countryID ?? ''), $result);
+                return $result;
+            }
+            return [];
         }
 
         protected function getExchangeRate($currency = null) {
@@ -521,7 +543,10 @@
             $request = $this->nonAPiCall($this->non_end_points['poducts'], $data);
             if($request->status  != "success") return [];
             $request =  (array)$request;
-            return $request['message']; 
+            $request =  $request['message']; 
+            if(!is_array(value: $request) || count($request) == 0) return [];
+            if($id != null) return (array)$request[0];
+            return (array)$request;
         }
 
         function nonRentNumber($serviceId) {
@@ -531,8 +556,6 @@
 
         function nonRejectNumber($serviceCode, $type, $number, $orderID) {
             $service = $this->nonGetservices($type, $serviceCode);
-            if(!is_array($service) || count($service) == 0) return false;
-            $service = (array)$service[0];
             $data = ["service"=>$service['name'], "number"=>$number, "order_id"=>$orderID];
             $request = $this->nonAPiCall($this->non_end_points['reject'], $data);
             if($request->status  == "success")  {
@@ -614,7 +637,7 @@
                 unset($services['service']);
                 return $services;
             }
-            return $this->cleanAnosimData($services);
+            return (array)$this->cleanAnosimData($services);
         }
 
         function anosimGetBalance() {
@@ -675,6 +698,8 @@
                    .$data;
             return $this->api_call($url, method: $method);
         }
+
+        
 
         function cleanAnosimData($jsonData) : array {
             // Decode the JSON into a PHP array
@@ -774,6 +799,26 @@
 
         }
 
+        function getCountry($broker) {
+            $countries = json_decode(base64_decode($this->get_settings($broker, where: 'catched_data')));
+            if($countries != "" && $countries != null && $countries != '[]') {return $countries;}
+            if(method_exists($this, $broker)) {$countries = $this->$broker();}
+            if(is_array($countries)) $this->update_catched_data($broker,  $countries);
+            return $countries;
+        }
+
+        function update_catched_data($key, $data) {
+            $data = is_array($data) ? base64_encode(json_encode($data)) : base64_encode($data);
+            $record = $this->getall("catched_data", 'meta_name = ?', [$key]);
+            if(is_array($record)) {
+                $data = ["meta_value"=>$data, "date"=>date('Y-m-d H:i:s')];
+                if($data['meta_value'] != $record['meta_value']) $this->update("catched_data", $data, "meta_name = '$key'");
+                return true;
+            }
+            $this->quick_insert("catched_data", ["meta_name"=>$key, "meta_value"=>$data, "meta_for"=>"all", "date"=>date('Y-m-d H:i:s')]);
+        }
+
+
         function smsActivationCountries() {
             $countries = $this->getCookieValue("smsActivationCountries");
             if($countries!= "" && $countries != null) return unserialize(base64_decode($countries));
@@ -792,7 +837,10 @@
 
         function smsActivateTwoGetNumber($service, $countryCode, $amount) {
             $request = $this->smsActivateTwoAPI("&action=getNumberV2&service=$service&country=$countryCode&maxPrice=$amount");
-            // var_dump($request);
+            return $this->handleNumberResponse($request);
+        }
+
+        function handleNumberResponse($request) {
             if(!is_array($request)) $request = (array)$request;
             if(isset($request[0])) $request = $request[0];
             if(!isset($request['phoneNumber'])) return false;
@@ -813,16 +861,69 @@
             return $request;
          }
 
-         function getCountryCode($countryName) {
-                        // Read the JSON file
-                $jsonFile = file_get_contents('countrie/countries.json');
+        //  sms bower api
+        function smsBowerServices($countryID, $service=null) {
+            $request = $this->smsBowerCallApi("&action=getPricesV2&country=$countryID&service=$service");
+            // var_dump($request);
+            $request = (array)$request;
+            if(!isset($request[$countryID])) return [];
+            return (array)$request[$countryID];
+        }
+        function smsBowerGetNumber($service, $countryCode, $amount) {
+            $request = $this->smsBowerCallApi("&action=getNumberV2&service=$service&country=$countryCode&maxPrice=$amount");
+            // var_dump($request);
+            return $this->handleNumberResponse($request);
+        }
 
+        protected function smsBowerRequestCodeNumber($id) {
+            $url = "&action=getStatus&id=$id";
+            $result = $this->smsBowerCallApi($url, isRaw: true);
+            return $this->handleCode($result, $id);
+        }
+
+        protected function smsBowerMakeNumberAsDone($id, $status = 0) {
+            $url = "&action=setStatus&id=$id&status=8";
+            $request = $this->smsBowerCallApi($url, isRaw: true);
+            if($request == "EARLY_CANCEL_DENIED" || $request == "CANNOT_BEFORE_2_MIN") {
+                $this->message("You can not cancel this number at the moment", "error");
+                return false;
+            }
+            return $this->message("Number status updated.", "success", "json");
+        }
+
+        function smsBowerCountries() {
+            $jsonFile = file_get_contents("countrie/smsbowercountries.json");
+            $countries = json_decode($jsonFile, true);
+            return $countries;
+        }
+        function getLowestPrice(array $data, $minCount = 30, $maxPrice = 190) {
+            // Filter the array based on the conditions ( count >= $minCount and price <= $maxPrice)
+            $filteredData = array_filter($data, function($count, $price) use ($minCount, $maxPrice) {
+                return $count >= $minCount && $price <= $maxPrice;
+            }, ARRAY_FILTER_USE_BOTH);
+            // Get the minimum price from the filtered data
+            $lowestPrice = $filteredData ? min(array_keys($filteredData)) : null;
+            return $lowestPrice !== null ? $lowestPrice : 0;
+        }
+
+
+         private function smsBowerCallApi($params = "", $id = "", $method = "GET", $isRaw = false) {
+            $url =  $this->sms_end_points['sms_bower']."?api_key=".$this->get_settings("sms_bower_API").$params;
+            $request =  $this->api_call($url, method: $method, isRaw: $isRaw);
+            return $request;
+        }
+
+
+         function getKeyValue($countryName, $path = 'countrie/countries.json', $key = null) {
+                        // Read the JSON file
+                $jsonFile = file_get_contents($path);
                 // Decode the JSON data into an associative array
                 $countries = json_decode($jsonFile, true);
-
                 // Loop through the array to find the country by name
+                if($key == null && isset($countries[$countryName])) return $countries[$countryName]; 
+                if($key == null && !isset($countries[$countryName])) return ""; 
                 foreach ($countries as $country) {
-                    if (strtolower($country['name']) == strtolower($countryName)) {
+                    if (strtolower($country[$key]) == strtolower($countryName)) {
                         return $country['code']; // Return the country code if found
                     }
                 }

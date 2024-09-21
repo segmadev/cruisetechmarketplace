@@ -84,40 +84,86 @@
 
 </html>
 <script>
-// Function to adjust jdiv button on mobile view
+
+  // Function to adjust jdiv button on mobile view
 function adjustJdivButtonOnMobile() {
     // Check if the viewport is mobile size (width <= 768px)
-    if (window.innerWidth <= 768) {
+    if (window.innerWidth <= 968) {
         // Select the jdiv element with the zoom style
         const jdivButton = document.querySelector('jdiv[style*="zoom"]');
-        mainjdivButton = document.querySelector('[class*="button__"]');
-        // console.log(jdivButton);
+        const mainjdivButton = document.querySelector('[class*="button__"]');
+
         // If the jdivButton exists, modify its style
-        if (jdivButton)  jdivButton.style.zoom = "0.57";  // Reduce the zoom
-        if(mainjdivButton) mainjdivButton.style.marginTop  = "-150px";  // Push the button up
+        
+        if (mainjdivButton) {
+            mainjdivButton.style.transform = "scale(0.6)";  // Use transform instead of zoom
+            // jdivButton.style.zoom = "0.2";  // Use transform instead of zoom
+        }
+        // Adjust button position dynamically based on viewport height
+        if (mainjdivButton) {
+            const viewportHeight = window.innerHeight;
+            const buttonHeight = mainjdivButton.offsetHeight;
+            const pushAmount = Math.min(viewportHeight * 0.3, 90); // Push by 10% of the height, max 90px
+            mainjdivButton.style.marginRight = `5px`;
+            mainjdivButton.style.marginTop = `-${pushAmount}px`;
+        }
+
+        
     }
 }
 
 // Call the function initially
 adjustJdivButtonOnMobile();
 
-// Add an event listener to handle screen resizing
-// window.addEventListener('resize', adjustJdivButtonOnMobile);
-
+// Keep adjusting at intervals in case of dynamic layout changes
 const fallbackInterval = setInterval(() => {
-  adjustJdivButtonOnMobile();
+    adjustJdivButtonOnMobile();
 }, 1000);
 
+// // Function to adjust jdiv button on mobile view
+// function adjustJdivButtonOnMobile() {
+//     // Check if the viewport is mobile size (width <= 768px)
+//     if (window.innerWidth <= 768) {
+//         // Select the jdiv element with the zoom style
+//         const jdivButton = document.querySelector('jdiv[style*="zoom"]');
+//         mainjdivButton = document.querySelector('[class*="button__"]');
+//         // console.log(jdivButton);
+//         // If the jdivButton exists, modify its style
+//         if (jdivButton)  jdivButton.style.zoom = "0.57";  // Reduce the zoom
+//         if(mainjdivButton) mainjdivButton.style.marginTop  = "-150px";  // Push the button up
+//     }
+// }
 
- modalelements = document.querySelectorAll('[data-url]');
-    iniModal(modalelements)
-    function iniModal(modalelements){
-        modalelements.forEach(element => { 
-            element.style.cursor = 'pointer';
-            element.addEventListener('click', function(e){
-            // e.preventDefault();
-            modalcontentv2(element);
-        })});
-    }
+// // Call the function initially
+// adjustJdivButtonOnMobile();
+
+// // Add an event listener to handle screen resizing
+// // window.addEventListener('resize', adjustJdivButtonOnMobile);
+
+// const fallbackInterval = setInterval(() => {
+//   adjustJdivButtonOnMobile();
+// }, 1000);
+if (typeof modalelements === 'undefined') {
+modalelements = document.querySelectorAll('[data-url]');
+iniModal(modalelements);
+
+function iniModal(modalelements) {
+    modalelements.forEach(element => {
+        element.style.cursor = 'pointer';
+
+        // Check if the event listener has already been added
+        if (!element.dataset.listenerAdded) {
+            element.addEventListener('click', function(e) {
+              console.log("it is me")
+                modalcontentv2(element);
+            });
+
+            // Mark that the listener has been added
+            element.dataset.listenerAdded = 'true';
+        }
+    });
+}
+}
+
   </script>
 <?php ob_end_flush(); ?>

@@ -76,6 +76,7 @@
         "nonvoipusnumber_password"=>["input_type"=>"password", "is_required"=>false],
         "added_value_amount_daisysms_short_term"=>["title"=>"Added Value Amount for dailysms (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_anosim_short_term"=>["title"=>"Added Value Amount for Anosim (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
+        "added_value_amount_sms_bower_short_term"=>["title"=>"Added Value Amount for smsbower.net (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_sms_activate_two_short_term"=>["title"=>"Added Value Amount for sms-activate.io (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_sms_activation_short_term"=>["title"=>"Added Value Amount for sms activation service (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
         "added_value_amount_nonvoipusnumber_short_term"=>["title"=>"Added Value Amount for nonvoipusnumber short (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],

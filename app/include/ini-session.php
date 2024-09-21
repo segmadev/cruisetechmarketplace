@@ -1,4 +1,6 @@
 <?php 
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
 // Set session cookie parameters
 $cookieParams = session_get_cookie_params();
 session_set_cookie_params(

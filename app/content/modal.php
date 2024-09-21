@@ -54,6 +54,7 @@
         modalelements.forEach(element => { 
             element.style.cursor = 'pointer';
             element.addEventListener('click', function(e){
+              console.log("it is me 2")
             // e.preventDefault();
             modalcontentv2(element);
         })});

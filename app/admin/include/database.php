@@ -1016,7 +1016,7 @@ class database
     }
     // addtion functions
 
-    function get_settings($value = "company_name", $where = "settings",  $who = "all")
+    function get_settings($value = "company_name", $where = "settings",  $who = "all", $type = "meta_for")
     {
         $data = $this->getall("$where", "meta_name = ? and meta_for = ?", [htmlspecialchars($value), $who]);
         if (!is_array($data)) {
@@ -1025,7 +1025,7 @@ class database
         if($this->isEncrypted($data['meta_value'])) {
             $data['meta_value'] = $this->get_enypt_data($data['meta_value']);
         }
-        return $data['meta_value'];
+        return ($type == "all") ? $data : $data['meta_value'];
     }
 
     protected function get_enypt_data($id) {

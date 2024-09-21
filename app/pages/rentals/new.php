@@ -99,7 +99,9 @@
                 </form>
             </div>
             <div class="card-body p-0 m-0">
-                <p class="bg-danger ps-4 text-white"><b>Note that the price are not fixed.</b></p>
+                <p class="bg-danger ps-4 text-white"><b>Note that the price are not fixed.
+                   <?php if(!isset($_GET['currentprice'])) { ?> <a href="<?= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>&currentprice=true" class="btn-sm text-black btn-light-dark">Update Price</a><?php } ?>
+                </b></p>
                 <div class="d-flex p-2 flex gap-2">
                
                     <div class="btn-group mb-2 print-ignore">
@@ -114,7 +116,8 @@
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new&networkName=Short Term Number 1 (USA)">Short Term Number 1 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=2&action=new&networkName=Short Term  Number 2 (USA)">Short Term  Number 2 (USA)</a></li>
                                 <li><a class="dropdown-item" href="index?p=rentals&network=3&action=new&countryCode=98&name=Germany&networkName=<?= htmlspecialchars('Germany and Netherlands (Short Term)') ?>">Germany & Netherlands (Short Term)</a></li>
-                                <!-- <li><a class="dropdown-item" href="index?p=rentals&network=5&action=new&countryCode=16&symbol=GB&name=England&networkName=All Countries (Short Term)">All Countries (Short Term)</a></li> -->
+                                <li><a class="dropdown-item" href="index?p=rentals&network=5&action=new&countryCode=16&symbol=GB&name=England&networkName=All Countries (Short Term)">All Countries (Short Term)</a></li>
+                                <li><a class="dropdown-item" href="index?p=rentals&network=6&action=new&countryCode=16&symbol=GB&name=United%20Kingdom&networkName=All Countries (Short Term 2)">All Countries (Short Term 2)</a></li>
                             </ul>
                         </div>
                    
@@ -135,7 +138,7 @@
                             <div class="dropdown-container mb-2">
                                 <div class="dropdown-header btn btn-sm btn-light-danger" onclick="toggleDropdown()">
                                 <?php if(isset($_GET['name']) && $_GET['name'] != "") {
-                                     echo '<img src="'.($r->getCountryCode($_GET['name'])  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($_GET['name'])).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" class="flag">';
+                                     echo '<img src="'.($r->getKeyValue($_GET['name'], key: "name")  ? 'https://flagcdn.com/w320/'.strtolower($r->getKeyValue($_GET['name'], key: "name")).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" class="flag">';
                                      echo '<span class="country-name">' . $_GET['name'] . '</span>';
                                 }else{
                                     echo "Select a country";
@@ -152,11 +155,11 @@
                                             if($countryName == "USA") $countryName = "USA (Real)";
                                             if($network == "3" && ($countryName != "Germany" && $countryName != "Netherlands")) continue;
                                             if($network == "4" && $countryName == "Germany") continue;
-                                            $code = $r->getCountryCode($countryName);
+                                            $code = $r->getKeyValue($countryName, key: "name");
                                             $countryID = $singleCountry['id'] ?? $singleCountry['ID'];
                                             $flagUrl = "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24";
                                             echo '<a href="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item text-black" onclick="selectCountry(\'' . $countryName . '\')">';
-                                            echo '<img src="'.($r->getCountryCode($countryName)  ? 'https://flagcdn.com/w320/'.strtolower($r->getCountryCode($countryName)).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag">';
+                                            echo '<img src="'.($code  ? 'https://flagcdn.com/w320/'.strtolower($code).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag">';
                                             echo '<span class="country-name">' . $countryName . '</span>';
                                             echo '</a>';
                                         }
@@ -170,7 +173,7 @@
                
 
                 <?php 
-                    if($number_type == "short_term" && ($network == 3 || $network == 4 || $network == 5)) require_once "pages/rentals/anosim.php"; 
+                    if($number_type == "short_term" && ($network == 3 || $network == 4 || $network == 5 || $network == 6)) require_once "pages/rentals/anosim.php"; 
                     if($number_type == "short_term" && $network == 1 && $broker == "daisysms") require_once "pages/rentals/short.php"; 
                     if($number_type == "long_term" || $number_type == '3days' || $network == 2) require_once "pages/rentals/long.php";
                 ?>

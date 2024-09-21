@@ -8,15 +8,6 @@ if(count($rental_services) == 0 || $rental_services == "") {
     foreach ($rental_services as $key => $service) {
         $service = (array)$service;
         if(!isset($used[$key])) {
-            $key = ($network == 6) ? $key : $service["id"] ?? $key;
-            if($network == 6) {
-                $service['cost'] = $r->getLowestPrice((array)$service);
-                if($service['cost'] == 0) continue;
-                $service['maxPrice'] = $service['cost'];
-                $service['name'] = $r->getKeyValue($key, 'countrie/services.json');
-                if($service['name'] == null || $service['name'] == "") continue;
-            }
-
             if($network == 5 && !isset($service['name'])) {
                 $service['name'] = $r->smsActivateTwoGetServices($countryCode, $key);
             }
