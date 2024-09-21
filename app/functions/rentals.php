@@ -902,7 +902,7 @@
             $countries = json_decode($jsonFile, true);
             return $countries;
         }
-        function getLowestPrice(array $data, $minCount = 30, $maxPrice = 190) {
+        function getLowestPrice(array $data, $minCount = 10, $maxPrice = 200) {
             // Filter the array based on the conditions ( count >= $minCount and price <= $maxPrice)
             $filteredData = array_filter($data, function($count, $price) use ($minCount, $maxPrice) {
                 return $count >= $minCount && $price <= $maxPrice;
