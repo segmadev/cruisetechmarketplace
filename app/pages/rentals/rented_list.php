@@ -4,7 +4,7 @@
     }else{
       $script[] = "countdown";
         $rented_numbers = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? and status = ? ORDER BY date desc", [$userID, "", "rentals", 1], fetch: "all");
-        $rented_numbers_non_active = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? and status = ? ORDER BY date LIMIT 20", [$userID, "", "rentals", 0], fetch: "all");
+        $rented_numbers_non_active = $d->getall("orders", "userID = ? and accountID != ? and order_type = ? and (status = ? or status = ?) ORDER BY date LIMIT 20", [$userID, "", "rentals", 0, 2], fetch: "all");
 ?>
 <div class="card overflow-hidden chat-application bg-white">
             <div class="d-flex align-items-center justify-content-between gap-3 m-3 #d-lg-none  ">
