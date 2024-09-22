@@ -739,7 +739,7 @@ class database
     {
         $body = htmlspecialchars_decode($body);
         // return $to;
-        require_once rootFile."include/phpmailer/PHPMailerAutoload.php";
+        require_once rootFile."/include/phpmailer/PHPMailerAutoload.php";
         // require_once "";
         $d = new database;
         $smtp = $d->getall("smtp_config", "ID = ?", ["$smtpid"]);
