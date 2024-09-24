@@ -25,7 +25,7 @@
                         <div data-name="<?= $service['name'] ?>" class="flex-shrink-0 bg-transparent rounded-circle round d-flex align-items-center justify-content-center">
                             <?php 
                                 $domain = trim(strtolower($names[0])).".com";
-                                if(trim(strtolower($names[0])) == "telegram") {
+                                if(trim(strtolower($names[0])) == "telegram" || trim(strtolower($names[0])) == "signal") {
                                     $domain = trim(strtolower($names[0])).".org";
                                 }
                                 
