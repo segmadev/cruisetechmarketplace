@@ -91,20 +91,22 @@ function adjustJdivButtonOnMobile() {
     // Check if the viewport is mobile size (width <= 768px)
     if (window.innerWidth <= 968) {
         // Select the jdiv element with the zoom style
-       // const jdivButton = document.querySelector('jdiv[style*="zoom"]');
-        const mainjdivButton = document.querySelector('.chaport-launcher-button');
+       const jdivButton = document.querySelector('.chaport-launcher-button');
+        const mainjdivButton = document.querySelector('.chaport-launcher');
+
         // If the jdivButton exists, modify its style
-        if (mainjdivButton) {
-            mainjdivButton.style.transform = "scale(0.6)";  // Use transform instead of zoom
+        
+        if (jdivButton) {
+          jdivButton.style.transform = "scale(0.7)";  // Use transform instead of zoom
             // jdivButton.style.zoom = "0.2";  // Use transform instead of zoom
         }
         // Adjust button position dynamically based on viewport height
         if (mainjdivButton) {
             const viewportHeight = window.innerHeight;
             const buttonHeight = mainjdivButton.offsetHeight;
-            const pushAmount = Math.min(viewportHeight * 0.3, 90); // Push by 10% of the height, max 90px
-            mainjdivButton.style.marginRight = `5px`;
-            mainjdivButton.style.marginTop = `-${pushAmount}px`;
+            const pushAmount = Math.min(viewportHeight * 0.2, 40); // Push by 10% of the height, max 90px
+            mainjdivButton.style.marginRight = `3px`;
+            mainjdivButton.style.marginBottom = `${pushAmount}px`;
         }
 
         
