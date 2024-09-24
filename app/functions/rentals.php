@@ -352,6 +352,7 @@
             if($broker == "nonvoipusnumber") $result = $this->nonGetBalance();
             if($broker == "anosim") $result = $this->anosimGetBalance();
             if(!is_array($result) || !isset($result['balance'])) return ;
+            var_dump($result);
             $notifyBalance =  $this->get_settings("notify_low_balance_amount_$broker") ? $this->get_settings("notify_low_balance_amount_$broker") : $this->get_settings("notify_low_balance_amount");
             if((float)$result['balance'] > (float)$notifyBalance) return ;
             $message = "You have a low balance on $broker Current balance is <b>".$this->money_format($result['balance'], "USD")."</b>";
@@ -915,7 +916,7 @@
         }
 
         function getKeyStats($data) {
-            // Filter keys where the value is greater than 20 and the key is less than or equal to 190
+            // Filter keys where the value is greater than 15 and the key is less than or equal to 190
             $filteredKeys = array_filter(array_keys($data), function($key) use ($data) {
                 return $data[$key] > 15 && $key <= 190;
             });
@@ -925,15 +926,26 @@
                 // Convert the keys to float for numeric operations
                 $filteredKeys = array_map('floatval', $filteredKeys);
         
-                // Calculate the lowest, average, and highest key
+                // Calculate the lowest and highest key
                 $lowestKey = min($filteredKeys);
                 $highestKey = max($filteredKeys);
                 $averageKey = array_sum($filteredKeys) / count($filteredKeys);
         
-                // Return the results, even if there are fewer than 3 keys
+                // Find the key closest to the average
+                $closestKey = null;
+                $minDiff = PHP_INT_MAX;
+                foreach ($filteredKeys as $key) {
+                    $diff = abs($key - $averageKey);
+                    if ($diff < $minDiff) {
+                        $minDiff = $diff;
+                        $closestKey = $key;
+                    }
+                }
+        
+                // Return the results, including the closest to average
                 return [
                     'lowest' => $lowestKey,
-                    'average' => $averageKey,
+                    'closest_to_average' => $closestKey,
                     'highest' => $highestKey
                 ];
             } else {
@@ -941,10 +953,11 @@
                 return null;
             }
         }
-
+        
 
          private function smsBowerCallApi($params = "", $id = "", $method = "GET", $isRaw = false) {
             $url =  $this->sms_end_points['sms_bower']."?api_key=".$this->get_settings("sms_bower_API").$params;
+        //    echo $url; exit();
             $request =  $this->api_call($url, method: $method, isRaw: $isRaw);
             return $request;
         }

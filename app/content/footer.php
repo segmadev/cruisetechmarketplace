@@ -91,11 +91,9 @@ function adjustJdivButtonOnMobile() {
     // Check if the viewport is mobile size (width <= 768px)
     if (window.innerWidth <= 968) {
         // Select the jdiv element with the zoom style
-        const jdivButton = document.querySelector('jdiv[style*="zoom"]');
-        const mainjdivButton = document.querySelector('[class*="button__"]');
-
+       // const jdivButton = document.querySelector('jdiv[style*="zoom"]');
+        const mainjdivButton = document.querySelector('.chaport-launcher-button');
         // If the jdivButton exists, modify its style
-        
         if (mainjdivButton) {
             mainjdivButton.style.transform = "scale(0.6)";  // Use transform instead of zoom
             // jdivButton.style.zoom = "0.2";  // Use transform instead of zoom
