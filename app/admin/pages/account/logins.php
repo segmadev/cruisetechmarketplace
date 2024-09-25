@@ -84,7 +84,7 @@
             let dataPattern = document.getElementById("data-pattern").value.trim();
             let spliter = document.getElementById("data-spliter").value.trim();
 
-            if (fileInput.files.length === 0 || !urlPattern || !dataPattern) {
+            if (fileInput.files.length === 0 || !dataPattern) {
                 alert("Please upload a file and fill in the URL pattern and data pattern.");
                 return;
             }

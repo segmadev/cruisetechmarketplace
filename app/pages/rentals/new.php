@@ -153,6 +153,7 @@
                                             $singleCountry = (array)$singleCountry;
                                             $countryName = $singleCountry['name'] ?? $singleCountry['country'] ?? $singleCountry['eng'];
                                             if($countryName == "USA") $countryName = "USA (Real)";
+                                            if($countryName == "Southafrica") $countryName = "South Africa";
                                             if($network == "3" && ($countryName != "Germany" && $countryName != "Netherlands")) continue;
                                             if($network == "4" && $countryName == "Germany") continue;
                                             $code = $r->getKeyValue($countryName, key: "name");
