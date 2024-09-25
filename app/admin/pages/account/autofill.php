@@ -21,6 +21,8 @@
                     <label for='data-spliter'>Pattern spliter:</label>
                     <input id='data-spliter' class='form-control' type='text' placeholder='(e.g.(, | , :)' value='|' />
                 </div>
+                <input type="checkbox" name="ignoreusername" id="ignoreusername">Ignore Username
+                <hr>
                 <!-- File input for user to upload data -->
                 <div class='mb-3'>
                     <label for='data-file'>Upload Login Data File:</label>

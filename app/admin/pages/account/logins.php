@@ -35,7 +35,6 @@
     if(spliter == 0) spliter = " ";
     let patterns = dataPattern.split(spliter);
     let mismatchedRows = [];  // Array to collect mismatched rows
-    console.log(patterns)
     var usernamePosition = findPosition(patterns);
     if(usernamePosition < 0) {
         alert("Username and ID not found in the data pattern.");
@@ -68,7 +67,8 @@
 
         container.querySelector('textarea[name="login_details[]"]').value = login_details;
         container.querySelector('input[name="preview_link[]"]').value = preview_link;
-        container.querySelector('input[name="username[]"]').value = username;
+        console.log(document.querySelector("#ignoreusername").checked);
+        if(!document.querySelector("#ignoreusername").checked) container.querySelector('input[name="username[]"]').value = username;
     });
     
     // Show a single alert if there are mismatched rows
