@@ -38,7 +38,7 @@ if (!$account || $account == "") {
         </div>
         <?php 
         if($account['description'] != "") { ?>
-            <div class='text-mute accountcontent' id="accountcontent"><?= htmlspecialchars_decode($account['description'])?></div>
+            <div class='text-mute accountcontent' id="accountcontent"><?= $d->handleLinkInText(htmlspecialchars_decode($account['description']));?></div>
             <div class="read-more text-primary" onclick="toggleContent()">Read More</div>
         <?php } ?>
         <hr>

@@ -1012,7 +1012,11 @@ class database
 
     function handleLinkInText($s)
     {
-        return preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?)?)@', '<a href="$1" target="_blank">$1</a><br>', $s);
+     // Decode URL-encoded entities to prevent broken links
+     $s = htmlspecialchars_decode($s, ENT_QUOTES);
+     // Replace URLs in text with proper links
+     return preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\s<>])?)?)@', '<a href="$1" target="_blank">$1</a><br>', $s);
+    
     }
     // addtion functions
 

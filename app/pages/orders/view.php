@@ -48,13 +48,13 @@ if (!$order || $order == "") {
         <?php if ($account['Aditional_auth_info'] != "") {?>
             <hr>
             <ul>
-                <li class="print-ignore addition"><b>Aditional Details:</b> <?= htmlspecialchars_decode($account['Aditional_auth_info']) ?></li>
+                <li class="print-ignore addition"><b>Aditional Details:</b> <?= $d->handleLinkInText(htmlspecialchars_decode($account['Aditional_auth_info'])) ?> </li>
             </ul>
             <?php }?>
         </div>
         <?php if ($account['description'] != "") {?>
         <hr>
-        <p class='text-mute print-ignore'><?= htmlspecialchars_decode($account['description']); ?></p>
+        <p class='text-mute print-ignore'><?= $d->handleLinkInText(htmlspecialchars_decode($account['description'])); ?> </p>
             <?php }?>
 
 

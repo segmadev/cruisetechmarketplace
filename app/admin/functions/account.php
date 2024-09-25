@@ -43,7 +43,7 @@ class accounts extends Account
 
     function update_login_info($ID, $value, $accountID, $username, $preview_link) {
         $ID = htmlspecialchars($ID);
-        $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details", [$ID, $accountID, $value]);
+        $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details = ?", [$ID, $accountID, $value]);
         if(is_array($check) && $check['login_details'] != $value) {
            return $this->message("Account with this details already exits for this account", "error");
         }

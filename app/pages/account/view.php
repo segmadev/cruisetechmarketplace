@@ -22,11 +22,11 @@ if (!$account || $account == "") {
             <ul>
                 <li>Login ID: <?= $account['loginID'] ?> <a href='javascript:void(0)' class='text-primary' onclick="copytext('<?= $account['loginID'] ?>')" ><i class='ti ti-copy'></i></a></li><hr>
                 <li>Login Password: <?= $account['password'] ?> <a href='javascript:void(0)' class='text-primary' onclick="copytext('<?= $account['password'] ?>')" ><i class='ti ti-copy'></i></a></li><hr>
-                <li>Aditional Details: <?= $account['Aditional_auth_info'] ?></li>
+                <li>Aditional Details: <?= $d->handleLinkInText($account['Aditional_auth_info']) ?></li>
             </ul>
         </div>
         <hr>
-        <div class='text-mute'><?= htmlspecialchars_decode($account['description']); ?></div>
+        <div class='text-mute'><?= $d->handleLinkInText(htmlspecialchars_decode($account['description'])); ?></div>
 
 
 
