@@ -95,15 +95,22 @@
                 $service['cost'] = $data['maxPrice'];
             }else{
                 $service = $this->getServices($broker, $noType, $serviceCode, countryID: $data['countryCode']);
+                // var_dump($service);
+                // exit();
             }
             if(!is_array($service) ||count($service) == 0) {
                 return $this->message("Service(s) not available.", "error", 'json');
+            }
+            if($data['broker'] == "sms_activate_two") {
+                if($service['cost'] > 20 && $service['cost'] < 50)  $service['cost'] = $service['cost'] + 20; 
+                // if($service['cost'] > 50 && $service['cost'] < 90)  $service['cost'] = $service['cost'] + 50; 
+                if($service['cost'] > 50)  $service['cost'] = $service['cost'] + 50; 
             }
             $cost = $service['cost'] ?? $service['price'] ?? $data['maxPrice'];
             $valuedPrice = $this->valuedPrice($noType, $broker, $cost);
             if(isset($data['maxPrice']) && $cost > $data['maxPrice']) {
                 $this->getServices($broker, $noType, countryID: $data['countryCode']);
-                return $this->message("The price has changed. The current price for ".($service['name'] ?? "this service")." is now: ".$this->money_format($valuedPrice).".<br> If you can purchase it at this price, <br> please reload this page and try again.", "error", 'json');
+                return $this->message("The price has changed. <br> The current price for ".($service['name'] ?? "this service")." is now: ".$this->money_format($valuedPrice).".<br> If you can purchase it at this price, <br> please reload this page and try again.", "error", 'json');
             }
              if(isset($service['available']) && (int)$service['available'] <= 0){
                 return $this->message("No Number available you can try another network.", "error", 'json');
@@ -152,7 +159,7 @@
             $update_order = $this->update("orders", $update, "ID ='$orderID'");
             if(!$update_order) return $this->message("Unable to update order.", "error", "json");
             return $this->loadpage("index?p=rentals&action=view&accountID=".$rentNumber['ID'], true, "Number booked successfully. Redirecting...");
-            // $this->message("Number booked successfully.", "success", "json");
+            // return $this->message("Number booked successfully.", "success", "json");
         }
 
         function getSecondsUntilExpiration($expirationDate) {
@@ -846,6 +853,7 @@
 
         function smsActivateTwoGetNumber($service, $countryCode, $amount) {
             $request = $this->smsActivateTwoAPI("&action=getNumberV2&service=$service&country=$countryCode&maxPrice=$amount");
+            // var_dump($request);
             return $this->handleNumberResponse($request);
         }
 
@@ -867,6 +875,7 @@
          function smsActivateTwoAPI($params, $method = "GET", $isRaw = false) {
             $url =  $this->sms_end_points['sms_activate_two_base_url']."?api_key=".$this->get_settings("sms_activate_two_API").$params;
             $request =  $this->api_call($url, method: $method, isRaw: $isRaw);
+            // var_dump("message".$request);
             return $request;
          }
 

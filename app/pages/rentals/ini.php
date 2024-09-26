@@ -23,11 +23,11 @@
         $rental_services = (array)$r->getServices($broker, "short_term", countryID: $countryCode, fromCookie: true);
         $countries = (array)$r->anosmsCountries();
     }
-    // if($number_type == "short_term" && $network == 4 && $countryCode != "") {
-    //     $broker = "sms_activation";
-    //     $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
-    //     $countries = $r->smsActivationCountries();
-    // }
+    if($number_type == "short_term" && $network == 4 && $countryCode != "") {
+        $broker = "sms_activation";
+        $rental_services = $r->getServices($broker, "short_term", countryID: $countryCode);
+        $countries = $r->smsActivationCountries();
+    }
 
     if($number_type == "short_term" && $network == 5 && $countryCode != "") {
         $broker = "sms_activate_two";

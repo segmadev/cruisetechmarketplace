@@ -4,7 +4,7 @@
   $service = isset($service['187']) ? (array) $service['187'] : $service;
   $names = explode("/", $service['name']);
   $cost = (!is_array($service['cost'] ?? $service['price'])) ?  $d->money_format($r->valuedPrice($number_type, $broker, $service['cost'] ?? $service['price'])) : $service['cost'] ;?>
-  
+
   <li class="search-items-details col-lg-4 col-md-6 col-12 p-0 m-0"> 
     
                         
@@ -75,9 +75,12 @@
                                         // echo "<p><small>Select max price you can pay.</small></p>";
                                     }
                                     
-                                }else{ ?> 
+                                }else{ 
+                                    
+                                    // var_dump($service);
+                                    ?> 
                                     <input type="hidden" name="maxPrice" value="<?= base64_encode($service['maxPrice'] ?? ($service['cost'] ?? $service['price'])) ?>">
-                                    <?=$cost?>
+                                    <?= $cost ?>
                                <?php }
                             ?>
                             <!-- <label class="btn btn-sm btn-outline-dark text-muted rounded p-0 p-1  font-medium" for="option1">N20,000</label>
