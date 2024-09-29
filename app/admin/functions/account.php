@@ -4,14 +4,21 @@ class accounts extends Account
 {
     function manage_account($account_from, $action = "insert")
     {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
        if( $action == "insert") $_POST['ID'] = uniqid();
         $info = $this->validate_form($account_from, "account", $action);
         if (is_array($info) && $action == "insert") {
+            echo "Insert session";
             $count = $this->add_login_info($info['ID']);
+            echo "Got here after insert";
             return $this->message("Account Created Successfully and $count Login Details added", "success");
         }
         if (is_array($info) && $action == "update"){
+            echo "Update session";
             $count = $this->add_login_info($info['ID']);
+            echo "Got here after update";
             return $this->message("Account updated Successfully and $count Login Details added", "success");
         }
     }
