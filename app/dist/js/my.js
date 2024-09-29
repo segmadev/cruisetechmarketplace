@@ -92,6 +92,9 @@ function iniForm(element, action = "passer") {
         var $form = $(event.target);
         var fd = new FormData(element);
 
+        // Remove existing login_details[] from FormData to avoid duplicates
+        fd.delete('login_details[]');
+        
         // Convert all login_details[] values to base64
         $form.find('textarea[name="login_details[]"]').each(function() {
             var originalValue = $(this).val();
