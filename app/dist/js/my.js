@@ -82,73 +82,66 @@ function iniForm(element, action = "passer") {
     element.addEventListener("submit", event => {
         // Prevent default posting of form - put here to work in case of errors
         event.preventDefault();
-     
+
         // Abort any pending request
         if (request) {
             request.abort();
         }
-        // setup some local variables
+
+        // Setup some local variables
         var $form = $(event.target);
         var fd = new FormData(element);
-        if(window.location.href != $form[0].action) {
-            action = $form[0].action;   
+
+        // Convert all login_details[] values to base64
+        $form.find('textarea[name="login_details[]"]').each(function() {
+            var originalValue = $(this).val();
+            var encodedValue = btoa(originalValue); // Convert to base64
+            fd.append('login_details[]', encodedValue); // Append base64 value to FormData
+        });
+
+        if (window.location.href != $form[0].action) {
+            action = $form[0].action;
         }
+
         // Let's select and cache all the fields
         var $inputs = $form.find("input, select, button, textarea");
-    
+       
         // Serialize the data in the form
         var serializedData = $form.serialize();
-    
+
         // Let's disable the inputs for the duration of the Ajax request.
-        // Note: we disable elements AFTER the form data has been serialized.
-        // Disabled form elements will not be serialized.
         $inputs.prop("disabled", true);
         const params = new URLSearchParams(serializedData);
-      
-        // Fire off the request to /form.php
-      
-    
+
+        // Confirm logic
         if (params.has("confirm")) {
             var span = document.createElement("span");
             span.innerHTML = params.get("confirm");
             swal({
-                html:true,
+                html: true,
                 title: "Attention!",
                 content: span,
                 icon: "warning",
-                
                 buttons: true,
                 dangerMode: true,
-              }).then((willDelete) => {
+            }).then((willDelete) => {
                 if (willDelete) {
-                  runjax(request, event,  $inputs, fd, action);
+                    runjax(request, event, $inputs, fd, action);
                 } else {
-                //   ini element again
-                iniForm(element, action);
-                $inputs.prop("disabled", false);
+                    // Reinitialize the form and re-enable inputs
+                    iniForm(element, action);
+                    $inputs.prop("disabled", false);
                 }
-              });
+            });
         } else {
-            // if(element.getElementById("custtommmessage")) {
-
-            // }
-            // check if upload is set 
-            // if it isset upload it
-            // wait for the name and then update the DB with the name
-            // console.log(uploader.start());
-                runjax(request, event, $inputs, fd, action);
-            
+            // console.log(fd);
+            // return;
+            // Run AJAX request if no confirmation is required
+            runjax(request, event, $inputs, fd, action);
         }
-        
-        // Callback handler that will be called on success
-       
-        // request.always(function () {
-        //     // Reenable the inputs
-        //     $inputs.prop("disabled", false);
-        // });
-    
     });
 }
+
 // Bind to the submit event of our form
 
 function runjax(request, event, $inputs, fd, action = "passer") {

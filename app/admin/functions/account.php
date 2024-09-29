@@ -4,23 +4,32 @@ class accounts extends Account
 {
     function manage_account($account_from, $action = "insert")
     {
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-        error_reporting(E_ALL);
        if( $action == "insert") $_POST['ID'] = uniqid();
         $info = $this->validate_form($account_from, "account", $action);
         if (is_array($info) && $action == "insert") {
-            echo "Insert session";
             $count = $this->add_login_info($info['ID']);
-            echo "Got here after insert";
             return $this->message("Account Created Successfully and $count Login Details added", "success");
         }
         if (is_array($info) && $action == "update"){
-            echo "Update session";
             $count = $this->add_login_info($info['ID']);
-            echo "Got here after update";
             return $this->message("Account updated Successfully and $count Login Details added", "success");
         }
+    }
+
+    function isBase64($value) {
+        // Check if value is a valid base64 string
+        if (base64_encode(base64_decode($value, true)) === $value) {
+            return true;
+        }
+        return false;
+    }
+    
+    function decodeBase64IfNeeded($value) {
+        // Check if value is Base64, if so, decode it
+        if ($this->isBase64($value)) {
+            return base64_decode($value);
+        }
+        return $value; // Return original value if not Base64
     }
 
     function add_login_info($accountID) {
@@ -28,6 +37,7 @@ class accounts extends Account
         if(!isset($_POST['login_details'])) return $count;
         foreach ($_POST['login_details'] as $key => $value) {
             if($value == "" || $value == " ") continue;
+            $value = $this->decodeBase64IfNeeded($value); // Decode Base64 if necessary
             $username = $_POST['username'][$key] ?? "";
             $preview_link = $_POST['preview_link'][$key] ?? "";
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
