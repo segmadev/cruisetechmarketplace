@@ -109,7 +109,7 @@
                             <i class="ti ti-phone"></i> 
                                 <?php if($number_type == "short_term"){ 
                                         if(isset($_GET['networkName']) && $_GET['networkName'] != "") echo htmlspecialchars_decode($_GET['networkName']);
-                                        if(!isset($_GET['networkName']) || $_GET['networkName'] == "") echo 'Short Term Number '.$network; 
+                                        if(!isset($_GET['networkName']) || $_GET['networkName'] == "") echo 'Short Term USA Number '.$network; 
                                     }else{ echo " Short term Numbers"; } ?>
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
