@@ -27,7 +27,12 @@ class accounts extends Account
     function decodeBase64IfNeeded($value) {
         // Check if value is Base64, if so, decode it
         if ($this->isBase64($value)) {
-            return base64_decode($value);
+            $value = base64_decode($value);
+            // Check if the decoded value is already UTF-8
+            if (mb_detect_encoding($value, 'UTF-8', true) === false) {
+                // Convert the string if not UTF-8
+                $value = iconv('ISO-8859-1', 'UTF-8', $value);
+            }
         }
         return $value; // Return original value if not Base64
     }

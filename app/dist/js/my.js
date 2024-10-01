@@ -77,6 +77,10 @@ function getCookieValue(cookieName) {
     $i++;
   });
 
+  function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+}
+
 // ini forms with passed element
 function iniForm(element, action = "passer") {
     element.addEventListener("submit", event => {
@@ -98,7 +102,7 @@ function iniForm(element, action = "passer") {
         // Convert all login_details[] values to base64
         $form.find('textarea[name="login_details[]"]').each(function() {
             var originalValue = $(this).val();
-            var encodedValue = btoa(originalValue); // Convert to base64
+            var encodedValue = utf8ToBase64(originalValue) // Convert to base64
             fd.append('login_details[]', encodedValue); // Append base64 value to FormData
         });
 
