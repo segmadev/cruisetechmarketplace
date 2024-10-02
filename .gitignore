@@ -11,3 +11,4 @@ app/.env
 app/note.txt
 textextractor
 app/.htaccess
+app/api/.htaccess
