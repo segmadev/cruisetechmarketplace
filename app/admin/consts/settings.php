@@ -10,6 +10,7 @@
     $settings_form = [
         "company_name"=>[],
         "website_url"=>[],
+        "tiny_API"=>["is_required"=>false],
         "account_preview"=>["type"=>"select", "Title"=>"Allow account preview", "options"=>["1"=>"Yes", "0"=>"No"]],
         "support_email"=>["input_type"=>"email"],
         "phone_number"=>["input_ype"=>"tel"],
