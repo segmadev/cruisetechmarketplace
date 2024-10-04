@@ -53,9 +53,14 @@ if (!$account || $account == "") {
                 <button class="btn min-width-40 py-0 border border-secondary fs-5 border-start-0 text-secondary"
                     type="button" id="addAmount"><i class="ti ti-plus"></i></button>
             </div>
-            <div class="mt-3"><span
+            <div class="mt-3 d-flex gap-2">
+                <div>
+                <span
                     class="badge text-bg-success fs-2 fw-semibold rounded-3"><?= $a->get_num_of_login($account['ID']) ?> pcs
-                    available</span></div>
+                    available</span>
+                </div>
+                    <a  id="copybtn" style='display: none' class='badge btn btn-sm btn-default'><i class="ti ti-copy"></i> Copy cart</a>
+                </div>
 
                     <div class="p-2 mt-2">
                         <div id="cart-container" class="row gap-3" data-account-id="<?= $account['ID'] ?>"></div>
@@ -74,6 +79,13 @@ if (!$account || $account == "") {
     </form>
     <?php 
         if($accountPreview == 1) {
+            echo '<!-- Search input -->
+                        <b class="text-primary"><small>Search by username or paste preview links copied form cart to search.</small></b>
+                        <input type="text" id="search-input" placeholder="Search by username or preview link..." onkeyup="searchLogins()" class="form-control mb-1">
+                        <!-- Notification Area -->
+                        <div id="notification" style="display: none;"></div>
+                        <div><button id="add-all-to-cart-btn" class="btn btn-sm btn-primary mb-1 mt-0" onclick="addAllToCart()" style="display: none;"><i class="ti ti-plus"></i>Add All results to Cart</button></div>
+                        ';
             echo '<div id="logins-container" class="row gap-2"></div>';
         }
     ?>

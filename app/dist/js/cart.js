@@ -6,7 +6,7 @@ let fetching = false;
 let accountID = cartContainer.data('account-id');
 let amount = document.getElementById('amountvalue').value;
 let platfromImage = document.getElementById('platfromImage').src;
-
+let copybtn = document.getElementById("copybtn");
 // Initialize cart
 let cart = JSON.parse(getCookie('cart' + accountID) || '[]');
 
@@ -104,11 +104,18 @@ window.toggleCart = function(ID, username, previewLink) {
 
 // Function to update cart display
 function updateCartDisplay() {
-    console.log(cart.length);
+    
+    // console.log(cart.length);
     if(cart.length == 0) {
         cartContainer.html('<small><b>Any Account Added will be displayed here.</b></small>');
+        copybtn.style.display = "none";
     }
-    if(cart.length > 0) cartContainer.html(cart.map(login => renderLogin(login, true)).join(''));
+
+
+    if(cart.length > 0){ 
+        cartContainer.html(cart.map(login => renderLogin(login, true)).join(''));
+        copybtn.style.display = "block";
+    }
     updateCartCount(); // Ensure the count is updated whenever the cart is updated
 }
 
@@ -209,3 +216,233 @@ function emptyCartAndRedirect(redirectUrl = null, holder = 9000) {
 // Initial setup
 updateCartDisplay();
 fetchLogins(accountID);
+
+
+function extractPreviewLinks() {
+    // Select the cart container
+    const cartContainer = document.getElementById('cart-container');
+    
+    // Select all the preview links within the cart
+    const previewLinks = cartContainer.querySelectorAll('a[target="_BLANK"]');
+    console.log(previewLinks[0].href);
+    // Initialize an empty string to store the links
+    let links = '';
+    
+    // Loop through the preview links and add each link to the string
+    previewLinks.forEach(link => {
+        links += link.href + '\n'; // Add each link followed by a new line
+    });
+
+    navigator.clipboard.writeText(links).then(() => {
+        // Optionally alert the user
+        alert('Preview links copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy links: ', err);
+    });
+    
+    // Output the links (for demonstration, you can log it or show in a textarea or alert)
+    // alert("All account(s) preview link in cart copied.")
+    // Alternatively, display it in a div or alert
+    // document.getElementById('output').innerText = links; // Example if using a div with id 'output'
+    // alert(links); // If you want to use an alert to display the links
+}
+
+
+
+// Inject the notification HTML into the page under the search input
+function injectNotificationHTML() {
+    const container = document.createElement('div');
+    container.id = 'notification-container';
+    container.style.display = 'none';
+    container.style.marginTop = '10px';
+    container.style.padding = '10px';
+    container.style.borderRadius = '5px';
+    container.style.border = '1px solid #fa5a15'; // Border color
+    container.style.backgroundColor = 'transparent'; // Fully transparent background
+    container.style.color = '#721c24'; // Dark red text
+    container.style.fontFamily = 'Arial, sans-serif';
+    container.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+    container.style.position = 'relative'; // Set position to relative for positioning the cancel button
+    container.style.width = '100%'; // Set notification to 100% width
+
+    const notFoundMessage = document.createElement('p');
+    notFoundMessage.id = 'not-found-message';
+    notFoundMessage.style.margin = '0'; // Remove default margin for the message
+    container.appendChild(notFoundMessage);
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex'; // Use flexbox for layout
+    buttonContainer.style.justifyContent = 'flex-start'; // Align items to start
+    buttonContainer.style.marginTop = '10px'; // Space above buttons
+    buttonContainer.style.gap = '5px'; // Small gap between buttons
+
+    const viewUnfoundBtn = document.createElement('button');
+    viewUnfoundBtn.id = 'view-unfound-btn';
+    viewUnfoundBtn.onclick = showUnfoundLinks;
+    viewUnfoundBtn.style.display = 'none';
+    viewUnfoundBtn.textContent = 'View Unfound Links';
+    viewUnfoundBtn.classList.add('btn', 'btn-sm', 'btn-primary'); // Add primary classes
+    buttonContainer.appendChild(viewUnfoundBtn);
+
+    const copyUnfoundBtn = document.createElement('button');
+    copyUnfoundBtn.id = 'copy-unfound-btn';
+    copyUnfoundBtn.onclick = copyUnfoundLinks;
+    copyUnfoundBtn.textContent = 'Copy Links';
+    copyUnfoundBtn.classList.add('btn', 'btn-sm'); // Add specified classes
+    copyUnfoundBtn.innerHTML += ' <i class="ti ti-copy"></i>'; // Add copy icon
+    buttonContainer.appendChild(copyUnfoundBtn);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Close'; // Change close icon to text 'X'
+    cancelButton.style.background = 'none'; // Remove background
+    cancelButton.style.border = 'none'; // Remove border
+    cancelButton.style.cursor = 'pointer'; // Change cursor to pointer
+    cancelButton.style.fontSize = '16px'; // Adjust the font size for better visibility
+    cancelButton.onclick = () => {
+        container.style.display = 'none'; // Hide the notification on click
+    };
+    buttonContainer.appendChild(cancelButton); // Add the cancel button to the container
+
+    container.appendChild(buttonContainer); // Add button container to the notification
+
+    const unfoundLinksContainer = document.createElement('div');
+    unfoundLinksContainer.id = 'unfound-links-container';
+    unfoundLinksContainer.style.display = 'none';
+
+    const unfoundLinks = document.createElement('pre');
+    unfoundLinks.id = 'unfound-links';
+    unfoundLinksContainer.appendChild(unfoundLinks);
+
+    container.appendChild(unfoundLinksContainer);
+
+    // Append the notification container after the search input
+    const searchInput = document.getElementById('search-input');
+    searchInput.parentNode.insertBefore(container, searchInput.nextSibling); // Insert after the search input
+}
+
+// Call this function once on page load to inject the HTML
+injectNotificationHTML();
+
+let notFoundTerms = []; // To store the unfound terms globally
+
+function isValidUrl(string) {
+    const regex = /^(ftp|http|https):\/\/[^ "]+$/; // Basic URL validation
+    return regex.test(string);
+}
+
+function searchLogins() {
+    const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+    const searchTerms = searchQuery.split(/\s*,\s*|\s+/); // Split by commas or spaces
+    const loginsContainer = document.getElementById('logins-container');
+    const logins = loginsContainer.getElementsByClassName('single-note-item');
+    let searchResultsFound = false;
+
+    const foundTerms = new Set(); // Track terms that are found
+    notFoundTerms = []; // Reset the unfound terms
+
+    // Clear the notification and unfound links on each new search
+    const notificationContainer = document.getElementById('notification-container');
+    notificationContainer.style.display = 'none';
+    const unfoundLinksElement = document.getElementById('unfound-links');
+    unfoundLinksElement.textContent = ''; // Clear the unfound links
+
+    // Loop through each login and check if it matches any search term
+    Array.from(logins).forEach(login => {
+        const username = login.querySelector('h6 p').textContent.toLowerCase();
+        const previewLinks = login.querySelectorAll('a[target="_BLANK"]'); // Select multiple links if present
+        let matchFound = false;
+
+        // Check if the username or any preview link matches any search term
+        searchTerms.forEach(term => {
+            if (username.includes(term)) {
+                matchFound = true;
+                foundTerms.add(term);
+            } else {
+                previewLinks.forEach(link => {
+                    if (link.href.toLowerCase().includes(term)) {
+                        matchFound = true;
+                        foundTerms.add(term);
+                    }
+                });
+            }
+        });
+
+        // Display the item if a match is found, otherwise hide it
+        if (matchFound) {
+            login.style.display = '';
+            searchResultsFound = true;
+        } else {
+            login.style.display = 'none';
+        }
+    });
+
+    // Show or hide "Add All to Cart" button based on search results
+    let addAllBtn = document.getElementById('add-all-to-cart-btn');
+    if (searchResultsFound && searchQuery !== "") {
+        addAllBtn.style.display = 'block';
+    } else {
+        addAllBtn.style.display = 'none';
+    }
+
+    // Determine which search terms were not found
+    notFoundTerms = searchTerms.filter(term => !foundTerms.has(term) && isValidUrl(term));
+
+    // Display notification if there are valid unfound terms
+    if (notFoundTerms.length > 0) {
+        notificationContainer.style.display = 'block';
+        const notFoundMessage = document.getElementById('not-found-message');
+        notFoundMessage.textContent = `${notFoundTerms.length} link(s) not found.`;
+        const viewUnfoundBtn = document.getElementById('view-unfound-btn');
+        viewUnfoundBtn.style.display = 'inline-block';
+    } else {
+        notificationContainer.style.display = 'none';
+        const viewUnfoundBtn = document.getElementById('view-unfound-btn');
+        viewUnfoundBtn.style.display = 'none';
+    }
+}
+
+function showUnfoundLinks() {
+    const unfoundLinksContainer = document.getElementById('unfound-links-container');
+    const unfoundLinksElement = document.getElementById('unfound-links');
+
+    // Display the list of unfound links, each on a new line
+    unfoundLinksElement.textContent = notFoundTerms.join('\n');
+    unfoundLinksContainer.style.display = unfoundLinksContainer.style.display === 'none' ? 'block' : 'none'; // Toggle display
+}
+
+function copyUnfoundLinks() {
+    const unfoundLinksElement = document.getElementById('unfound-links');
+    navigator.clipboard.writeText(unfoundLinksElement.textContent)
+        .then(() => alert('Unfound links copied to clipboard!'))
+        .catch(err => alert('Failed to copy links: ', err));
+}
+
+// Initial call to set the notification container
+injectNotificationHTML();
+
+
+
+function addAllToCart() {
+    const loginsContainer = document.getElementById('logins-container');
+    const logins = loginsContainer.getElementsByClassName('single-note-item');
+
+    // Loop through each visible login and click its "Add to Cart" button
+    Array.from(logins).forEach(login => {
+        if (login.style.display !== 'none') { // Check if login is visible (part of search result)
+            const toggleButton = login.querySelector('a[onclick*="toggleCart"]');
+            if (toggleButton) {
+                toggleButton.click(); // Simulate a click on the "toggleCart" button
+            }
+        }
+    });
+    document.getElementById('search-input').value = "";
+    document.getElementById('add-all-to-cart-btn').style.display = "none";
+}
+    
+
+
+copybtn.addEventListener('click', function (event) {
+    extractPreviewLinks();
+});
+
+
