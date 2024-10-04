@@ -440,6 +440,7 @@ function addAllToCart() {
     });
     document.getElementById('search-input').value = "";
     document.getElementById('add-all-to-cart-btn').style.display = "none";
+    searchLogins();
 }
     
 
