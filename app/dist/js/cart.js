@@ -7,6 +7,7 @@ let accountID = cartContainer.data('account-id');
 let amount = document.getElementById('amountvalue').value;
 let platfromImage = document.getElementById('platfromImage').src;
 let copybtn = document.getElementById("copybtn");
+let clearbtn = document.getElementById("clearbtn");
 // Initialize cart
 let cart = JSON.parse(getCookie('cart' + accountID) || '[]');
 
@@ -109,12 +110,14 @@ function updateCartDisplay() {
     if(cart.length == 0) {
         cartContainer.html('<small><b>Any Account Added will be displayed here.</b></small>');
         copybtn.style.display = "none";
+        clearbtn.style.display = "none";
     }
 
 
     if(cart.length > 0){ 
         cartContainer.html(cart.map(login => renderLogin(login, true)).join(''));
         copybtn.style.display = "block";
+        clearbtn.style.display = "block";
     }
     updateCartCount(); // Ensure the count is updated whenever the cart is updated
 }
@@ -444,5 +447,28 @@ function addAllToCart() {
 copybtn.addEventListener('click', function (event) {
     extractPreviewLinks();
 });
+clearbtn.addEventListener('click', function (event) {
+    clearCart();
+});
 
 
+
+function clearCart() {
+    // Prompt the user for confirmation before clearing the cart
+    const confirmation = confirm("Are you sure you want to clear the cart? This action cannot be undone.");
+
+    if (confirmation) {
+        // Select all minus buttons within the cart container
+        const minusButtons = document.querySelectorAll('#cart-container .btn.btn-sm.bg-primary.text-white');
+
+        // Loop through each button and simulate a click to remove items from the cart
+        minusButtons.forEach(button => {
+            button.click();
+        });
+
+        // Optional: You can log a message to the console after clearing the cart
+        console.log('Cart cleared: clicked all minus buttons.');
+    } else {
+        console.log('Cart clearing cancelled.');
+    }
+}

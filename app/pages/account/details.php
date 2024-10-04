@@ -59,7 +59,8 @@ if (!$account || $account == "") {
                     class="badge text-bg-success fs-2 fw-semibold rounded-3"><?= $a->get_num_of_login($account['ID']) ?> pcs
                     available</span>
                 </div>
-                    <a  id="copybtn" style='display: none' class='badge btn btn-sm btn-default'><i class="ti ti-copy"></i> Copy cart</a>
+                    <a  id="copybtn" style='display: none' class='badge btn btn-sm btn-dark'><i class="ti ti-copy"></i> Copy cart</a>
+                    <a  id="clearbtn" style='display: none' class='badge btn btn-sm btn-danger'><i class="ti ti-trash"></i> Clear cart</a>
                 </div>
 
                     <div class="p-2 mt-2">
@@ -84,7 +85,7 @@ if (!$account || $account == "") {
                         <input type="text" id="search-input" placeholder="Search by username or preview link..." onkeyup="searchLogins()" class="form-control mb-1">
                         <!-- Notification Area -->
                         <div id="notification" style="display: none;"></div>
-                        <div><button id="add-all-to-cart-btn" class="btn btn-sm btn-primary mb-1 mt-0" onclick="addAllToCart()" style="display: none;"><i class="ti ti-plus"></i>Add All results to Cart</button></div>
+                        <div><button id="add-all-to-cart-btn" class="btn btn-sm btn-primary mb-1 mt-1" onclick="addAllToCart()" style="display: none;"><i class="ti ti-plus"></i>Add All results to Cart</button></div>
                         ';
             echo '<div id="logins-container" class="row gap-2"></div>';
         }
