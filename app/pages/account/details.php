@@ -81,7 +81,7 @@ if (!$account || $account == "") {
     <?php 
         if($accountPreview == 1) {
             echo '<!-- Search input -->
-                        <b class="text-primary fs-2"><small>Search by username or paste preview links copied from the cart to search.</small></b>
+                        <b class="text-primary fs-2"><small>Search by username or paste preview links copied from the cart.</small></b>
                         <input type="text" id="search-input" placeholder="Search by username or preview link..." onkeyup="searchLogins()" class="form-control mb-1">
                         <!-- Notification Area -->
                         <div id="notification" style="display: none;"></div>
