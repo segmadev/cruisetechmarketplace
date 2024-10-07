@@ -20,7 +20,27 @@
   </div>
 </div>
 <br><br><br>
-
+<style>
+  .telegram-icon {
+    position: fixed;
+    bottom: 125px!important;
+    right: 20px;
+    z-index: 10000;
+    cursor: pointer;
+    width: 100px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: 12px;
+    background-color: deepskyblue;
+    
+    display: flex;
+  }
+  .telegram-icon img{
+    width: 20px;
+    margin-right:5px;
+  }
+</style>
+<div class="telegram-icon"><a style="color: white!important;" target="_BLANK" href="https://t.me/cruisetechsupport"><img src="https://cdn.pixabay.com/photo/2021/12/27/10/50/telegram-icon-6896828_1280.png" alt=""> <b>Chat Us</b></a></div>
 <footer class="d-flex justify-content-center bottom-nav" style="margin-top: 50px">
   <div class="col-11 shadow d-flex justify-content-around p-1 rounded botton-navs bg-light-primary">
     <a data-url="index" class="btn btn-sm p-2 m-0 <?php if ($page == "dashboard") {
@@ -52,7 +72,7 @@
 
     <!-- <a href="index?p=profile" class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Settings"><img src="<?= $u->get_profile_icon_link($userID) ?>" alt="" width="40" height="40"></a> -->
   </div>
- 
+
 </footer>
 <script>
   function search_div(keyword, id) {
