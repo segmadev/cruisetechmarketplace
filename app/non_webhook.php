@@ -4,4 +4,8 @@
     require_once "admin/include/database.php";
     require_once "functions/rentals.php";
     $r = new rentals;
-    echo $r->nonHandleCallBack();
+    if(isset($_GET['broker']) && $_GET['broker'] == "daisysms") {
+        echo $r->daisysmsWebhook();
+    }else {
+        echo $r->nonHandleCallBack();
+    }

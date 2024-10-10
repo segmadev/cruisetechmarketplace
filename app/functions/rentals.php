@@ -462,6 +462,32 @@
             
         }
 
+        function daisysmsWebhook() {
+            // Read the raw POST data from the incoming callback
+            $rawData = file_get_contents('php://input');
+            // Decode the JSON data into a PHP array
+            $data = json_decode($rawData, true);
+            $data = (array)$data;
+            if(!is_array($data) || count($data) == 0) $data = $_POST;
+            if(is_array($data) || count($data) == 0) return;
+            if(isset($data['message'])) (array)$data['message'];
+            if(isset($data['event']) && $data['event'] == "incoming_message") {
+                $data = $data['message'][0] ?? $data['message'];
+            }
+            if(!is_array($data) || !isset($data['activationId'])) return ;
+            $accountID = $data['activationId'];
+            $code = $data['text'] ?? $data['code'];
+            $data = $this->getall("orders", "accountID = ? and broker_name = ?", [$accountID, "daisysms"]);
+            if(!is_array($data)) return ;
+            $id = $data['accountID'];
+            $orderID = $data['ID'];
+            if($this->newCode($id, $code, $data['sender'] ?? "", $data['number'])) {
+                return json_encode(["success"]);
+            }
+            $this->update("orders", ["activate_expire_date"=>""], "ID ='$orderID'");
+        }
+
+
         function valuedPrice($noType, $broker, $amount) {
             // echo "added_value_amount_".$broker."_".$noType;
             $currency = null;
