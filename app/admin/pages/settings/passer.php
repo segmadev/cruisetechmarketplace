@@ -5,4 +5,3 @@ $test_from = [
 if(isset($_POST['upload_image'])) {
     $d->validate_form($test_from);
 }
-?>

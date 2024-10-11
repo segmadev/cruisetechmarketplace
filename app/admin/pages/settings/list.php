@@ -34,6 +34,27 @@
     </div>
 </div>
 
+
+
+<div id="helppage" class="card col-12">
+    <div class="border-bottom title-part-padding">
+        <h4 class="card-title mb-0">Help Videos Links</h4>
+    </div>
+    <div class="card-body">
+        <form class="mt-4" action="" id="foo" novalidate="">
+            <div class="row">
+                <?php
+                echo $c->create_form($settings_help); ?>
+                <input type="hidden" name="updatesettings" value="" id="">
+                <input type="hidden" name="page" value="settings" id="">
+                <input type="hidden" name="settings" value="help">
+            </div>
+            <div id="custommessage"></div>
+            <input type="submit" value="Submit" class="btn btn-primary col-3">
+        </form>
+    </div>
+</div>
+
 <div id="seopage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">SEO Details</h4>

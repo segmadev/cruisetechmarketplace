@@ -9,6 +9,13 @@
         selector: '#richtext2',
         height: 400
       });
+      tinymce.init({
+        selector: '#richtext_help',
+        plugins: 'media link',
+        // toolbar: 'media',
+        toolbar: 'media link code undo redo styles bold italic alignleft aligncenter alignright alignjustify | bullist numlist outdent indent',
+        height: 400
+      });
     </script>
 
 <style>

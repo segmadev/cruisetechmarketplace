@@ -197,6 +197,21 @@ require_once "include/ini-session.php";
             </li>
             </ul>
             <?php } ?>
+
+            <?php if($d->get_settings("get_help") && $d->get_settings("get_help") != "" && $d->get_settings("get_help") != "array") { ?>
+              <ul id="sidebarnav bg-transparent border-1 border-danger">
+                <li class="sidebar-item  mt-2">
+                  <a class="sidebar-link" href="index?p=viewer&action=new" aria-expanded="false">
+                    <span>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png" style="width:20px" srcset="">
+                    </span>
+                    <span class="hide-menu"> <span class="m-0 p-0 text-danger">Get Help</span> <p class="fs-2 text-muted m-0 p-0">How to use our platfrom</p></span>
+                    
+                  </a>
+                </li>
+                </ul>
+            <?php } ?>
+
         </nav>
 
         <!-- End Sidebar navigation -->
