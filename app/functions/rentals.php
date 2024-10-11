@@ -468,6 +468,7 @@
             // Decode the JSON data into a PHP array
             $data = json_decode($rawData, true);
             $data = (array)$data;
+            $this->update_catched_data("daisysmsWebhook", json_encode($data) ?? "Nothing");
             if(!is_array($data) || count($data) == 0) $data = $_POST;
             if(is_array($data) || count($data) == 0) return;
             if(isset($data['message'])) (array)$data['message'];
