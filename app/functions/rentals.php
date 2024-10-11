@@ -653,6 +653,7 @@
             if(isset($data['event']) && $data['event'] == "incoming_message") {
                 $message = $data['message'][0] ?? $data['message'];
                 if(!is_array($message)) return ;
+                $this->update_catched_data("nonHandleCallBack", json_encode($message));
                 $code = $message['sms'];
                 $number = $message['number'];
                 $id = $message['order_id'];
