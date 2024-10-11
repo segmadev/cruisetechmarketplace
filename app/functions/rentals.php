@@ -470,19 +470,15 @@
             $data = (array)$data;
             $this->update_catched_data("daisysmsWebhook", json_encode($data) ?? "Nothing");
             if(!is_array($data) || count($data) == 0) $data = $_POST;
-            if(is_array($data) || count($data) == 0) return;
-            if(isset($data['message'])) (array)$data['message'];
-            if(isset($data['event']) && $data['event'] == "incoming_message") {
-                $data = $data['message'][0] ?? $data['message'];
-            }
+            if(!is_array($data) || count($data) == 0) return;
             if(!is_array($data) || !isset($data['activationId'])) return ;
             $accountID = $data['activationId'];
-            $code = $data['text'] ?? $data['code'];
+            $code = htmlspecialchars($data['text'] ?? $data['code']);
             $data = $this->getall("orders", "accountID = ? and broker_name = ?", [$accountID, "daisysms"]);
             if(!is_array($data)) return ;
             $id = $data['accountID'];
             $orderID = $data['ID'];
-            if($this->newCode($id, $code, $data['sender'] ?? "", $data['number'])) {
+            if($this->newCode($id, $code, $data['sender'] ?? "", $data['loginIDs'])) {
                 return json_encode(["success"]);
             }
             $this->update("orders", ["activate_expire_date"=>""], "ID ='$orderID'");
