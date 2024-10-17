@@ -7,7 +7,7 @@ if ($action == "list") {
 }
 
 if (isset($_GET['tx_ref']) && isset($_GET['transaction_id']) && !isset($_POST['start'])) {
-    $de->validate_payment(htmlspecialchars($_GET['tx_ref']), htmlspecialchars($_GET['transaction_id']), $userID);
+    // $de->validate_payment(htmlspecialchars($_GET['tx_ref']), htmlspecialchars($_GET['transaction_id']), $userID);
 }
 if (isset($_GET['new_account'])) {
     try {

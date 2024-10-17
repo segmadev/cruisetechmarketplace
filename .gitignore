@@ -12,3 +12,4 @@ app/note.txt
 textextractor
 app/.htaccess
 app/api/.htaccess
+app/extract.html

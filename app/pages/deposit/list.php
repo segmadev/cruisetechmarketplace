@@ -28,11 +28,11 @@ $account_details = $de->get_account_details($userID);
                         }
                     ?>
                 </div>
-                <!-- <div class="card card-body bg-light-danger p-3">
+                <div class="card card-body bg-light-danger p-3">
                     <h5>Other Payment Option</h5>
                     <small>Click the fund account button below to try other method of funding your account.</small>
                     <a href='#' data-bs-toggle='modal' data-bs-target='#bs-example-modal-md' id='modal-viewer-funaccount' data-url='modal?p=deposit&action=new' data-title='Fund Account' onclick='modalcontent(this)' class='btn btn-sm bg-primary text-light mt-2'>+ Fund Account</a>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>

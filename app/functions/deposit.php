@@ -23,6 +23,7 @@ class deposit extends user
         if(!is_array($account)) return null;
         return $account;
     }
+
     function create_account_details(array $user) {
         if($this->get_settings("bvn") == "") return false;
         if($this->getall("user_accounts", "userID = ?", [$user['ID']], fetch: "") > 0) return false;

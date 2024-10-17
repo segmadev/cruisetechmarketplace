@@ -2,8 +2,8 @@
 <div class="p-5">
     <h3>Fund your Account</h3>
     <hr />
-    <p>This payment method is not available at the moment.</p>
-    <!-- <form method="POST" id="foo" action="">
+    <!-- <p>This payment method is not available at the moment.</p> -->
+    <form method="POST" id="foo" action="">
         <label for="amount">Amount(NGN)</label><br>
         <input type="number" class="from-control mt-3 mb-3 w-100"  placeholder="0000" name="amount" />
         <input type="hidden" name="ini_payment" value="">
@@ -11,5 +11,5 @@
         <br>
         <div id="custommessage"></div>
         <button type="submit" class="btn btn-primary">+ Add Fund</button>
-    </form> -->
+    </form>
 </div>
