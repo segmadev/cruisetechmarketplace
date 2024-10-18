@@ -10,7 +10,7 @@
     $settings_form = [
         "company_name"=>[],
         "website_url"=>[],
-        "tiny_API"=>["is_required"=>false],
+        "tiny_API"=>["is_required"=>false, "input_type"=>"password"],
         "account_preview"=>["type"=>"select", "Title"=>"Allow account preview", "options"=>["1"=>"Yes", "0"=>"No"]],
         "support_email"=>["input_type"=>"email"],
         "phone_number"=>["input_ype"=>"tel"],
@@ -20,15 +20,16 @@
         "live_chat_widget"=>["type"=>"textarea", "global_class"=>"w-100"],
        ];
        $settings_form['input_data'] = $s->getdata($settings_form);
+       $settings_form['input_data']['tiny_API'] = "--placeholder";
        $settings_help =["help_title"=>[], "get_help"=>["type"=>"textarea", "id"=>"richtext_help", "global_class"=>"w-100"]];
        $s->create_settings($settings_help);
        $settings_help['input_data'] = $s->getdata($settings_help);
        $settings_backup = [
             "dropbox_API"=>["input_type"=>"password", "is_required"=>false],
             "backup_interval"=>["input_type"=>"number", "title"=>"Backup Interval (in hour)", "description"=>"Backup Interval in hour"],
+            "input_data"=>["dropbox_API"=>"--placeholder", $s->getdata(["backup_interval"=>[]])]
         ];
         $s->create_settings($settings_backup);
-        $settings_backup['input_data'] = $s->getdata($settings_backup);
 
         $settings_social_media = [
             "telegram_link" => ["is_required"=>false],
@@ -101,3 +102,8 @@
     $rentals_settings['input_data'] = $s->getdata($rentals_settings);
     $rentals_settings['input_data']['rentals_API'] = "--placeholder";
     $rentals_settings['input_data']['exchange_rate_API'] = '--placeholder';
+    $rentals_settings['input_data']['nonvoipusnumber_email'] = '--placeholder';
+    $rentals_settings['input_data']['nonvoipusnumber_password'] = '--placeholder';
+    $rentals_settings['input_data']['sms_activation_API'] = '--placeholder';
+    $rentals_settings['input_data']['sms_bower_API'] = '--placeholder';
+    $rentals_settings['input_data']['anosim_API'] = '--placeholder';
