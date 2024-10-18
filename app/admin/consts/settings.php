@@ -23,6 +23,13 @@
        $settings_help =["help_title"=>[], "get_help"=>["type"=>"textarea", "id"=>"richtext_help", "global_class"=>"w-100"]];
        $s->create_settings($settings_help);
        $settings_help['input_data'] = $s->getdata($settings_help);
+       $settings_backup = [
+            "dropbox_API"=>["input_type"=>"password", "is_required"=>false],
+            "backup_interval"=>["input_type"=>"number", "title"=>"Backup Interval (in hour)", "description"=>"Backup Interval in hour"],
+        ];
+        $s->create_settings($settings_backup);
+        $settings_backup['input_data'] = $s->getdata($settings_backup);
+
         $settings_social_media = [
             "telegram_link" => ["is_required"=>false],
             "facebook_link" => ["is_required"=>false],
