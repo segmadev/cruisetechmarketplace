@@ -87,7 +87,7 @@
                             <label class="btn btn-sm btn-outline-dark text-muted rounded p-0 p-1  font-medium" for="option1">N2,000</label> -->
 
                         </h6>
-                        <span class="fs-1 m-0 p-0"><?= // $avilable ?></span>
+                        <span class="fs-1 m-0 p-0"><?php // echo $avilable ?></span>
                         
                     </div>
                         </form>
