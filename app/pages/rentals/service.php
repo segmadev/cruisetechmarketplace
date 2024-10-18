@@ -47,7 +47,7 @@
                                     echo '<h6 class="m-0">' . $d->short_text($name, 20) . '</h6>';
                                     unset($names[0]);
                                     if(count($names) > 0) $name = implode(',', $names);
-                                    echo '<span class="fs-2">'.$name.'</span>';
+                                    echo '<span class="fs-2" style="color: black!important">'.$name.'</span>';
                                 }
                                 ?>
                           <!-- <h6 class="mb-1 fs-4 fw-semibold">PayPal</h6>
@@ -87,7 +87,7 @@
                             <label class="btn btn-sm btn-outline-dark text-muted rounded p-0 p-1  font-medium" for="option1">N2,000</label> -->
 
                         </h6>
-                        <span class="fs-1 m-0 p-0"><?= $avilable ?></span>
+                        <span class="fs-1 m-0 p-0"><?= // $avilable ?></span>
                         
                     </div>
                         </form>

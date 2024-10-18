@@ -155,7 +155,7 @@
                                             if($countryName == "USA") $countryName = "USA (Real)";
                                             if($countryName == "Southafrica") $countryName = "South Africa";
                                             if($network == "3" && ($countryName != "Germany" && $countryName != "Netherlands")) continue;
-                                            if($network == "4" && $countryName == "Germany") continue;
+                                            if(($network == "4" || $network== "6") && $countryName == "Germany") continue;
                                             $code = $r->getKeyValue($countryName, key: "name");
                                             $countryID = $singleCountry['id'] ?? $singleCountry['ID'];
                                             $flagUrl = "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24";
