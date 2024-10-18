@@ -27,8 +27,9 @@
        $settings_backup = [
             "dropbox_API"=>["input_type"=>"password", "is_required"=>false],
             "backup_interval"=>["input_type"=>"number", "title"=>"Backup Interval (in hour)", "description"=>"Backup Interval in hour"],
-            "input_data"=>["dropbox_API"=>"--placeholder", $s->getdata(["backup_interval"=>[]])]
         ];
+        $settings_backup['input_data'] = $s->getdata($settings_backup);
+        $settings_backup['input_data']['dropbox_API'] = "--placeholder";
         $s->create_settings($settings_backup);
 
         $settings_social_media = [
