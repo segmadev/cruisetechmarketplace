@@ -15,6 +15,7 @@
                 </div>
                 <div class='mb-3'>
                     <label for='data-pattern'>Data Pattern:</label>
+                    <p>Use <span class='text-primary'>null</span> to remove the values you don't need.</p>
                     <input id='data-pattern' class='form-control' type='text' placeholder='Enter data pattern (e.g., username|password|2fa key|Mail|mail pass|Recovery mail|additional info)' value='username|password|2fa key|Mail|mail pass|Recovery mail|additional info' />
                 </div>
                 <div class='mb-3'>

@@ -56,9 +56,15 @@
         let username = details[usernamePosition];  // Assuming the first field is 'id', treat it as username
         let preview_link = urlPattern.replace(/username|ID|id/, username);
 
-        // Construct login details excluding optional fields like 'dob'
-        let login_details = details.slice(0, patterns.length).join(' | ');
+        let filteredDetails = [];
+        patterns.forEach((pattern, i) => {
+            if (!pattern.includes('null')) {
+                filteredDetails.push(details[i]); // Keep only needed values
+            }
+        });
 
+        // Construct login details excluding optional fields like 'dob'
+        let login_details = filteredDetails.join(`|`);
         // Call add_login to create new inputs
         add_login();
 
