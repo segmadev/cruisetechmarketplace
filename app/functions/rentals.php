@@ -662,8 +662,12 @@
                 $this->update_catched_data("nonHandleCallBack", json_encode($message));
                 $code = $message['sms'];
                 $number = $message['number'];
-                $id = $message['order_id'];
-                $data = $this->getall("orders", "accountID = ? and loginIDs = ?", [$id, $number]);
+                if(isset($message['order_id']) && $message['order_id'] != "") {
+                    $id = $message['order_id'];
+                    $data = $this->getall("orders", "accountID = ? and loginIDs = ?", [$id, $number]);
+                }else {
+                    $data = $this->getall("orders", "loginIDs = ?", [$number]);
+                }
                 if(!is_array($data)) return ;
                 $id = $data['accountID'];
                 $orderID = $data['ID'];
