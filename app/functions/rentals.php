@@ -649,6 +649,12 @@
             // Decode the JSON data into a PHP array
             $data = json_decode($rawData, true);
             $data = (array)$data;
+            $file = fopen("non_report.log", "a");
+            if ($file) {
+                fwrite($file, $rawData . PHP_EOL);
+                if(count($_POST) > 0) fwrite($file, json_encode($_POST) . PHP_EOL);
+                fclose($file);
+            }
             if(isset($data['message'])) (array)$data['message'];
             if(isset($data['event']) && $data['event'] == "incoming_message") {
                 $message = $data['message'][0] ?? $data['message'];
@@ -667,6 +673,7 @@
                 }
                 $this->update("orders", ["activate_expire_date"=>""], "ID ='$orderID'");
             }
+            
         }
 
         // anosim api calls
