@@ -664,9 +664,9 @@
                 $number = $message['number'];
                 if(isset($message['order_id']) && $message['order_id'] != "") {
                     $id = $message['order_id'];
-                    $data = $this->getall("orders", "accountID = ? and loginIDs = ?", [$id, $number]);
+                    $data = $this->getall("orders", "accountID = ? and loginIDs = ? order by date desc", [$id, $number]);
                 }else {
-                    $data = $this->getall("orders", "loginIDs = ?", [$number]);
+                    $data = $this->getall("orders", "loginIDs = ? order by date desc", [$number]);
                 }
                 if(!is_array($data)) return ;
                 $id = $data['accountID'];
