@@ -110,8 +110,8 @@ function adjustJdivButtonOnMobile() {
     if (window.innerWidth <= 968) {
         // Select the jdiv element with the zoom style
       //  const jdivButton = document.querySelector('.chaport-launcher-button');
-        const mainjdivButton = document.querySelector('.brevo-conversations');
-        const mainjdivButtonVisible = document.querySelector('.brevo-conversations--visible');
+        const mainjdivButton = document.querySelector('.chatway--trigger-container');
+        // const mainjdivButtonVisible = document.querySelector('.brevo-conversations--visible');
 
         // If the jdivButton exists, modify its style
         
@@ -120,7 +120,7 @@ function adjustJdivButtonOnMobile() {
         //     // jdivButton.style.zoom = "0.2";  // Use transform instead of zoom
         // }
         // Adjust button position dynamically based on viewport height
-        if (mainjdivButton && !mainjdivButtonVisible) {
+        if (mainjdivButton) {
             mainjdivButton.style.transform = "scale(0.8)";
             const viewportHeight = window.innerHeight;
             const buttonHeight = mainjdivButton.offsetHeight;

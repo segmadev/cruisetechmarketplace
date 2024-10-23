@@ -8,6 +8,13 @@ let amount = document.getElementById('amountvalue').value;
 let platfromImage = document.getElementById('platfromImage').src;
 let copybtn = document.getElementById("copybtn");
 let clearbtn = document.getElementById("clearbtn");
+
+let discountAppliedOnce = false;
+
+add = document.getElementById("addAmount");
+minus = document.getElementById("minusAmount");
+var qtynumber = document.getElementById("qtynumber");
+
 // Initialize cart
 let cart = JSON.parse(getCookie('cart' + accountID) || '[]');
 
@@ -69,17 +76,132 @@ function addHttpsToLink(link) {
     return link;
 }
 
-// Function to update the cart count in the HTML
-function updateCartCount() {
-    if(cart.length > 0)  document.getElementById("qtynumberDiv").style.display = "none";
-    if(cart.length == 0)  document.getElementById("qtynumberDiv").style.display = "flex";
-    document.getElementById("qtynumber").value = cart.length;
-    document.getElementById("cartDetails").innerHTML = JSON.stringify(cart);
-    document.getElementById("DisplayAmount").innerHTML = "N" + (parseInt(amount) * cart.length).toLocaleString('en-US') + "</b><br> Quantity: <b>"+cart.length+"</b>";
-    // (parseInt(amount) * currentValue).toLocaleString('en-US')
+// let cart = []; // Example cart: [{id: 1, name: 'item1'}, {id: 2, name: 'item2'}]
+ // Example: [{id: 1, name: 'item1'}, {id: 2, name: 'item2'}]
+// let discountAppliedOnce = false; // Track if the discount was applied after page load
 
-    // $('#qtynumberere').value(cart.length);
+
+function applyDiscount(totalAmount) {
+    let discountData = document.getElementById("discountData").value;
+    if (!discountData) return { amount: totalAmount, discountApplied: false, discountName: "" };
+
+    discountData = JSON.parse(atob(discountData));
+    const qtynumberValue = parseInt(qtynumber.value);
+
+    if (qtynumberValue >= parseInt(discountData.no_order) && discountData.totalCredit > 0) {
+        let discountedAmount = totalAmount;
+        let discountValue = "";
+        let discountName = discountData.name;
+
+        if (discountData.discount_type === "percentage") {
+            discountedAmount -= totalAmount * (parseFloat(discountData.discount) / 100);
+            discountValue = `${discountData.discount}% off`;
+        } else if (discountData.discount_type === "fixed") {
+            discountedAmount -= parseFloat(discountData.discount);
+            discountValue = `N${parseFloat(discountData.discount).toLocaleString("en-US")} off`;
+        }
+
+        if (!discountAppliedOnce) {
+            showCelebration(); // Show celebration on first discount application
+            discountAppliedOnce = true;
+        }
+
+        return { amount: discountedAmount, discountApplied: true, discountName, discountValue };
+    }
+
+    return { amount: totalAmount, discountApplied: false, discountName: "" };
 }
+
+function formatAmount(amount) {
+    return `<?= htmlspecialchars(currency ?? "N") ?>${amount.toLocaleString('en-US')}`;
+}
+
+function displayAmounts(totalAmount, discountedAmount, discountApplied, discountValue, discountName) {
+    let content = `<span style="color: ${discountApplied ? "#f4a1a1" : "#333"}; text-decoration: ${discountApplied ? "line-through" : "none"};">${formatAmount(totalAmount)}</span>`;
+    
+    if (discountApplied) {
+        content += `
+            <span style="color: #4b8f4b; font-size: 1rem; font-weight: bold; margin-left: 10px;">
+                ${formatAmount(discountedAmount)}
+            </span>
+            <small style="font-size: 0.8rem; color: #4b8f4b;">
+                (${discountValue} - ${discountName})
+            </small>`;
+    }
+
+    return content;
+}
+
+function updateDisplayAmount(qtyValue = null, amountValue = null) {
+    const qtynumberValue = qtyValue != null ? qtyValue : parseInt(qtynumber.value);
+    const totalAmount = amountValue != null ? (amountValue * qtynumberValue) : (amount * qtynumberValue);
+    const { amount: discountedAmount, discountApplied, discountName, discountValue } = applyDiscount(totalAmount);
+
+    const displayContent = displayAmounts(totalAmount, discountedAmount, discountApplied, discountValue, discountName);
+    const encouragementText = qtynumberValue < JSON.parse(atob(document.getElementById("discountData").value)).no_order
+        ? `<p style="font-size: 0.85rem; color: #777; margin-top: 5px;">
+             Add <b>${JSON.parse(atob(document.getElementById("discountData").value)).no_order - qtynumberValue}</b> more items to unlock an exclusive discount!
+           </p>`
+        : '';
+
+    document.getElementById("DisplayAmount").innerHTML = displayContent + `<p style="font-size: 1rem;">Quantity: <b>${qtynumberValue}</b></p>` + encouragementText;
+}
+
+function updateCartCount() {
+    const cartDetails = document.getElementById("cartDetails");
+    const qtynumberDiv = document.getElementById("qtynumberDiv");
+    const qtynumberInput = document.getElementById("qtynumber");
+
+    qtynumberDiv.style.display = cart.length > 0 ? "none" : "flex";
+    qtynumberInput.value = cart.length;
+    cartDetails.value = JSON.stringify(cart, null, 2);
+    
+    if (cart.length === 0) {
+        document.getElementById("DisplayAmount").innerHTML = `<p style="color: gray; font-size: 1rem;">No items in the cart.</p>`;
+        return;
+    }
+
+    updateDisplayAmount(); // Sync display update with cart count update
+}
+
+function showCelebration() {
+    const celebrationDiv = document.createElement("div");
+    celebrationDiv.innerHTML = `🎉 Congratulations! You unlocked a discount! 🎉`;
+    celebrationDiv.style.position = "fixed";
+    celebrationDiv.style.top = "20%";
+    celebrationDiv.style.left = "50%";
+    celebrationDiv.style.transform = "translateX(-50%)";
+    celebrationDiv.style.background = "#e0ffe0";
+    celebrationDiv.style.color = "#4b8f4b";
+    celebrationDiv.style.padding = "15px 30px";
+    celebrationDiv.style.fontSize = "1.2rem";
+    celebrationDiv.style.borderRadius = "10px";
+    celebrationDiv.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.1)";
+    celebrationDiv.style.zIndex = "1000";
+    document.body.appendChild(celebrationDiv);
+
+    setTimeout(() => {
+        celebrationDiv.style.opacity = "1";
+        celebrationDiv.style.transition = "opacity 0.5s";
+        setTimeout(() => {
+            celebrationDiv.style.opacity = "0";
+            setTimeout(() => celebrationDiv.remove(), 500);
+        }, 2000);
+    }, 100);
+}
+
+
+
+// function updateCartCount() {
+//     if(cart.length > 0)  document.getElementById("qtynumberDiv").style.display = "none";
+//     if(cart.length == 0)  document.getElementById("qtynumberDiv").style.display = "flex";
+//     document.getElementById("qtynumber").value = cart.length;
+//     document.getElementById("cartDetails").innerHTML = JSON.stringify(cart);
+//     document.getElementById("DisplayAmount").innerHTML = "N" + (parseInt(amount) * cart.length).toLocaleString('en-US') + "</b><br> Quantity: <b>"+cart.length+"</b>";
+//     // (parseInt(amount) * currentValue).toLocaleString('en-US')
+
+//     // $('#qtynumberere').value(cart.length);
+// }
 
 // Global function to add or remove login from cart
 window.toggleCart = function(ID, username, previewLink) {

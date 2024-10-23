@@ -39,6 +39,7 @@ require_once "include/ini-session.php";
       background-color: rgba(124, 143, 172, 0.75)!important;
     }
   </style>
+  <link rel="stylesheet" href="dist/css/badge.css?n=6432">
 </head>
 
 <body>
@@ -171,8 +172,10 @@ require_once "include/ini-session.php";
           <form action="index?logout=" method="post">
             <div class=" fixed-profile bg-light-secondary rounded sidebar-ad m-0 p-0 p-3 mt-3">
               <a href='index?p=profile' class="hstack gap-3">
-                <div class="john-img">
-                  <img src="<?= $u->get_profile_icon_link($userID) ?>" class="rounded-circle" width="40" height="40" alt="">
+                <div class="john-img" style="zoom: 0.5; position: relative">
+                  <?= $u->displayProfile($userID, $user_data['stage']['position'] ?? 0) ?>
+
+                 
                 </div>
                 <div class="john-title">
                   <h6 class="mb-0 fs-3 fw-semibold"><?= $d->short_text($u->get_name($userID), 8, true) ?></h6>
@@ -247,10 +250,9 @@ require_once "include/ini-session.php";
             </a>
           </button> -->
           <a class="navbar-toggler p-0 border-0" href="index?p=profile" type="button" id="drop2">
-            <div class="nav-link nav-icon-hover">
-              <div class="rounded-circle overflow-hidden me-6">
-                <img src="<?= $u->get_profile_icon_link($userID) ?>" alt="" width="40" height="40">
-              </div>
+            <div class="nav-link nav-icon-hover" style="scale: 0.8">
+              <!-- <?php // $u->displayProfile($userID, $user_data['stage']['position'] ?? 0) ?> -->
+              <img src="<?= $u->get_profile_icon_link($userID) ?>" class="rounded-circle" width="40" height="40" alt="">
               <!-- <div class="notification bg-primary rounded-circle"></div> -->
             </div>
           </a>

@@ -87,7 +87,9 @@
         <div class="card-header">
                 <h3>SMS Verifications </h3>
                 <p class="m-0">Get phone number to receive OTP for <a href="index?p=rentals&network=1&action=new">short term</a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
+                <p class="m-0 text-black">You will receive an instant refund if you do not receive OTP. </p>
                 <p class="text-muted m-0">To view rented numbers <a href="index?p=rentals" class="btn-sm">click here</a>.</p>
+
                 <form class="position-relative">
                     <input type="text" 
                     data-search-list="search-items-details" 

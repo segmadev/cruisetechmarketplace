@@ -89,11 +89,8 @@ if (isset($_SESSION['browser_theme'])) {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
-
 </style>
-
-
+<input id="discountData" type="hidden" value="<?= base64_encode(json_encode($user_data['stage'])) ?>">
 
 <!-- <script type="text/javascript">var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();(function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;s1.src='https://embed.tawk.to/6585690607843602b804b9e1/1hi8i4gpn';s1.charset='UTF-8';

@@ -60,6 +60,10 @@
     </script>
 <?php } ?>
 <!-- fetch data -->
+<?php if (in_array("stacktable", $script)) { ?>
+    <script src="dist/libs/tablesaw/dist/tablesaw.jquery.js"></script>
+    <script src="dist/libs/tablesaw/dist/tablesaw-init.js"></script>
+<?php } ?>
 <?php if (in_array("countdown", $script)) { ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.40/moment-timezone-with-data.min.js"></script>

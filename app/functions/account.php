@@ -103,6 +103,21 @@ class Account extends user
 
     }
 
+          // Function to calculate the discount based on amount and quantity
+      function calculateDiscount($amount, $quantity, $discountData) {
+        // var_dump($discountData);
+        if ($quantity >= $discountData['no_order'] && $discountData['totalCredit'] > 0) {
+            if ($discountData['discount_type'] === "percentage") {
+                $discountAmount = $amount * ($discountData['discount'] / 100);
+            } else {
+                $discountAmount = $discountData['discount']; // Flat discount
+            }
+            return $amount - $discountAmount;
+        }
+        return $amount; // No discount applied
+      }
+
+
     function buy_account($userID, $accountID, $qty, array $logins = []) {
         $account = $this->getall("account", "ID = ?", [$accountID]);
         $useCart = false;
@@ -129,7 +144,10 @@ class Account extends user
           return $this->message("You selected zero(0) account.", "error", "json");
         }
         
-        $amount = (float)$account['amount'] * (int)$qty;
+        $costAmount = (float)$account['amount'] * (int)$qty;
+        $discountData = $this->getUserStage($userID);
+        $amount = $this->calculateDiscount($costAmount, $qty, $discountData['stage']);
+        
         $orderID = uniqid("order-");
         // debit user account
         $debit = $this->credit_debit($userID, $amount, "balance", "debit", "orders", $orderID);
@@ -155,9 +173,8 @@ class Account extends user
               }
             }
         }
-        // exit();
         if($faild > 0) {
-          $refundAmount = (float)$account['amount'] * (int)$faild;
+          $refundAmount = ($amount / $qty) * (int)$faild;
           $this->credit_debit($userID, $refundAmount, "balance", "credit", "order-refund", $orderID);
         }
         // create an order for the account
@@ -167,6 +184,7 @@ class Account extends user
           "accountID"=>$accountID,
           "loginIDs"=>implode(',', $bought_logins),
           "amount"=>$amount,
+          "cost_amount"=>$costAmount,
           "no_of_orders"=>($qty - $faild),
         ];
         $this->quick_insert("orders", $order);
