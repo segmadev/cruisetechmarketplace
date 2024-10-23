@@ -8,7 +8,7 @@ require_once "pages/profile/stage.php";
 <div class="container mt-5">
 <h1>How Our Discount Plan Works</h1>
     <p>
-      Our discount plan is to rewards users for being loyal and actively funding their accounts. The more Deposit you accumulate, the higher your level and the better your discount on future orders. Each level comes with:
+      Our discount plan is to reward users for being loyal and actively funding their accounts. The more Deposit you accumulate, the higher your level and the better your discount on future orders. Each level comes with:
     </p>
     <ul>
       <li><b>Total Deposit:</b> The total amount you need to accumulate to unlock a level.</li>
@@ -22,7 +22,7 @@ require_once "pages/profile/stage.php";
         </p>
     <h2>Levels and Discounts</h2>
     <p>
-      Below is a table that shows the different levels, required Deposits, discounts, and the minimum number of accounts you need to order to access the discount.
+      Below is a table that shows the different levels, required Deposits, discounts, and the minimum number of accounts you need to order in one transaction to enjoy the discount.
     </p>
         <table class="tablesaw no-wrap table-bordered table-hover table" data-tablesaw-mode="stack">
             <thead>

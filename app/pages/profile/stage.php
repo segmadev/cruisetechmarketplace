@@ -21,7 +21,7 @@
             <?php } ?>
         </div>
         <div class="progress bg-light-primary" style="height: 4px;">
-            <div class="progress-bar w-<?= $user_data['percentage'] ?? 0 ?>" role="progressbar" aria-valuenow="90"
+            <div class="progress-bar w-<?= (int)$user_data['percentage'] ?? 0 ?>" role="progressbar" aria-valuenow="90"
                 aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     </div>
