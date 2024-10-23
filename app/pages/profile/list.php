@@ -1,4 +1,5 @@
 <div class="container-fluid">
+    
     <div class="card bg-light-info shadow-none position-relative overflow-hidden">
         <div class="card-body px-4 py-3">
             <div class="row align-items-center">
@@ -14,6 +15,7 @@
         </div>
     </div>
     <div class="card">
+   
         <ul class="nav nav-pills user-profile-tab" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link position-relative rounded-0 active d-flex align-items-center justify-content-center bg-transparent fs-3 py-4" id="pills-account-tab" data-bs-toggle="pill" data-bs-target="#pills-account" type="button" role="tab" aria-controls="pills-account" aria-selected="true">
@@ -41,6 +43,7 @@
             </li> -->
         </ul>
         <div class="card-body">
+        <h6>UserID: <?= $user['ID']; ?></h6>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-account" role="tabpanel" aria-labelledby="pills-account-tab" tabindex="0">
                     <div class="row">
