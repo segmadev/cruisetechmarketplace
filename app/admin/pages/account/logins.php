@@ -6,8 +6,10 @@
     <h3 class="h5">Add Account Logins</h3>
     <div id="loginInfos" class="row"></div>
 </div>
+<div class="d-flex mt-2">
 <button type="button" onclick="add_login()" class="btn text-primary"><b><i class="ti ti-plus"></i> Add more
-        Login</b></button>
+Login</b></button> <button type='button' id="copyButton" class="btn btn-outline-black btn-sm btn-black">Copy Preview Links</button>
+</div>
 <hr>
 <?php require_once 'pages/account/autofill.php'; ?>
 <script>
@@ -165,4 +167,31 @@
         // If neither 'username', 'ID', nor 'id' is found, return false
         return position;
     }
+
+    // copy preview links to clipboard
+    function copyPreviewLinks() {
+    const previewLinks = document.querySelectorAll('#loginInfos input[name="preview_link[]"]');
+    let links = '';
+
+    previewLinks.forEach(input => {
+        const value = input.value.trim();
+        if (value) {
+            links += value + '\n';  // Add each non-empty link with a newline
+        }
+    });
+
+    if (links) {
+        navigator.clipboard.writeText(links).then(() => {
+            alert('Preview links copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy links: ', err);
+        });
+    } else {
+        alert('No preview links to copy.');
+    }
+}
+
+// Example: Call the function on button click
+document.getElementById('copyButton').addEventListener('click', copyPreviewLinks);
+
 </script>

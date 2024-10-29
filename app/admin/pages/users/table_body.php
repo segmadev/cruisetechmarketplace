@@ -8,8 +8,7 @@
                 <th>Email</th>
                 <th>Phone Number</th>
                 <th>Balance</th>
-                <th>Trading Balance</th>
-                <th>Trading Bonus</th>
+                <th>Total Credit</th>
                 <th>Date</th>
             </tr>
             <!-- end row -->
@@ -25,10 +24,10 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="index?p=users&action=view&id=<?= $row['ID']; ?>">View Profile</a></li>
-                                <!-- <li>
-                                                    <a class="dropdown-item" href="#">Another action</a>
+                                <li>
+                                                    <a class="dropdown-item" href="index?p=users&action=transactions&id=<?= $row['ID'] ?>">All Transactions</a>
                                                 </li>
-                                                <li>
+                                                <!-- <li>
                                                     <a class="dropdown-item" href="#">Something else here</a>
                                                 </li> -->
                                 <li>
@@ -44,8 +43,7 @@
                     <td><a href="mailto:<?= $row['email'] ?>" target="_blank"><?= $row['email'] ?></a></td>
                     <td><a href="tel:<?= $row['phone_number'] ?>"><?= $row['phone_number'] ?></a></td>
                     <td><?= $d->money_format($row['balance'], currency) ?></td>
-                    <td><?= $d->money_format($row['trading_balance'], currency) ?></td>
-                    <td><?= $d->money_format($row['trade_bonus'], currency) ?></td>
+                    <td><?= $d->money_format($row['total_credit'], currency) ?></td>
                     <td><?= $d->date_format($row['date']) ?></td>
 
                 </tr>
