@@ -79,14 +79,14 @@ $navs = [
                 "icon" => "ti ti-layout-grid" // Main icon for Platforms
             ],
 
-            "categories" => [
+            "category" => [
                 "new" => [
-                    "a" => "index?p=platform&action=new", 
-                    "title" => "Create Platform"
+                    "a" => "index?p=category&action=new", 
+                    "title" => "Create category"
                 ],
                 "list" => [
-                    "a" => "index?p=platform&action=list", 
-                    "title" => "List of Platforms"
+                    "a" => "index?p=category&action=list", 
+                    "title" => "List of categories"
                 ],
                 "icon" => "ti ti-layout-grid" // Main icon for Platforms
             ],
