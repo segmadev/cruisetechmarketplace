@@ -1,11 +1,11 @@
 <?php
 class Account extends user
 {
-    function delete_account($id) {
+    function delete_account($id, $r) {
       if(!$this->validate_admin()) {
         return false;
       }
-
+      if(!$r->validate_action(["account"=>"delete"], true)) return ;
       $account = $this->getall("account", "ID = ?", [$id]);
       if(!is_array($account)) {
         return false;

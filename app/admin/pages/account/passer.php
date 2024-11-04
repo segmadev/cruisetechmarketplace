@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST['new_account'])) echo $a->manage_account($account_from);
 if (isset($_POST['upadate_account'])) echo $a->manage_account($account_from, "update");
-if (isset($_POST['delete_account'])) echo $a->delete_account(htmlspecialchars($_POST['ID'] ?? ""));
+if (isset($_POST['delete_account'])) echo $a->delete_account(htmlspecialchars($_POST['ID'] ?? ""), $r);
 if (isset($_POST['edit_login_details']) && isset($_POST['ID'])) {
     $loginID = htmlspecialchars($_POST['ID']);
     $value = htmlspecialchars($_POST['login_details']);
@@ -11,7 +11,6 @@ if (isset($_POST['edit_login_details']) && isset($_POST['ID'])) {
     echo $a->update_login_info($loginID, $value, $accountID, $username, $preview_link);
 }
 if (isset($_POST['delete_login'])) {
-    if(!$r->validate_action(["account"=>"delete"])) return ;
     $id = htmlspecialchars($_POST['ID'] ?? "");
     echo $a->delete_login_details($id);
 }
