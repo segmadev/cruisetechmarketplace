@@ -11,6 +11,7 @@ if (isset($_POST['edit_login_details']) && isset($_POST['ID'])) {
     echo $a->update_login_info($loginID, $value, $accountID, $username, $preview_link);
 }
 if (isset($_POST['delete_login'])) {
+    if(!$r->validate_action(["account"=>"delete"])) return ;
     $id = htmlspecialchars($_POST['ID'] ?? "");
     echo $a->delete_login_details($id);
 }
