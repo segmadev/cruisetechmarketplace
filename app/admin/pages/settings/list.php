@@ -17,6 +17,7 @@
                         </ul>
                       </div>
 <!-- logo settings -->
+ <?php if($r->validate_action(["settings"=>"logo"])) { ?>
 <div id="brandingpage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Logo</h4>
@@ -35,9 +36,9 @@
         </form>
     </div>
 </div>
+<?php } ?>
 
-
-
+<?php if($r->validate_action(["settings"=>"help"])) { ?>
 <div id="helppage" class="card col-12">
     <div class="border-bottom title-part-padding">
         <h4 class="card-title mb-0">Help Videos Links</h4>
@@ -56,6 +57,9 @@
         </form>
     </div>
 </div>
+<?php } ?>
+
+<?php if($r->validate_action(["settings"=>"backup"])) { ?>
 
 
 <div id="backup" class="card col-12">
@@ -76,8 +80,9 @@
         </form>
     </div>
 </div>
+<?php } ?>
 
-
+<?php if($r->validate_action(["settings"=>"seo"])) { ?>
 
 <div id="seopage" class="card col-12">
     <div class="border-bottom title-part-padding">
@@ -97,6 +102,9 @@
         </form>
     </div>
 </div>
+<?php } ?>
+
+<?php if($r->validate_action(["settings"=>"settings"])) { ?>
 
 <!-- main settings -->
 <div id="settingspage" class="card col-12">
@@ -117,6 +125,8 @@
         </form>
     </div>
 </div>
+<?php } ?>
+<?php if($r->validate_action(["settings"=>"deposit"])) { ?>
 <!--  deposit  -->
 <div id="paymentpage" class="card col-12">
     <div class="border-bottom title-part-padding">
@@ -137,6 +147,8 @@
         </form>
     </div>
 </div>
+<?php } ?>
+<?php if($r->validate_action(["settings"=>"rentals"])) { ?>
 <!-- rentals settings -->
 <div id="rentalspage" class="card col-12">
     <div class="border-bottom title-part-padding">
@@ -158,6 +170,9 @@
         </form>
     </div>
 </div>
+<?php } ?>
+
+<?php if($r->validate_action(["settings"=>"social_media"])) { ?>
 <!-- social media links -->
 
 <div id="socialpage" class="card col-12">
@@ -178,7 +193,8 @@
         </form>
     </div>
 </div>
-
+<?php } ?>
+<?php if($r->validate_action(["settings"=>"term_and_policy_condition"])) { ?>
 <!-- term_and_policy_condition -->
 <div id="termspage" class="card col-12">
     <div class="border-bottom title-part-padding">
@@ -199,3 +215,4 @@
         </form>
     </div>
 </div>
+<?php } ?>

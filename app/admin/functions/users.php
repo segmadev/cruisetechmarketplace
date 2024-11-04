@@ -1,13 +1,25 @@
 <?php
 class users extends user
 {
+    protected $role;
+    public function __construct() {
+        // Call the parent constructor
+        parent::__construct();
+        $this->role = new roles;
+    }
 
     function block_user($user_id, $what = "status") {
         if(!$this->validate_admin()) { return false; }
+        if(!$this->role->validate_action(["users"=>"block"])) return ;
         $update = $this->update("users", ["$what"=>"blocked"], "ID = '$user_id'");
         if($update) {
             return $this->message("Blocked", "success", "json");
         }
+        $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+                "action_name" => "block User",
+                "description" => "Block User", 
+                "action_for"=>"users", 
+                "action_for_ID"=>htmlspecialchars($user_id)];
     }
 
     function total_transaction_type($userID, $type) {
@@ -98,6 +110,7 @@ class users extends user
     }
 
     function admin_transfer($transfer_from) {
+        if(!$this->role->validate_action(["users"=>"transfer"])) return ;
         $data = $this->validate_form($transfer_from);
         if(!is_array($data)) { exit(); }
         if(isset($data['session_ID']) && $data['session_ID'] != "") {
@@ -113,8 +126,16 @@ class users extends user
         } 
         
         $transfer = $this->credit_debit($data['userID'], $data['amount'], $data['action_on'], $data['type'], $data['for'], $data['session_ID']);
-        if($transfer)  $this->message("Done! You can reload page to see effect.", "success");
-        else $this->message("OOPS! something went wrong", "error");
+        if($transfer) {
+             $this->message("Done! You can reload page to see effect.", "success");
+             $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+                "action_name" => $data['type']." user",
+                "description" => $data['type']." ".$data['amount']." on user ".$data['action_on'], 
+                "action_for"=>"users", 
+                "action_for_ID"=>$data['userID']];
+                $this->new_activity($actInfo);
+        }
+        else {$this->message("OOPS! something went wrong", "error");}
     }
     protected function activate_pending($userID) {
         $invest = $this->getall("investment", "userID = ? and status  =?", [$userID, "pending"], fetch: "moredetails");

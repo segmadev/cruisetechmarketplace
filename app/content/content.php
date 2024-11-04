@@ -383,4 +383,72 @@ class content extends database
     function copy_text($text, $class = "") {
         return "<a href='javascript:void(0)' onclick='copy_text(`$text`)' class='btn btn-sm $class'><i class='ti ti-copy'></i></a>";
     }
+    
+
+    // navigation 
+    
+    function renderSingleLink($linkKey, $action, $mainIcon = "ti ti-circle") {
+        echo '<li class="sidebar-item">';
+        echo '<a class="sidebar-link" href="' . htmlspecialchars($action['a']) . '" aria-expanded="false">';
+        echo '<span><i class="' . htmlspecialchars($mainIcon) . '"></i></span>';
+        echo '<span class="hide-menu">' . htmlspecialchars($action['title']) . '</span>';
+        echo '</a>';
+        echo '</li>';
+    }
+
+    function renderCollapsibleMenu($linkKey, $link, $r) {
+        if($r->validate_action($linkKey)){
+            $mainIcon = $link['icon'] ?? 'ti ti-dot'; // Use main icon if specified, otherwise default to ti ti-dot
+            echo '<li class="sidebar-item">';
+            echo '<a class="sidebar-link has-arrow" href="#" aria-expanded="false">';
+            echo '<span><i class="' . htmlspecialchars($mainIcon) . '"></i></span>';
+            echo '<span class="hide-menu">' . str_replace("_", " ", $linkKey) . '</span>';
+            echo '</a>';
+        
+            echo '<ul aria-expanded="false" class="collapse first-level">';
+            foreach ($link as $actionKey => $action) {
+                // Skip the icon attribute when looping through actions
+                if ($actionKey === 'icon' || !$r->validate_action([$linkKey=>$actionKey])) continue;
+                echo '<li class="sidebar-item">';
+                echo '<a href="' . htmlspecialchars($action['a']) . '" class="sidebar-link">';
+                echo '<div class="round-16 d-flex align-items-center justify-content-center">';
+                echo '<i class="ti ti-dot"></i>'; // Use ti ti-dot for all sub-links
+                echo '</div>';
+                echo '<span class="hide-menu">' . htmlspecialchars($action['title']) . '</span>';
+                echo '</a>';
+                echo '</li>';
+            }
+            echo '</ul>';
+            echo '</li>';
+        }   
+    }
+
+    function generateNavigation($navs, $r) {
+        foreach ($navs as $sectionKey => $section) {
+            // Render the section title
+            echo '<li class="nav-small-cap">';
+            echo '<i class="ti ti-dots nav-small-cap-icon fs-4"></i>';
+            echo '<span class="hide-menu">' . htmlspecialchars($section['title']) . '</span>';
+            echo '</li>';
+
+            // Loop through each link in the section
+            foreach ($section['links'] as $linkKey => $link) {
+                $actionCount = count(array_filter($link, 'is_array')); // Filter to count only actions, ignoring icon
+
+                // If single action, render as a single link
+                if ($actionCount === 1) {
+                    $action = reset($link);
+                    $mainIcon = $link['icon'] ?? 'ti ti-circle';
+                    if ($r->validate_action([$linkKey => array_key_first($link)])) {
+                        // var_dump($link);
+                        $this->renderSingleLink($linkKey, $action, $mainIcon);
+                    }
+                } 
+                // If multiple actions, render as a collapsible menu
+                else {
+                    $this->renderCollapsibleMenu($linkKey, $link, $r);
+                }
+            }
+        }
+    }
 }

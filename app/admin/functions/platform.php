@@ -1,18 +1,26 @@
 <?php
-class platform extends database
+class platform extends roles
 {
     function manage_platform($platform_form, $action = "insert")
     {
-
+        if(!$this->validate_action(["platform"=>$action == "insert" ? "new" : "edit"])) return ;
         $platform_form['icon']['file_name'] = $_POST['name'];
         $info = $this->validate_form($platform_form, "platform", $action);
         if (is_array($info)) {
+            $action = $action == "insert" ? "New" : "edit";
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+            "action_name" => "$action platform",
+            "description" => "$action Platform", 
+            "action_for"=>"platform", 
+            "action_for_ID"=>$info['ID']];
+            $this->new_activity($actInfo);
             return $this->message("Platform Added successfully", "success");
         }
     }
 
     function delete_platform($id) {
         // check if platform not in account
+        if(!$this->validate_action(["platform"=>"delete"])) return ;
         $check = $this->getall("account", "platformID = ?", [$id], fetch: "");
         if($check > 0) return $this->message( "You can not delete a platform with account in it.", "error", "json");
         $platform = $this->getall("platform", "ID = ?", [$id]);
@@ -24,6 +32,13 @@ class platform extends database
             "message" => ["Success", "Platform Deleted successfully, Reload page to see effect", "success"],
             // "function" => ["removediv", "data" => ["platform$id", "id"]],
         ];
+        $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+        "action_name" => "delete platform",
+        "description" => "delete Platform", 
+        "action_for"=>"platform", 
+        "action_for_ID"=>$id];
+        $this->new_activity($actInfo);
+        
         return json_encode($return);
 
         // return $this->message("Platform Deleted successfully", "success", "json");  

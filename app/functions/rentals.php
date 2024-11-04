@@ -1002,7 +1002,6 @@
 
          private function smsBowerCallApi($params = "", $id = "", $method = "GET", $isRaw = false) {
             $url =  $this->sms_end_points['sms_bower']."?api_key=".$this->get_settings("sms_bower_API").$params;
-        //    echo $url; exit();
             $request =  $this->api_call($url, method: $method, isRaw: $isRaw);
             return $request;
         }

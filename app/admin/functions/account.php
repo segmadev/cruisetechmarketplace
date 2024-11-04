@@ -2,18 +2,35 @@
 require_once "../functions/account.php";
 class accounts extends Account
 {
+    protected $role;
+    public function __construct() {
+        // Call the parent constructor
+        parent::__construct();
+        $this->role = new roles;
+    }
+
     function manage_account($account_from, $action = "insert")
     {
-       if( $action == "insert") $_POST['ID'] = uniqid();
+       if( $action == "insert") {
+            $_POST['ID'] = uniqid();
+            if(!$this->role->validate_action(["account"=>"new"], true)) return ;
+       }else {
+        if(!$this->role->validate_action(["account"=>"edit"], true)) return ;
+       }
         $info = $this->validate_form($account_from, "account", $action);
         if (is_array($info) && $action == "insert") {
+            
             $count = $this->add_login_info($info['ID']);
-            return $this->message("Account Created Successfully and $count Login Details added", "success");
+            $this->message("Account Created Successfully and $count Login Details added", "success");
+            $action = "new";
         }
         if (is_array($info) && $action == "update"){
             $count = $this->add_login_info($info['ID']);
-            return $this->message("Account updated Successfully and $count Login Details added", "success");
+            $this->message("Account updated Successfully and $count Login Details added", "success");
+            $action = "edit";
         }
+        $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "$action account", "description" => "$action Account on ".htmlspecialchars($_POST['ID']), "action_for"=>"account", "action_for_ID"=>htmlspecialchars($_POST['ID']) ];
+        $this->new_activity($actInfo);
     }
 
     function isBase64($value) {
@@ -38,6 +55,7 @@ class accounts extends Account
     }
 
     function add_login_info($accountID) {
+        if(!$this->role->validate_action(["account"=>"addLogins"], true)) return ;
         $count = 0;
         if(!isset($_POST['login_details'])) return $count;
         foreach ($_POST['login_details'] as $key => $value) {
@@ -59,11 +77,16 @@ class accounts extends Account
             ]);
             $count++;
         }
-
+        if($count > 0) {
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "login account", "description" => "Add $count login(s) Account in ".$accountID, "action_for"=>"account", "action_for_ID"=>$accountID];
+            $this->new_activity($actInfo);
+        }
+        
         return $count;
     }
 
     function update_login_info($ID, $value, $accountID, $username, $preview_link) {
+        if(!$this->role->validate_action(["account"=>"edit_login"], true)) return ;
         $ID = htmlspecialchars($ID);
         $check = $this->getall("logininfo", "ID = ? and accountID = ? and login_details = ?", [$ID, $accountID, $value]);
         if(is_array($check) && $check['login_details'] != $value) {
@@ -80,9 +103,13 @@ class accounts extends Account
             "ID = '$ID'",
             "Login Details Updated."
         );
+
+        $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "update login", "description" => "Edit login details", "action_for"=>"logininfo", "action_for_ID"=>$ID];
+        $this->new_activity($actInfo);
     }
 
     function delete_login_details($id) {
+        if(!$this->role->validate_action(["account"=>"deleteLogins"])) return ;
         if(!$this->validate_admin()) return ;
         $login = $this->getall("logininfo", "ID = ?", [$id]);
         if(!is_array($login)) return ;
@@ -93,6 +120,8 @@ class accounts extends Account
             "message" => ["Success", "Login Details Deleted", "success"],
             "function" => ["removediv", "data" => ["#displaylogin-$id", "null"]]
         ];
+        $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "update login", "description" => "Delete login", "action_for"=>"logininfo", "action_for_ID"=>$id];
+        $this->new_activity($actInfo);
         return json_encode($return);
     }
 }

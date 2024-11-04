@@ -43,7 +43,7 @@
             </li> -->
         </ul>
         <div class="card-body">
-        <h6>UserID: <?= $user['ID']; ?></h6>
+    <h6>UserID: <?= $user['ID']; ?></h6>
             <div class="tab-content" id="pills-tabContent">
                 <div class="tab-pane fade show active" id="pills-account" role="tabpanel" aria-labelledby="pills-account-tab" tabindex="0">
                     <div class="row">

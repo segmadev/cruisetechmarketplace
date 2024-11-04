@@ -12,11 +12,11 @@
 <div class="row">
     <div class="card p-3"><div class="card-header"><a href="index?p=features&action=new" class='btn btn-primary'><i class='ti ti-plus'></i> Add feature</a></div></div>
     <?php
-        if($features->rowCount() == 0) {
+        if($featuresList->rowCount() == 0) {
         echo $c->empty_page("No key feature added yet.", "<a class='btn btn-primary' href='index?p=features&action=new'><i class='ti ti-plus'></i> Add now!</a>");
         }else{
             $script[] = "sweetalert";
-            foreach($features as $row) {
+            foreach($featuresList as $row) {
     ?>
     <div class="col-md-4 col-12 p-2 detail-<?= $row['ID'] ?>">
         <div class="card p-3">
@@ -32,7 +32,7 @@
                <form action="" id="foo">
                     <input type="hidden" name="confirm" value="Are you sure you want to remove this feature?">
                     <input type="hidden" name="page" value="features">
-                    <input type="hidden" name="deletedetails" value="key_features">
+                    <input type="hidden" name="deletedetails" value="features">
                     <input type="hidden" name="ID" value='<?= $row['ID'] ?>'>
                     <div id="custommessage"></div>
                     <button type="submit" class='btn btn-outline-danger ms-2'><i class='ti ti-trash text-danger'></i></button>

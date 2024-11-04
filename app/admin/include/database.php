@@ -78,9 +78,9 @@ class database
             unset($data['userID']);
             // var_dump($this->get_visitor_details());
             $visitor_info = [];
-            if(!isset($_SESSION['adminSession'])) {
+            // if(!isset($_SESSION['adminSession'])) {
                 $visitor_info = $this->get_visitor_details();
-            }
+            // }
             $info = array_merge($info, $visitor_info, $data);
             if(!$this->quick_insert("activities",  $info)){
                 return false;
@@ -350,6 +350,19 @@ class database
         }
         return $data;
     }
+    function isPasswordHash($string) {
+        // Check if the length is consistent with bcrypt hashes
+        if (strlen($string) === 60 && substr($string, 0, 4) === '$2y$') {
+            return true;
+        }
+        
+        // Check if it is an Argon2 hash
+        if (strpos($string, '$argon2i$') === 0 || strpos($string, '$argon2id$') === 0) {
+            return true;
+        }
+        
+        return false;
+    }
 
     function validate_form($datas, $what = "", $action = null, bool $showError = true)
     {
@@ -410,8 +423,10 @@ class database
                 if($showError) { echo $this->message("Password and confrim password do not match", "error"); }
                 return null;
             }
-            // $info['password'] = password_hash($_POST['password'],  PASSWORD_DEFAULT);
         }
+        // if(isset($_POST['password']) && $_POST['password'] != "") {
+        //     $info['password'] = password_hash($_POST['password'],  PASSWORD_DEFAULT);
+        // }
 
         if ($what != "") {
             if (!$this->validate_database_data($what, $wait, $datas, $info)) {
@@ -478,6 +493,9 @@ class database
         if(!is_array($data) || empty($what) || $action == null ) {
             return true;
         }
+        if(isset($data['password']) && !$this->isPasswordHash($data['password'])) {
+            $data['password'] = password_hash($data['password'],  PASSWORD_DEFAULT);
+        }
         switch ($action) {
             case 'insert':
                 if(!$this->quick_insert($what, $data)) {
@@ -524,6 +542,7 @@ class database
                 return true;
             }
             $against = $datas[$key]["unique"];
+            // var_dump($against);
             if ($against == "") {
                 $datacheck = [$info[$key]];
                 if ($idv != "") {
@@ -531,6 +550,7 @@ class database
                 }
                 $check = $this->getall("$what", "$idc $key = ?", $datacheck, fetch: "");
             }
+            // exit();
 
             if (!isset($check)) {
                 if (!isset($datas[$against])) {
@@ -538,15 +558,16 @@ class database
                     echo $this->message("Int: We have issues to validate your data. please reload the page and try again", "error");
                     return false;
                 }
-
+                
                 if ((int)array_search($key, array_keys($datas)) > (int)array_search($against, array_keys($datas))) {
-
+                    
                     $datacheck = [$info[$against], $info[$key]];
                     if ($idv != "") {
                         $datacheck = [$idv, $info[$against], $info[$key]];
                     }
-
+                    
                     $check = $this->getall($what, "$idc $against = ? and $key = ?", $datacheck, fetch: "");
+                    // var_dump("$idc $against = ? and $key = ?"); exit();
                     // var_dump($check);
 
 

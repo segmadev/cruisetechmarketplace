@@ -1,8 +1,13 @@
 <?php if (in_array("modal", $script)) { 
     require_once "../content/modal.php";
 } ?>
-
 <!-- Dashboard3 -->
+<?php if (in_array("scrape", $script)) { ?>
+  <script src="../dist/js/scrape.js?n=11"></script>
+<?php } ?>
+<?php if (in_array("roles", $script)) { ?>
+  <script src="js/roles.js?m=10"></script>
+<?php } ?>
 <?php if (in_array("dashboard3", $script)) { ?>
     <script src="../dist/libs/owl.carousel/dist/owl.carousel.min.js"></script>
   <script src="../dist/js/dashboard3.js?n=11"></script>

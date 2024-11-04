@@ -133,7 +133,7 @@ function iniForm(element, action = "passer") {
                 dangerMode: true,
             }).then((willDelete) => {
                 if (willDelete) {
-                    runjax(request, event, $inputs, fd, action);
+                    runjax(event, $inputs, fd, action);
                 } else {
                     // Reinitialize the form and re-enable inputs
                     iniForm(element, action);
@@ -144,79 +144,62 @@ function iniForm(element, action = "passer") {
             // console.log(fd);
             // return;
             // Run AJAX request if no confirmation is required
-            runjax(request, event, $inputs, fd, action);
+            runjax(event, $inputs, fd, action);
         }
     });
 }
 
 // Bind to the submit event of our form
+function runjax(event, $inputs, fd, action = "passer") {
+    const form = event.srcElement; // Assuming the event is fired from the form
+    let customMessageElement = form.querySelector('.custommessage');
 
-function runjax(request, event, $inputs, fd, action = "passer") {
-    if(event.srcElement.children.custommessage) {
-        event.srcElement.children.custommessage.innerHTML = `<div 
-        style='min-height: 100px;'
-        class="loading-spinner-container">
-        <div 
-        style='border: 4px solid rgba(0, 0, 0, 0.1);
-          border-top: 4px solid #fa5a15;
-          width: 40px;
-          height: 40px;'
-        class="spinner"></div>
-      </div>`;
-        // "<div class='flex bg-light-warning text-warning rounded ps-2' style='width: 160px'><b>Please Wait...</b></div>";
+    // Create custom message element if it doesn't exist
+    if (!customMessageElement) {
+        customMessageElement = document.createElement('div');
+        customMessageElement.classList.add('custommessage');
+        form.appendChild(customMessageElement);
     }
-    // return ;
-    request = $.ajax({
+
+    // Display loading spinner
+    customMessageElement.innerHTML = `
+        <div style='min-height: 100px;' class="loading-spinner-container">
+            <div style='border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #fa5a15; width: 40px; height: 40px;' class="spinner"></div>
+        </div>`;
+
+    // AJAX request
+    $.ajax({
         url: action,
         type: "post",
         cache: false,
         processData: false,
         contentType: false,
         data: fd,
-    });
-
-    request.done(function (response, textStatus, jqXHR) {
+    })
+    .done((response) => {
         $inputs.prop("disabled", false);
-        if(testJSON(response)){
-            event.srcElement.children.custommessage.innerHTML = "";
+        
+        // Clear loading message
+        customMessageElement.innerHTML = "";
+
+        if (testJSON(response)) {
             proceessjson(response);
-        }else{
-        // Log a message to the console
-        // Log a message to the console
-        var res = response.substring(0, 30);
-        if(event == null || event == "") {
-            return response;
-        }
-        if (res === "<div class='card card-primary'") {
-            event.srcElement.children.custommessage.innerHTML = "";
-            // document.getElementById("accordion").innerHTML += response;
-            $("#accordion").prepend(response);
-
         } else {
-            event.srcElement.children.custommessage.innerHTML = response;
+            const previewResponse = response.substring(0, 30);
+
+            if (previewResponse === "<div class='card card-primary'") {
+                $("#accordion").prepend(response);
+            } else {
+                customMessageElement.innerHTML = response;
+            }
         }
-
-        }
-        // document.getElementById("message").innerHTML = "";
-        // chatBox =  document.getElementById("chatdiv").innerHTML
-        // if(chatbox){
-        //     chatBox.scrollTop = chatBox.scrollHeight;
-        // }
+    })
+    .fail((jqXHR, textStatus, errorThrown) => {
+        console.error("The following error occurred:", textStatus, errorThrown);
     });
-
-    // Callback handler that will be called on failure
-    request.fail(function (jqXHR, textStatus, errorThrown) {
-        // Log the error to the console
-        console.error(
-            "The following error occurred: " +
-            textStatus, errorThrown
-        );
-    });
-
-    // Callback handler that will be called regardless
-    // if the request failed or succeeded
-    
 }
+
+
 // $("#foo").submit(function (event) {
 //     console.log(this);
 

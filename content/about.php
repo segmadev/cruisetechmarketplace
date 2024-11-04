@@ -1,4 +1,4 @@
-<?php $features = $d->getall("key_features", fetch: "moredetails") ?>
+<?php $features = $d->getall("features", fetch: "moredetails") ?>
 <section class="mx-auto max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 2xl:max-w-full">
                 <!-- <div class="relative mb-6 overflow-hidden md:mb-8"><img
                         src="_astro/features-image.BEGIe8fA_Z2c6sgV.avif" alt="ScrewFast products in floating boxes"

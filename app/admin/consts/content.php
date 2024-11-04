@@ -16,5 +16,5 @@
     // $d->create_settings($home_header, "content");
 
     
-    // $d->create_table("key_features", $key_features);
+    // $d->create_table("features", $key_features);
 ?>

@@ -69,25 +69,30 @@ session_start();
         echo $e->update_template();
     }
     if(isset($_POST['updatesettings'])) {
-        $return = match (htmlspecialchars($_POST['settings'])) {
-             "settings"=>$s->update_settings($settings_form) ,
-             "Withdraw"=>$s->update_settings($settings_withdraw_form) ,
-             "deposit"=>$s->update_settings($settings_deposit_form) ,
-             "term_and_policy_condition"=>$s->update_settings($term_and_policy_condition) ,
-             "logo"=>$s->update_settings($logo_from),
-             "compound_profits"=>$s->update_settings($compound_profits_details),
-             "social_media"=>$s->update_settings($settings_social_media),
-             "seo"=>$s->update_settings($settings_seo),
-             "help"=>$s->update_settings($settings_help),
-             "backup"=>$s->update_settings($settings_backup),
-             "rentals"=>$s->update_settings($rentals_settings),
-             "edit_admin"=>$s->edit_admin($adminID, $admin_account),
-        };
+        $return = $s->message("You can not perfrom this action", "error", "json");
+        if($r->validate_action(["settings"=>$_POST['settings']])) {
+            $return = match (htmlspecialchars($_POST['settings'])) {
+                "settings"=>$s->update_settings($settings_form) ,
+                "Withdraw"=>$s->update_settings($settings_withdraw_form) ,
+                "deposit"=>$s->update_settings($settings_deposit_form) ,
+                "term_and_policy_condition"=>$s->update_settings($term_and_policy_condition) ,
+                "logo"=>$s->update_settings($logo_from),
+                "compound_profits"=>$s->update_settings($compound_profits_details),
+                "social_media"=>$s->update_settings($settings_social_media),
+                "seo"=>$s->update_settings($settings_seo),
+                "help"=>$s->update_settings($settings_help),
+                "backup"=>$s->update_settings($settings_backup),
+                "rentals"=>$s->update_settings($rentals_settings),
+                "edit_admin"=>$s->edit_admin($adminID, $admin_account),
+           };
+        }
+       
         echo $return;
     }
 
     if(isset($_POST['updatecontent'])) {
         $key = htmlspecialchars($_POST['content']);
+        if(!$r->validate_action(["content"=>"list"], true)) return ;
         if(isset(${"content_".$key})) {
             echo $s->update_settings(${"content_".$key}, "content");
         }

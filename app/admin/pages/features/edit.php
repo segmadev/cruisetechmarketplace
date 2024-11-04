@@ -6,7 +6,7 @@
         <form action="" id="foo">
             <?php echo $c->create_form($key_features)?>
             <input type="hidden" name="page" value="features">
-            <input type="hidden" name="updatedetails" value="key_features">
+            <input type="hidden" name="updatedetails" value="features">
             <div id="custommessage"></div>
             <input type="submit" value="Update" class="btn btn-primary">
         </form>

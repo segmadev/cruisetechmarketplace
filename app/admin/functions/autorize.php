@@ -34,6 +34,8 @@ class autorize extends database
                             $this->message("Unable to set token", "error");
                             return ;
                         }
+                        $actInfo = ["userID" => $value['ID'], "date_time" => date("Y-m-d H:i:s"), "action_name" => "Login", "description" => "Admin Login"];
+                        $this->new_activity($actInfo);
                         // $_SESSION['adminSession'] = ;
                         // $d->message("Account logged in Sucessfully <a href='index.php'>Click here to proceed.</a>", "error");
                         $return = [

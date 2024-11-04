@@ -1,6 +1,12 @@
 <?php 
     class settings extends content {
-    private $accepted_tables = ["key_features",  "how_it_works", "testimonies"];
+        protected $role;
+        public function __construct() {
+            // Call the parent constructor
+            parent::__construct();
+            $this->role = new roles;
+        }
+    private $accepted_tables = ["features",  "how_it_works", "testimonies"];
         function new_settings($data, $what = "settings") {
             if($data  == ""){ return null; }
             foreach($data as $key => $row) {
@@ -31,6 +37,12 @@
             }
             if($info['password'] != "") $update_info['password'] = password_hash($info['password'], PASSWORD_DEFAULT);
             $this->update("admins", $update_info, "ID = '$adminID'", "Account Updated");
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+            "action_name" => "Edit Profile",
+            "description" => "Edit Profile", 
+            "action_for"=>"admins", 
+            "action_for_ID"=>$adminID];
+            $this->new_activity(data: $actInfo);
         }
         function update_settings($data, $what =  "settings") {
             if($data  == ""){ return null; }
@@ -53,6 +65,13 @@
             $return = [
                 "message" => ["Success", "$what Updated", "success"],
             ];
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+            "action_name" => "Edit Settings",
+            "description" => "Edit $what Settings", 
+            "action_for"=>"settings", 
+            "action_for_ID"=>$what];
+            $this->new_activity($actInfo);
+
             return json_encode($return);  
         }
 
@@ -66,39 +85,62 @@
             return $info;
         }
 
-        function new_details($data, $what = "key_features") {
+        function new_details($data, $what = "features") {
             if(!in_array($what, $this->accepted_tables)){
                 return null;
             }
+            if(!$this->role->validate_action(["$what"=>"new"], true)) return ;
             if(isset($data['ID'])) {
                 unset($data['ID']);
             }
             $info = $this->validate_form($data, "$what");
             if(!is_array($info)) { return null; }
             $this->quick_insert("$what", $info, "New detail added.");
+
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+            "action_name" => "New $what",
+            "description" => "New $what", 
+            "action_for"=>"$what", 
+            "action_for_ID"=>""];
+            $this->new_activity(data: $actInfo);
         }
 
-        function edit_details($data, $what = "key_features") {
+        function edit_details($data, $what = "features") {
             if(!in_array($what, $this->accepted_tables)){
                 return null;
             }
+            if(!$this->role->validate_action(["$what"=>"edit"], true)) return ;
+            // echo "Got herwe";
             $info = $this->validate_form($data, "$what");
             if(isset($info['image']) && $info['image'] == "") unset($info['image']);
             if(!is_array($info)) { return null; }
             $id = $info['ID'];
             unset($info['ID']);
             $this->update("$what", $info, "ID = '$id'", "Detail updated.");
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+            "action_name" => "Edit $what",
+            "description" => "Edit $what", 
+            "action_for"=>"$what", 
+            "action_for_ID"=>$id];
+            $this->new_activity(data: $actInfo);
         }
 
-        function remove_details($id, $what = "key_features") {
+        function remove_details($id, $what = "features") {
             if(!in_array($what, $this->accepted_tables)){
                 return null;
             }
+            if(!$this->role->validate_action(["$what"=>"delete"], true)) return ;
             $delete = $this->delete("$what", "ID = ?", [$id]);
             $return = [
                 "message" => ["Success", "one detail deleted", "success"],
                 "function" => ["removediv", "data"=>[".detail-".$id, "success"]]
             ];
+            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 
+            "action_name" => "Delete $what",
+            "description" => "Delete $what", 
+            "action_for"=>"$what", 
+            "action_for_ID"=>$id];
+            $this->new_activity(data: $actInfo);
             return json_encode($return);
         }
     }
