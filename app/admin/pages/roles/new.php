@@ -3,7 +3,7 @@ $script[] = "roles";
 
 ?>
     <div class="container mt-5">
-        <h2>Create New Role</h2>
+        <h2>Role</h2>
         <form id="roleForm">
             <div class="mb-3">
                 <label for="roleName" class="form-label">Role Name</label>
@@ -48,7 +48,7 @@ $script[] = "roles";
 
                 <?php endforeach; ?>
             </div>
-
+                <div class="custommessage"></div>
             <button type="submit" class="btn btn-primary mt-3">Submit</button>
         </form>
     </div>

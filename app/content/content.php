@@ -425,30 +425,53 @@ class content extends database
 
     function generateNavigation($navs, $r) {
         foreach ($navs as $sectionKey => $section) {
-            // Render the section title
-            echo '<li class="nav-small-cap">';
-            echo '<i class="ti ti-dots nav-small-cap-icon fs-4"></i>';
-            echo '<span class="hide-menu">' . htmlspecialchars($section['title']) . '</span>';
-            echo '</li>';
-
-            // Loop through each link in the section
+            $hasValidLink = false; // Flag to check if the section has any valid links
+    
+            // Loop through each link in the section to check for validity
             foreach ($section['links'] as $linkKey => $link) {
                 $actionCount = count(array_filter($link, 'is_array')); // Filter to count only actions, ignoring icon
-
-                // If single action, render as a single link
+    
                 if ($actionCount === 1) {
+                    // Check if the single link is valid
                     $action = reset($link);
-                    $mainIcon = $link['icon'] ?? 'ti ti-circle';
                     if ($r->validate_action([$linkKey => array_key_first($link)])) {
-                        // var_dump($link);
-                        $this->renderSingleLink($linkKey, $action, $mainIcon);
+                        $hasValidLink = true;
+                        break; // No need to check further links in this section
                     }
-                } 
-                // If multiple actions, render as a collapsible menu
-                else {
-                    $this->renderCollapsibleMenu($linkKey, $link, $r);
+                } else {
+                    // Check if any action in the collapsible menu is valid
+                    foreach ($link as $actionKey => $action) {
+                        if ($actionKey !== 'icon' && $r->validate_action([$linkKey => $actionKey])) {
+                            $hasValidLink = true;
+                            break 2; // Exit both inner and outer loop if a valid link is found
+                        }
+                    }
+                }
+            }
+    
+            // Only render the section title if there's at least one valid link
+            if ($hasValidLink) {
+                echo '<li class="nav-small-cap">';
+                echo '<i class="ti ti-dots nav-small-cap-icon fs-4"></i>';
+                echo '<span class="hide-menu">' . htmlspecialchars($section['title']) . '</span>';
+                echo '</li>';
+    
+                // Render the valid links in this section
+                foreach ($section['links'] as $linkKey => $link) {
+                    $actionCount = count(array_filter($link, 'is_array'));
+    
+                    if ($actionCount === 1) {
+                        $action = reset($link);
+                        $mainIcon = $link['icon'] ?? 'ti ti-circle';
+                        if ($r->validate_action([$linkKey => array_key_first($link)])) {
+                            $this->renderSingleLink($linkKey, $action, $mainIcon);
+                        }
+                    } else {
+                        $this->renderCollapsibleMenu($linkKey, $link, $r);
+                    }
                 }
             }
         }
     }
+    
 }
