@@ -1,5 +1,10 @@
 <?php 
+    // echo "No access";
+if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_ofline_buyer($userID)) {
+    $accounts = [];
+}else{
     $accounts = $d->getall("account", "categoryID = ? order by date DESC LIMIT 10", [$category['ID']], fetch: "all");
+}
 ?>
 <div class="card">
     <div class="card-header d-flex justify-content-between">

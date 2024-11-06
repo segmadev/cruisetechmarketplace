@@ -9,5 +9,5 @@ $account = [];
 if($action == "edit") {
     $id = htmlspecialchars($_GET['id'] ?? "");
     $account = $d->getall("account", "ID = ?", [$id]);
-    $logins = $d->getall("logininfo", "accountID = ? order by sold_to ASC", [$id], fetch: "all");
+    // $logins = $d->getall("logininfo", "accountID = ? order by sold_to ASC", [$id], fetch: "all");
 }

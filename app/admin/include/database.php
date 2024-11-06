@@ -31,6 +31,17 @@ class database
         // $this->userID = htmlspecialchars($_SESSION['adminSession']);  
     }
 
+    function is_ofline_buyer($userID) {
+        $idlist = $this->get_settings("offline_buyers");
+        // Split the $idlist by commas and whitespace
+        $id_array = array_map('trim', explode(",", $idlist));
+        // Check if the $userID is in the $id_array
+        if (in_array($userID, $id_array)) {
+           return true;
+        } else {
+            return false;
+        }
+    }
 
     function get_visitor_details() {
         // ip, browser, theme, country, postal_code, state, city
@@ -1264,6 +1275,26 @@ class database
     {
         $date = date_create($date);
         return date_format($date, "D, d M Y h:i:sa");
+    }
+
+    function formatDate($date) {
+        // Sanitize the input to prevent XSS
+        $date = htmlspecialchars($date);
+    
+        // Check if the date is provided
+        if ($date) {
+            // Create a DateTime object from the date
+            try {
+                $date = new DateTime($date);
+                // Format the date to 'YYYY-MM-DD HH:MM:SS'
+                return $date->format('Y-m-d H:i:s');
+            } catch (Exception $e) {
+                // Return an error message if the date is invalid
+                $date;
+            }
+        } else {
+            return $date;
+        }
     }
 
     function datediffe($largeDate, $smallDate, $format = "h") {

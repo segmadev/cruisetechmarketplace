@@ -54,10 +54,10 @@
         modalelements.forEach(element => {
         element.style.cursor = 'pointer';
 
+        console.log("it is me")
         // Check if the event listener has already been added
         if (!element.dataset.listenerAdded) {
             element.addEventListener('click', function(e) {
-              console.log("it is me")
                 modalcontentv2(element);
             });
 

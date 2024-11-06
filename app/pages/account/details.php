@@ -1,7 +1,9 @@
 <?php
 if (!$account || $account == "") {
     echo $c->empty_page("Account not found or sold.", h1: "Not Found");
-} else {
+} else if(!$a->can_buy($userID, $account['categoryID'])){ 
+ echo $c->empty_page("You can't access this page");
+}else{
     $accountPreview = $d->get_settings("account_preview");
     $script[] = "sweetalert";
     if($accountPreview == 1)  $script[] = "cart";

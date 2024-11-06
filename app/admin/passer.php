@@ -74,7 +74,7 @@ session_start();
             $return = match (htmlspecialchars($_POST['settings'])) {
                 "settings"=>$s->update_settings($settings_form) ,
                 "Withdraw"=>$s->update_settings($settings_withdraw_form) ,
-                "deposit"=>$s->update_settings($settings_deposit_form) ,
+                "payment"=>$s->update_settings($settings_deposit_form) ,
                 "term_and_policy_condition"=>$s->update_settings($term_and_policy_condition) ,
                 "logo"=>$s->update_settings($logo_from),
                 "compound_profits"=>$s->update_settings($compound_profits_details),

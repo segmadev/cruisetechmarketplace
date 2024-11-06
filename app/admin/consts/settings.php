@@ -51,6 +51,7 @@
    
     // var_dump($settings_form);
     $settings_deposit_form = [
+        "offline_buyers"=>["type"=>"textarea", "global_class"=>"col-md-12", "description"=>"User IDs of people who can buy accounts in offline category"],
         "flutterwave_public_key"=>["input_type"=>"password", "is_required"=>false],
         "flutterwave_secret_key"=>["input_type"=>"password", "is_required"=>false],
         "flutterwave_encyption_key"=>["input_type"=>"password", "is_required"=>false],
@@ -61,7 +62,7 @@
         "exchange_rate_update_interval"=>["input_type"=>"number","atb"=>'step="0.0001"', "description"=>"value in minutes"],
         "fix_exchange_rate"=>["type"=>"select", "options"=>["yes"=>"Yes", "no"=>"No"]],
         "exchange_rate_API"=>["input_type"=>"password", "is_required"=>false, "description"=>"You can get your API key <a target='_BLANK' href='https://www.exchangerate-api.com'>here</a>"],
-        "input_data"=>array_merge(["exchange_rate_API"=>"--placeholder", "flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["min_deposit"=>[], "exchange_rate_update_interval"=>[], "max_deposit"=>[], "fix_exchange_rate"=>[], "exchange_rate"=>[]])),
+        "input_data"=>array_merge(["exchange_rate_API"=>"--placeholder", "flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["offline_buyers"=>[], "min_deposit"=>[], "exchange_rate_update_interval"=>[], "max_deposit"=>[], "fix_exchange_rate"=>[], "exchange_rate"=>[]])),
     ];
 
     $term_and_policy_condition = [

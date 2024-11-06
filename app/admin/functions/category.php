@@ -5,10 +5,10 @@ class Category extends roles
     {
         if($action == "insert") {
             $actionName = "new";
-            if(!$this->validate_action(["categories"=>"new"], true)) return ;
+            if(!$this->validate_action(["category"=>"new"], true)) return ;
         }else {
             $actionName = "edit";
-            if(!$this->validate_action(["categories"=>"edit"], true)) return ;
+            if(!$this->validate_action(["category"=>"edit"], true)) return ;
             
         }
         $info = $this->validate_form($category_form, "category", $action);
@@ -25,7 +25,7 @@ class Category extends roles
 
     function delete_category($id) {
         // check if category not in account
-        if(!$this->validate_action(["categories"=>"delete"], true)) return ;
+        if(!$this->validate_action(["category"=>"delete"], true)) return ;
         $check = $this->getall("account", "categoryID = ?", [$id], fetch: "");
         if($check > 0) return $this->message( "You can not delete a category with account in it.", "error", "json");
         $category = $this->getall("category", "ID = ?", [$id]);
@@ -62,7 +62,7 @@ class Category extends roles
     }
     function display_category($category)
     {
-        $deleteForm = "";
+        $deleteForm = "<td class='flex d-flex'>";
         
         $id = $category['ID'];
         // name of the category
@@ -72,9 +72,11 @@ class Category extends roles
         $no = number_format($this->get_no_of_account_in_category($id));
         // date added
         $date = $this->date_format($category['date']);
-        if($this->validate_action(["categories"=> "delete"])) {
-            $deleteForm = "<td class='flex d-flex'>
-                            <a href='index?p=category&action=edit&id=$id' class='btn btn-primary btn-sm'>Edit</a>
+        if($this->validate_action(["category"=> "edit"])) {
+            $deleteForm .= "<a href='index?p=category&action=edit&id=$id' class='btn btn-primary btn-sm'>Edit</a>";
+        }
+        if($this->validate_action(["category"=> "delete"])) {
+            $deleteForm .="
                             <form action='' id='foo'>
                                 <input type='hidden' name='ID' value='$id'>
                                 <input type='hidden' name='delete_category' value='approved'>
@@ -83,8 +85,10 @@ class Category extends roles
                                 <div id='custommessage'></div>
                                 <button type='submit' class='ml-2 btn btn-light-danger d-flex align-items-center gap-3 text-danger' href='#'><i class='fs-4 ti ti-trash'></i>Delete</button>
                             </form>
-                        </td>";
+                        ";
         }
+        $deleteForm .= "</td>";
+
         return "<tr id='category$id'>
                         <td class='ps-0'>
                             <div class='d-flex align-items-center'>
@@ -99,7 +103,13 @@ class Category extends roles
                         <td>
                             <a href='index?p=account&category=".$id."'><span class='badge fw-semibold py-1 w-85 bg-light-dark'>View: $no</span></a>
                         </td>
-                        $deleteForm
+                        
+                            <td>
+                            $date
+                            </td>
+                            <td>
+                            $deleteForm
+                            </td>
                     </tr>";
     }
 }

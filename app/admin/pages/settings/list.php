@@ -126,7 +126,7 @@
     </div>
 </div>
 <?php } ?>
-<?php if($r->validate_action(["settings"=>"deposit"])) { ?>
+<?php if($r->validate_action(["settings"=>"payment"])) { ?>
 <!--  deposit  -->
 <div id="paymentpage" class="card col-12">
     <div class="border-bottom title-part-padding">
@@ -139,7 +139,7 @@
                 <?php echo $c->create_form($settings_deposit_form); ?>
                 <input type="hidden" name="updatesettings" value="" id="">
                 <input type="hidden" name="page" value="settings" id="">
-                <input type="hidden" name="settings" value="deposit">
+                <input type="hidden" name="settings" value="payment">
             </div>
             <div id="custommessage"></div>
             <input type="submit" value="Update" class="btn btn-primary  col-3">

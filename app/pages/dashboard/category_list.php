@@ -9,6 +9,7 @@
     </li>
     <?php if ($categories->rowCount() > 0) {
         foreach ($categories as $category) {
+            if($category['cat_type'] == "0" && !$d->is_ofline_buyer($userID)) continue;
             $new_categories[] = $category;
     ?>
             <li>

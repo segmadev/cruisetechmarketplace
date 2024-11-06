@@ -22,6 +22,7 @@ $script[] = "sweetalert";
                         <th scope="col" class="ps-0">Category Name</th>
                         <th scope="col">No Accts</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody class="border-top" id="displaycategories"></tbody>

@@ -1,14 +1,4 @@
-// var loaddata = document.querySelectorAll("[data-load]");
-// for (var i in loaddata) {
-//   if (loaddata.hasOwnProperty(i)) {
-//     what = loaddata[i].getAttribute("data-load");
-//     displayId = loaddata[i].getAttribute("data-displayId");
-//     start = loaddata[i].getAttribute("data-start") || 0;
-//     limit = loaddata[i].getAttribute("data-limit") || 1;
-//     fetchData(what, displayId, limit, start);
-//   }
-// }
-
+const activeFetches = new Map();
   let searchM = document.querySelector("#searchMarket");
   let searchIsSave = true;
 if(searchM) {
@@ -43,106 +33,152 @@ function addPlatfrom(value, name = "") {
   document.querySelector("#searchMarketPlaform").value = value;
   searchMarket();
 }
-
 document.querySelectorAll("[data-load]").forEach(loaddata => {
   loadFetchData(loaddata);
 });
 
-function loadFetchData (loaddata) {
+
+document.querySelectorAll('.fetcher-form').forEach(form => {
+  form.addEventListener('submit', function(e) {
+      e.preventDefault(); // Prevent the default form submission
+
+      const targetId = this.getAttribute('data-target');
+      const targetDiv = document.getElementById(targetId);
+
+      if (!targetDiv) {
+          console.warn(`Target div with ID "${targetId}" not found.`);
+          return;
+      }
+
+      // Get current data-path and form data
+      let currentDataPath = targetDiv.getAttribute('data-path');
+      const formData = new FormData(this);
+
+      // Convert current data-path parameters to URLSearchParams
+      const urlParams = new URLSearchParams(currentDataPath.split('?')[1]);
+
+      // Update URLSearchParams with form data
+      formData.forEach((value, key) => {
+          if (value) {
+              urlParams.set(key, value);
+          }
+      });
+
+      // Reconstruct the data-path with updated parameters
+      const updatedDataPath = currentDataPath.split('?')[0] + '?' + urlParams.toString();
+      targetDiv.setAttribute('data-path', updatedDataPath);
+
+      // Reload data based on the updated path
+      loadFetchData(targetDiv);
+  });
+});
+
+// Track fetch requests and timeouts for each element to prevent overlapping requests
+function loadFetchData(loaddata) {
   const what = loaddata.getAttribute("data-load");
-  const displayId = loaddata.getAttribute("data-displayId");
+
+  // Check if `data-displayId` exists, if not, use `id` of `loaddata`, or generate a new ID if neither exist
+  let displayId = loaddata.getAttribute("data-displayId") || loaddata.id;
+  if (!displayId) {
+      displayId = `loaddata-${Math.random().toString(36).substr(2, 9)}`;
+      loaddata.id = displayId; // Assign the generated ID to the element
+  }
+  // document.getElementById("displayId").innerHTML = "";
   const start = loaddata.getAttribute("data-start") ?? 0;
   const limit = loaddata.getAttribute("data-limit") ?? 1;
   const path = loaddata.getAttribute("data-path") ?? "passer";
   const isReplace = loaddata.getAttribute("data-isreplace") ?? 'false';
   const interval = loaddata.getAttribute("data-interval") ?? 3000;
+
+  // Abort any ongoing fetch request and clear timeout for this `displayId`
+  if (activeFetches.has(displayId)) {
+      const { controller, timeoutId } = activeFetches.get(displayId);
+      controller.abort(); // Abort the ongoing fetch
+      clearTimeout(timeoutId); // Clear the timeout if set
+  }
+
+  // Initialize a new AbortController for this fetch
+  const controller = new AbortController();
+  activeFetches.set(displayId, { controller, timeoutId: null });
+
+  // Clear the content of the element with the determined `displayId`
   document.querySelector("#" + displayId).innerHTML = "";
-  fetchData(what, displayId, limit, start, path, isReplace, interval);
-  return true;
+  // modalcontent(displayId);
+  // Start fetching data
+  fetchData(what, displayId, limit, start, path, isReplace, interval, controller);
 }
 
-// function fetchData(what, displayId, limit = 1, start = 0, path="passer") {
-//   data = { page: what, what: what, start: start };
-//   request = $.ajax({
-//     type: "POST",
-//     url: path+gets(),
-//     data: data,
-//   });
+function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isReplace="false", interval = 3000, controller) {
+  // const loadingMessage = "<p class='h4'><b>Loading Data</b></p>";
+  const displayHere = document.getElementById(displayId);
+  // if (displayHere.innerHTML === "") displayHere.innerHTML = loadingMessage;
 
-// }
+  const data = { page: what, what: what, start: start, limit: limit };
+  console.log("Fetching data:", data);
 
-
-// document.querySelectorAll("[data-ajax-data]").forEach(loaddata => {
-//   const what = loaddata.getAttribute("data-ajax-data");
-//   const displayId = loaddata.getAttribute("data-displayId");
-//   const start = loaddata.getAttribute("data-start") || 0;
-//   const limit = loaddata.getAttribute("data-limit") || 1;
-//   loadAjaxData(what, displayId, limit, start);
-// });
-
-// function loadAjaxData(what, displayId, limit = 1, start = 0) {
-//   request = $.ajax({
-//     type: "POST",
-//     url: "fetcher"+gets()+"&start="+start+"&limit="+limit,
-//     data: {what: what},
-//   });
-
-//   request.done(function (response) {
-//     if (response == null || response == "null" || response == "" || response == "No data found") {
-//         start = 0;
-//         return null;
-//     }
-//     if(document.getElementById(displayId).innerHTML == response) {
-//      return false;
-//     } 
-
-//     document.getElementById(displayId).innerHTML += response;
-//     start = parseInt(start) + parseInt(limit);
-//     loadAjaxData(what, displayId, limit, start);
-    
-//   });
-
-// }
-
-function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isReplace="false", interval = 3000) {
-  var loading = "<p class='h4'><b>Loading Data</b></p>";
-  // var displayHere = document.getElementById(displayId);
-  // if(displayHere.innerHTML == "") displayHere = loading;
-  data = { page: what, what: what, start: start };
-  request = $.ajax({
-    type: "POST",
-    url: path == "passer" ? path+gets() : path,
-    data: data,
+  const request = $.ajax({
+      type: "POST",
+      url: path === "passer" ? path + gets() : path,
+      data: data,
+      signal: controller.signal, // Use AbortController's signal to cancel if needed
   });
-  request.done(function (response) {
-    if (response == null || response == "null" || response == "  " || response.replace(/ /g, '') == "", response.replace(/ /g, '') == " ") {
-      start = 0;
-        return null;
-    }
-    if (checkJSON(response)) {
-      obj = JSON.parse(response);
-      if(obj['status'] != "ok") return null;
-      response = obj['data'];
-    }
-    // if (displayHere.innerHTML == loading) {
-    //   displayHere.innerHTML = response;
-    // } else {
-    //   displayHere.innerHTML += response;
-    // }
-    try {
-      (isReplace == "false") ? document.getElementById(displayId).innerHTML += response : document.getElementById(displayId).innerHTML = response;
-    } catch (error) {
-      
-    }
 
-    start =  parseInt(start) + parseInt(limit);
-    if(document.getElementById(displayId)){
-      console.log("True gt here");
-      setTimeout(function() {
-        fetchData(what, displayId, limit, start, path, isReplace);
-    }, parseInt(interval)); 
-    }
-    
+  request.done(function (response) {
+      // Stop if the response is empty or invalid
+      if (!response || response.trim() === "") {
+          start = 0;
+          return null;
+      }
+      
+      // Parse JSON response if possible
+      if (checkJSON(response)) {
+          const obj = JSON.parse(response);
+          if (obj['status'] !== "ok") return null;
+          response = obj['data'];
+      }
+
+      // Update the display with the new response
+      displayHere.innerHTML = (isReplace === "false") ? displayHere.innerHTML + response : response;
+
+      // Update start for pagination
+      start = parseInt(start) + parseInt(limit);
+
+      if(displayHere.querySelectorAll('[data-url]')) {
+        console.log("Works here")
+        modalelements = displayHere.querySelectorAll('[data-url]');
+        iniModal(modalelements);
+      }else{
+        console.log("Nothing here")
+      }
+
+      if(displayHere.querySelectorAll("#foo")) {
+        const elements = displayHere.querySelectorAll("#foo");
+        $i = 0;
+        console.log("Got some");
+        elements.forEach((element) => {
+          iniForm(element);
+          $i++;
+        });
+      }
+      
+
+
+      // Schedule the next fetch, but clear any previous timeout
+      if (document.getElementById(displayId)) {
+          const timeoutId = setTimeout(() => {
+              fetchData(what, displayId, limit, start, path, isReplace, interval, controller);
+          }, parseInt(interval));
+
+          // Update the timeout ID for this fetch to allow canceling if needed
+          activeFetches.get(displayId).timeoutId = timeoutId;
+      }
+  });
+
+  // Handle fetch cancellation errors silently
+  request.fail(function (jqXHR, textStatus) {
+      if (textStatus !== "abort") {
+          console.error("Fetch failed:", textStatus);
+      }
   });
 }
 

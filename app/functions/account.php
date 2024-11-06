@@ -21,6 +21,46 @@ class Account extends user
     return json_encode($return);
       
     }
+
+    function fetch_login() {
+      $start = $_POST['start'] ?? 0;
+      $limit = $_POST['limit'] ?? 10;
+      // echo $start;
+      $s = isset($_GET['s'])? htmlspecialchars($_GET['s']) : "";
+
+      $where = "";
+      $data = [""];
+      if(isset($_GET['s']) && $_GET['s'] != "") {
+        $s = htmlspecialchars($_GET['s']);
+        $where .= "and (login_details  LIKE CONCAT( '%',?,'%') or username  LIKE CONCAT( '%',?,'%')) ";
+        $data[] = $s;
+        $data[] = $s;
+      }
+
+      if(isset($_GET['is_sold']) && $_GET['is_sold'] == "all") {
+        $where .= "or sold_to  LIKE CONCAT( '%',?,'%')";
+        $data[] = $s;
+      }
+
+      if(isset($_GET['is_sold']) && $_GET['is_sold'] == "yes") {
+        $s = htmlspecialchars($_GET['s']);
+        $where .= "and sold_to = ?";
+        $data[] = "";
+      }
+      if(isset($_GET['is_sold']) && $_GET['is_sold'] == "no") {
+        $s = htmlspecialchars($_GET['s']);
+        $where .= "and sold_to != ?";
+        $data[] = "";
+      }
+
+
+      if(isset($_GET['startDate']) && isset($_GET['endDate']) && $_GET['startDate'] != "" ) {
+        $where .= "and date >= ? and date <= ?";
+        $data[] = htmlspecialchars($this->formatDate($_GET['startDate']));
+        $data[] = htmlspecialchars($this->formatDate($_GET['endDate'])) ?? date("Y-m-d H:i:s");
+     }
+     return $this->getall("logininfo", "id != ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
+    }
     function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1, $category = "all")
     {
      
@@ -118,10 +158,21 @@ class Account extends user
       }
 
 
+      function can_buy($userID, $catID) {
+        $category = $this->getall("category", "ID = ?", [$catID]);
+        if($category['cat_type'] == 0 && !$this->is_ofline_buyer($userID)) {
+            return false;
+        }
+        return true;
+      }
+
     function buy_account($userID, $accountID, $qty, array $logins = []) {
         $account = $this->getall("account", "ID = ?", [$accountID]);
         $useCart = false;
         $qty = (int)$qty;
+        if(isset($account['categoryID']) && !$this->can_buy($userID, $account['categoryID'])) {
+          return $this->message("Error.", "error", "json");
+        }
         if(count($logins) > 0) { 
           $useCart = true;
           $qty = count($logins);
@@ -146,8 +197,7 @@ class Account extends user
         
         $costAmount = (float)$account['amount'] * (int)$qty;
         $discountData = $this->getUserStage($userID);
-        $amount = $this->calculateDiscount($costAmount, $qty, $discountData['stage']);
-        
+        $amount = ($this->is_ofline_buyer($userID)) ? $costAmount : $this->calculateDiscount($costAmount, $qty, $discountData['stage']);  
         $orderID = uniqid("order-");
         // debit user account
         $debit = $this->credit_debit($userID, $amount, "balance", "debit", "orders", $orderID);
@@ -314,10 +364,10 @@ class Account extends user
     }
       return "
         <div class='col-md-4 single-note-item all-category' id='displaylogin-".$login['ID']."'>
-                        <div class='card card-body p-4'>
+                        <div class='shadow-sm card-body p-4'>
                             <span class='side-stick bg-$stick'></span>
                             <h6 class='note-title text-truncate w-75 mb-0 fs-2'>ID ".$login['ID']."</h6>
-                            <h6 class='note-title text-truncate w-75 mb-0'>Login $index</h6>
+                            <h6 class='note-title text-truncate w-75 mb-0'></h6>
                             <p class='note-date fs-2 text-$stick'>$status</p>
                             
                             <div class='note-content'>
@@ -328,6 +378,8 @@ class Account extends user
                             <div class='d-flex gap-1'>
                             ".$this->get_login_btns($login, $showAccount)."
                           </div>
+                          <hr>
+                          <small><b>Added on: </b>".$login['date']."</small>
                         </div>
                     </div>
         ";

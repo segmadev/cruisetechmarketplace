@@ -1,6 +1,7 @@
 <?php
 $script[] = "modal";
 $script[] = "sweetalert";
+$script[] = "fetcher";
  require_once "../content/textarea.php"; 
 ?>
 <div class="card">
@@ -26,14 +27,75 @@ $script[] = "sweetalert";
         </form>
         <hr>    
         <h3>Logins Added</h3>
-        <div class="note-has-grid row">
-            <?php if ($logins->rowCount() > 0) {
-                $i = 1;
-                foreach ($logins as $login) {
-                    echo $a->display_login_details($login, $i);
-                    $i++;
-                }
-            } ?>
-        </div>
+        <hr>
+        <div class="container my-3">
+   
+        <div class="container my-3">
+    <!-- Toggle Button -->
+    <button class="btn btn-outline-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterForm" aria-expanded="false" aria-controls="filterForm">
+        Toggle Filter Form
+    </button>
+
+    <!-- Collapsible Form -->
+    <div class="collapse" id="filterForm">
+        <form id="loadloginForm" action="loadlogin" method="get" class="row g-3">
+            <input type="hidden" name="p" value="account">
+            <!-- Search Input -->
+            <div class="col-12 col-md-5">
+                <input type="search" value="<?php if(isset($_GET['s'])) { echo $_GET['s']; } ?>" name="s" class="form-control" placeholder="Search Login" data-id="#accountList" id="searchMarket">
+            </div>
+
+            <!-- Date and Filter Options -->
+            <div class="col-12 col-md-7">
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <label for="startDate" class="form-label mb-0 me-2">Start Date</label>
+                    <input class="form-control" type="datetime-local" name="startDate" id="startDate">
+
+                    <label for="endDate" class="form-label mb-0 me-2">End Date</label>
+                    <input class="form-control" type="datetime-local" name="endDate" id="endDate">
+
+                    <select name="is_sold" class="form-select" style="width: auto;">
+                        <option value="all">All</option>
+                        <option value="yes">Not Sold</option>
+                        <option value="no">Sold</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+</div>
+
+    <div class="note-has-grid row" data-limit="100" data-start="0" data-path="passer?p=account&id=<?= $id ?>&get=logins&type=active&action=edit" data-load='account'  data-displayId="loadlogin" id="loadlogin"></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('loadloginForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent form submission
+
+    const formData = new FormData(this); // Get form data
+    const loadloginDiv = document.getElementById('loadlogin'); // Target div
+    let currentDataPath = loadloginDiv.getAttribute('data-path'); // Get current data-path
+
+    // Convert current data-path to URLSearchParams for easy manipulation
+    const urlParams = new URLSearchParams(currentDataPath.split('?')[1]);
+
+    // Update URLSearchParams with form data, replacing any existing keys
+    formData.forEach((value, key) => {
+        if (value) { // Only add if there's a value
+            urlParams.set(key, value);
+        }
+    });
+
+    // Reconstruct data-path with updated parameters
+    const updatedDataPath = currentDataPath.split('?')[0] + '?' + urlParams.toString();
+    loadloginDiv.setAttribute('data-path', updatedDataPath);
+
+    // Optional: Call loadFetchData function to reload content if needed
+    loadFetchData(loadloginDiv);
+});
+</script>

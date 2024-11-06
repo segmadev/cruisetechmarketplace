@@ -19,6 +19,7 @@ if (isset($_SESSION['newuser'])) {
         <?php
         if ($categories->rowCount() > 0) {
             foreach ($categories as $category) {
+                if($category['cat_type'] == "0" && !$d->is_ofline_buyer($userID)) continue;
                 $selected = "";
                 if($category['ID'] == $categoryID) $selected = "selected";
                 echo "<option value='" . $category['ID'] . "' $selected>" . $category['name'] . "</option>";
@@ -51,7 +52,7 @@ if (isset($_SESSION['newuser'])) {
                     </ul>
                 </div>
                 </div>
-    <p>Buy last longing account from us.</p>
+    <p>Buy last longing account from us today.</p>
 
 </div>
 <div class="card p-2 mt-2">
