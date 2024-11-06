@@ -213,7 +213,7 @@ class Account extends user
             if($check > 0) {
               $faild++;
             }else{
-              $update = $this->update("logininfo", ["sold_to" => $userID], "ID = '$login[ID]' AND (sold_to IS NULL OR sold_to = '')");
+              $update = $this->update("logininfo", ["sold_to" => $userID, "sold_at"=>date("Y-m-d H:i:s")], "ID = '$login[ID]' AND (sold_to IS NULL OR sold_to = '')");
               $check = $this->getall("logininfo", "ID = ? and sold_to = ?", [$login['ID'], $userID], fetch: "");
               if(!$update || $check == 0) {
                 $faild++;
