@@ -14,7 +14,7 @@ if (isset($_POST['delete_login'])) {
     $id = htmlspecialchars($_POST['ID'] ?? "");
     echo $a->delete_login_details($id);
 }
-if (isset($_POST['what']) && $_POST['what'] == "get") {
+if (isset($_GET['get']) && $_GET['get'] == "accounts") {
     $start = htmlspecialchars($_POST['start']);
     $limit = htmlspecialchars($_POST['limit']);
     try {

@@ -8,7 +8,7 @@
 
 <!-- Core Css -->
 <link id="themeColors" rel="stylesheet" href="../dist/css/style.min.css?n=90" />
-<link rel="stylesheet" href="../dist/css/custom.css?n=20">
+<link rel="stylesheet" href="../dist/css/custom.css?n=22220">
 
 <link rel="stylesheet" href="../dist/libs/bootstrap-table/dist/bootstrap-table.min.css">
 <link rel="stylesheet" href="../dist/css/notification.css?n=1">

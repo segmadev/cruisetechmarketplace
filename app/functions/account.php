@@ -29,7 +29,7 @@ class Account extends user
       $s = isset($_GET['s'])? htmlspecialchars($_GET['s']) : "";
 
       $where = "";
-      $data = [""];
+      $data = [htmlspecialchars($_GET['id'] ?? "")];
       if(isset($_GET['s']) && $_GET['s'] != "") {
         $s = htmlspecialchars($_GET['s']);
         $where .= "and (login_details  LIKE CONCAT( '%',?,'%') or username  LIKE CONCAT( '%',?,'%')) ";
@@ -59,7 +59,7 @@ class Account extends user
         $data[] = htmlspecialchars($this->formatDate($_GET['startDate']));
         $data[] = htmlspecialchars($this->formatDate($_GET['endDate'])) ?? date("Y-m-d H:i:s");
      }
-     return $this->getall("logininfo", "id != ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
+     return $this->getall("logininfo", "accountID = ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
     }
     function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1, $category = "all")
     {
@@ -287,7 +287,7 @@ class Account extends user
     function display_account($account, $userID = null){
         $platform = $this->get_platform($account['platformID']);
         return "<div class='col single-note-item all-category p-0 m-0' id='displayaccount-".$account['ID']."'>
-                <div class='card card-body bg-light p-0 p-2 border-1 mb-1'>
+                <div class='card noanimation card-body bg-light p-0 p-2 border-1 mb-1'>
                   ".$this->display_account_name($account)."
                   <div class='d-flex align-items-center justify-content-between p-0 m-0'>
                   <div class='w-80 text-end'><small><b>".$this->get_num_of_login($account['ID'])." pcs available</b></small></div>

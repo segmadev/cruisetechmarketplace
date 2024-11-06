@@ -49,7 +49,7 @@
 }
 
 
-.card {
+.card:not(.noanimation) {
   animation: rightsidemovement 1s ease 0s 1 normal forwards;
 }
 

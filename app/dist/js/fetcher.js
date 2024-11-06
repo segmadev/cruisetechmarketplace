@@ -37,41 +37,43 @@ document.querySelectorAll("[data-load]").forEach(loaddata => {
   loadFetchData(loaddata);
 });
 
-
-document.querySelectorAll('.fetcher-form').forEach(form => {
-  form.addEventListener('submit', function(e) {
-      e.preventDefault(); // Prevent the default form submission
-
-      const targetId = this.getAttribute('data-target');
-      const targetDiv = document.getElementById(targetId);
-
-      if (!targetDiv) {
-          console.warn(`Target div with ID "${targetId}" not found.`);
-          return;
-      }
-
-      // Get current data-path and form data
-      let currentDataPath = targetDiv.getAttribute('data-path');
-      const formData = new FormData(this);
-
-      // Convert current data-path parameters to URLSearchParams
-      const urlParams = new URLSearchParams(currentDataPath.split('?')[1]);
-
-      // Update URLSearchParams with form data
-      formData.forEach((value, key) => {
-          if (value) {
-              urlParams.set(key, value);
-          }
-      });
-
-      // Reconstruct the data-path with updated parameters
-      const updatedDataPath = currentDataPath.split('?')[0] + '?' + urlParams.toString();
-      targetDiv.setAttribute('data-path', updatedDataPath);
-
-      // Reload data based on the updated path
-      loadFetchData(targetDiv);
+if(document.querySelectorAll('.fetcher-form')) {
+  document.querySelectorAll('.fetcher-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+  
+        const targetId = this.getAttribute('data-target');
+        const targetDiv = document.getElementById(targetId);
+  
+        if (!targetDiv) {
+            console.warn(`Target div with ID "${targetId}" not found.`);
+            return;
+        }
+  
+        // Get current data-path and form data
+        let currentDataPath = targetDiv.getAttribute('data-path');
+        const formData = new FormData(this);
+  
+        // Convert current data-path parameters to URLSearchParams
+        const urlParams = new URLSearchParams(currentDataPath.split('?')[1]);
+  
+        // Update URLSearchParams with form data
+        formData.forEach((value, key) => {
+            if (value) {
+                urlParams.set(key, value);
+            }
+        });
+  
+        // Reconstruct the data-path with updated parameters
+        const updatedDataPath = currentDataPath.split('?')[0] + '?' + urlParams.toString();
+        targetDiv.setAttribute('data-path', updatedDataPath);
+  
+        // Reload data based on the updated path
+        loadFetchData(targetDiv);
+    });
   });
-});
+}
+
 
 // Track fetch requests and timeouts for each element to prevent overlapping requests
 function loadFetchData(loaddata) {
