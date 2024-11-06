@@ -4,6 +4,7 @@ if ($categories == null || $categories <= 0) {
 }
 $script[] = "modal";
 $script[] = "sweetalert";
+$script[] = "fetcher";
 ?>
 <style>
     .table>:not(caption)>*>*  {
@@ -11,7 +12,7 @@ $script[] = "sweetalert";
     }
 </style>
 <div class="card">
-    <div class="card-body" data-load="get" data-page="category" data-displayId="displaycategories">
+    <div class="card-body" data-limit="100" data-start = "0" data-path="passer?get=category" data-load="category" data-page="category" data-displayId="displaycategories">
         <div class="card-title">
             <h1>List of category</h1>
         </div>

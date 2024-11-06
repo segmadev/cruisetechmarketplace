@@ -11,7 +11,7 @@
     if(isset($_POST['delete_category'])) {
         echo $ca->delete_category(htmlspecialchars($_POST['ID']));
     }
-    if(isset($_POST['what']) && $_POST['what'] == "get") {
+    if(isset($_GET['get']) && $_GET['get'] == "category") {
         $start = htmlspecialchars($_POST['start']);
         $limit = htmlspecialchars($_POST['limit']);
        try {
