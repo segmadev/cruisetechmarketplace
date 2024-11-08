@@ -87,7 +87,7 @@ if (!$account || $account == "") {
                         <input type="text" id="search-input" placeholder="Search by username or preview link..." onkeyup="searchLogins()" class="form-control mb-1">
                         <!-- Notification Area -->
                         <div id="notification" style="display: none;"></div>
-                        <div><button id="add-all-to-cart-btn" class="btn btn-sm btn-primary mb-1 mt-1" onclick="addAllToCart()" style="display: none;"><i class="ti ti-plus"></i>Add All results to Cart</button></div>
+                        <div><button id="add-all-to-cart-btn" class="btn btn-sm btn-primary mb-1 mt-1" onclick="addAllToCart()" style="display: block;"><i class="ti ti-plus"></i>Add All results to Cart</button></div>
                         ';
             echo '<div id="logins-container" class="row gap-2"></div>';
         }

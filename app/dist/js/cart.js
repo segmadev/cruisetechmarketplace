@@ -503,11 +503,11 @@ function searchLogins() {
 
     // Show or hide "Add All to Cart" button based on search results
     let addAllBtn = document.getElementById('add-all-to-cart-btn');
-    if (searchResultsFound && searchQuery !== "") {
-        addAllBtn.style.display = 'block';
-    } else {
-        addAllBtn.style.display = 'none';
-    }
+    addAllBtn.style.display = 'block';
+    // if (searchResultsFound && searchQuery !== "") {
+    // } else {
+    //     addAllBtn.style.display = 'none';
+    // }
 
     // Determine which search terms were not found
     notFoundTerms = searchTerms.filter(term => !foundTerms.has(term) && isValidUrl(term));
