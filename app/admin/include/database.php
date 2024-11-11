@@ -657,7 +657,7 @@ class database
         // $specialChars = preg_match('@[^\w]@', $password);
 
         if (!$uppercase || !$lowercase || !$number || strlen($password) < 4) {
-            database::message("Password should be at least 4 characters in length and should include at least one upper case letter and one number.", "error");
+            database::message("Password should be at least 8 characters in length and should include at least one upper case letter and one number.", "error");
             return false;
         } else {
             if ($password == $cpass) {

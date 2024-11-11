@@ -84,8 +84,15 @@
 }
         </style>
     <div class="card bg-white p-0">
-        <div class="card-header">
-                <h3>SMS Verifications </h3>
+        <div class="card-header p-4">
+                <h6><b>SMS Verifications For: </b> </h6>
+                <h4 class="text-primary">
+               <b> <?php if($number_type == "short_term"){ 
+                                        if(isset($_GET['networkName']) && $_GET['networkName'] != "") echo htmlspecialchars_decode($_GET['networkName']);
+                                        if(!isset($_GET['networkName']) || $_GET['networkName'] == "") echo 'Short Term USA Number '.$network; 
+                                    }else if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; } else{
+                                        echo " Short term Numbers"; } ?></b>
+                </h4>
                 <p class="m-0">Get phone number to receive OTP for <a href="index?p=rentals&network=1&action=new">short term</a> or <a href="index?p=rentals&network=1&action=new&type=long_term"> long term</a> use.</p>
                 <p class="m-0 text-black">You will receive an instant refund if you do not receive OTP. </p>
                 <p class="text-muted m-0">To view rented numbers <a href="index?p=rentals" class="btn-sm">click here</a>.</p>
@@ -101,18 +108,15 @@
                 </form>
             </div>
             <div class="card-body p-0 m-0">
-                <p class="bg-danger ps-4 text-white"><b>Note that the price are not fixed.
-                   <?php if(!isset($_GET['currentprice'])) { ?> <a href="<?= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>&currentprice=true" class="btn-sm text-black btn-light-dark">Update Price</a><?php } ?>
+                <p class="bg-light-danger text-black ps-4"><b>Note that the price are not fixed.
+                   <?php if(!isset($_GET['currentprice'])) { ?> <a href="<?= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>&currentprice=true" class="btn-sm text-primary btn-light-dark">Update Price</a><?php } ?>
                 </b></p>
                 <div class="d-flex p-2 flex gap-2">
                
                     <div class="btn-group mb-2 print-ignore">
                             <button class="btn btn-sm <?php if($number_type == "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="ti ti-phone"></i> 
-                                <?php if($number_type == "short_term"){ 
-                                        if(isset($_GET['networkName']) && $_GET['networkName'] != "") echo htmlspecialchars_decode($_GET['networkName']);
-                                        if(!isset($_GET['networkName']) || $_GET['networkName'] == "") echo 'Short Term USA Number '.$network; 
-                                    }else{ echo " Short term Numbers"; } ?>
+                                Click for all countries
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new&networkName=Short Term Number 1 (USA)">Short Term Number 1 (USA)</a></li>
@@ -125,7 +129,7 @@
                    
                     <div class="btn-group mb-2 print-ignore">
                             <button class="btn btn-sm <?php if($number_type != "short_term"){ echo 'btn-primary'; } else { echo 'btn-light-danger'; }; ?> dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="ti ti-phone"></i> <?php if($number_type != "short_term"){ echo str_replace("_", " ", $number_type). ' Network '.$network; }else{ echo "Long Term Number"; } ?>
+                            Click for Long Terms No.
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
                                 <li><a class="dropdown-item" href="index?p=rentals&action=new&type=3days">Long Term Number (USA) <span class="text-primary">(3days)</span> </a></li>
@@ -137,11 +141,11 @@
 
                         <?php if($countries && is_array($countries)){ ?>
 
-                            <div class="dropdown-container mb-2">
+                            <div class="dropdown-container mb-2 ms-4">
                                 <div class="dropdown-header btn btn-sm btn-light-danger" onclick="toggleDropdown()">
                                 <?php if(isset($_GET['name']) && $_GET['name'] != "") {
                                      echo '<img src="'.($r->getKeyValue($_GET['name'], key: "name")  ? 'https://flagcdn.com/w320/'.strtolower($r->getKeyValue($_GET['name'], key: "name")).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" class="flag">';
-                                     echo '<span class="country-name">' . $_GET['name'] . '</span>';
+                                     echo '<span class="country-name">' . $_GET['name'] .  '<small style="font-size: 10px"> - (click more Countries )</small></span>';
                                 }else{
                                     echo "Select a country";
                                 }    
@@ -164,6 +168,7 @@
                                             echo '<a href="index?p=rentals&network='.$network.'&action=new&countryCode='.$countryID.'&symbol='.$code.'&name='.$countryName.'" class="country-item text-black" onclick="selectCountry(\'' . $countryName . '\')">';
                                             echo '<img src="'.($code  ? 'https://flagcdn.com/w320/'.strtolower($code).'.png' : 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=hsjdhsd.com&size=24').'" alt="' . $countryName . ' flag" class="flag">';
                                             echo '<span class="country-name">' . $countryName . '</span>';
+                                          
                                             echo '</a>';
                                         }
                                         ?>
