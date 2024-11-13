@@ -47,9 +47,7 @@
                 <div class="text-danger card p-3 d-flex m-0 bg-light-danger"><b>Total Debit: <?= $d->money_format($u->total_transaction_type($userID, "debit")['total']) ?> </b></div>
                 <hr>
                 <!-- index?p=orders&userID= //$userID;  -->
-                <a href="#" class="text-primary card p-3 d-flex m-0 bg-light-primary"><b>No of orders: <br> <?= number_format($no_account_bought) ?> | View </b></a>
-              
-
+                <a href="index?p=orders&userID=<?= $userID; ?>" class="text-primary card p-3 d-flex m-0 bg-light-primary"><b>No of orders: <br> <?= number_format($no_account_bought) ?> | View </b></a>
             </div>
         </div>
        

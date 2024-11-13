@@ -24,7 +24,6 @@ if($action == "list" || $action == "table") {
 
 
 if(isset($_GET['download_profile'])) {
-    echo "yes";
     $u->download_profile();
 }
 

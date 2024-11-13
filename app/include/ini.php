@@ -55,7 +55,7 @@ $script = [];
 $user = $d->getall("users", "ID = ?",  [$userID], fetch:"details");
 $full_name = ucwords($user['first_name'].' '.$user['last_name']);
 $user_data = $u->user_data($userID);
-$activities = $d->getall("activities", "userID = ? order by date DESC LIMIT 5", [$userID], fetch: "moredetails");
+$activities = $d->getall("activities", "userID = ? order by date DESC LIMIT 1", [$userID], fetch: "moredetails");
 $act_title = 'Recent Activity';
 $act_des = 'New notifications and activity on your account';
 

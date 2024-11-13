@@ -243,7 +243,7 @@ class deposit extends user
     function get_total_pending($userID, $status, $data = null)
     {
         if ($data == null) {
-            $data = $this->getall("deposit", "userID = ? and status = ?", [$userID, $status], fetch: "moredetails");
+            $data = $this->getall("deposit", "userID = ? and status = ? LIMIT 50", [$userID, $status], fetch: "moredetails");
         }
         if ($data->rowCount() == 0) {
             return $info = ['data' => [], 'number' => 0, 'total' => 0];
