@@ -46,7 +46,8 @@
                 <hr>
                 <div class="text-danger card p-3 d-flex m-0 bg-light-danger"><b>Total Debit: <?= $d->money_format($u->total_transaction_type($userID, "debit")['total']) ?> </b></div>
                 <hr>
-                <a href="index?p=orders&userID=<?= $userID; ?>" class="text-primary card p-3 d-flex m-0 bg-light-primary"><b>No of orders: <br> <?= number_format($no_account_bought) ?> | View </b></a>
+                <!-- index?p=orders&userID= //$userID;  -->
+                <a href="#" class="text-primary card p-3 d-flex m-0 bg-light-primary"><b>No of orders: <br> <?= number_format($no_account_bought) ?> | View </b></a>
               
 
             </div>
@@ -56,7 +57,9 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Transctions.</h5>
-                    <p>Recent Transctions taken on this account. <a href="index?p=users&action=transactions&id=<?= $userID ?>">See All</a></p>
+                    <p>Recent Transctions taken on this account.
+                         <!-- <a href="index?p=users&action=transactions&id=<?= $userID ?>">See All</a> -->
+                        </p>
                 </div>
                 <div class="card-body">
                     <?php require_once "pages/users/trans_table.php"; ?>

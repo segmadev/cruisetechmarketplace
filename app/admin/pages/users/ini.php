@@ -15,9 +15,9 @@ if (isset($_GET['action'])) {
 if($action == "list" || $action == "table") {
     $acct_type = htmlspecialchars($_GET["acct_type"] ?? "all");
     if($acct_type == "all") {
-        $users = $d->getall("users", fetch: "moredetails");
+        $users = $d->getall("users", "ID != ? order by date desc limit 1", [""], fetch: "moredetails");
     }else{
-        $users = $d->getall("users", "acct_type = ?", [$acct_type], fetch: "moredetails");
+        $users = $d->getall("users", "acct_type = ? order by date desc limit 1", [$acct_type], fetch: "moredetails");
     }
 }
 
@@ -39,7 +39,7 @@ if(isset($_GET['id'])  && !empty($_GET['id'])) {
     $user_data = $u->user_data($userID);
     $deposit = $d->getall("deposit", "userID = ? order by date DESC LIMIT 10", [$userID], fetch: "moredetails");
     if($action == "transactions") {
-        $transactions = $d->getall("transactions", "userID = ? order by date DESC", [$userID], fetch: "moredetails");
+        $transactions = $d->getall("transactions", "userID = ? order by date DESC LIMIT 100", [$userID], fetch: "moredetails");
     }else{
         $transactions = $d->getall("transactions", "userID = ? order by date DESC LIMIT 10", [$userID], fetch: "moredetails");
     }

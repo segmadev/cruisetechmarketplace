@@ -115,7 +115,11 @@ $navs = [
                     "a" => "index?p=users", 
                     "title" => "Manage Users", 
                 ],
-                "icon" => "ti ti-users" 
+                "transactions" => [
+                    "a" => "index?p=users&action=transactions", 
+                    "title" => "Search Transactions",  
+                ],
+                "icon" => "ti ti-money" 
             ],
 
             "deposits" => [
