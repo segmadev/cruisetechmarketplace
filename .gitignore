@@ -13,3 +13,4 @@ textextractor
 app/.htaccess
 app/api/.htaccess
 app/extract.html
+app/validate_webhook.php

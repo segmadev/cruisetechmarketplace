@@ -37,6 +37,77 @@ class validate_payment extends database {
         
     }
 
+    function outstandingtrans() {
+        $out = $this->getall("outstandingtransactions", "outStatus = ?", [0], fetch:"all");
+        if($out == "") { return $this->apiMessage("All done"); }
+        foreach($out as $o) {
+                $check = $this->getall("transactions", "forID = ? and trans_for = ? and action_type = ?", [$o['forID'], $o['trans_for'], $o['action_type']]);
+                if(is_array($check)) {
+                    $this->update("outstandingtransactions", ["outStatus"=>2], "ID = '".$o['ID']."'");
+                    $this->message("Was done for ".$o['ID'], "error");
+                    continue;
+                }
+            if($this->credit_debit($o['userID'], $o['amount'], "balance", $o['action_type'], $o['trans_for'], $o['forID'])) {
+                $this->update("outstandingtransactions", ["outStatus"=>1], "ID = '".$o['ID']."'");
+                $this->message("Done for ".$o['ID'], "success");
+            }
+        }
+    }
+
+    function outstandingorders() {
+        $orders =  $this->getall("outstandingorders", "outStatus = ?", [0], fetch: "all");
+        foreach ($orders as $order) {
+            var_dump($order);
+            exit();
+            if(is_array($this->getall("orders", "ID = ?", [$order['ID']]))) {
+                $this->update("outstandingorders", ["outStatus"=>2], "ID = '".$order['ID']."'");
+                $this->message("order already created", "error");
+                continue;
+            }
+
+            if($order['order_type'] == "account") {
+                $logins = explode(',', $order['loginIDs']);
+                if(is_array($logins) && count($logins) > 0) {
+                    foreach ($logins as $login) {
+                        $checkLogin = $this->getall("logininfo", "ID = ?", [$login]);
+                        if(is_array($checkLogin)){
+                            if($checkLogin['sold_to'] != null && $checkLogin['sold_to'] != "" && $checkLogin['sold_to'] != $order['userID']) {
+                                $this->message($login." Login already sold to ".$checkLogin['sold_to'], "error");
+                                $this->update("outstandingorders", ["outStatus"=>3], "ID = '".$order['ID']."'");
+                                continue;
+                            }
+                            $this->update("logininfo", ["sold_to"=>$order['userID']], "ID = '".$checkLogin['ID']."'");
+                        }
+                    }
+                } 
+            }
+            unset($order['outStatus']);
+            $data = [
+                "ID"=>$order['ID'],
+                "userID"=>$order['userID'],
+                "accountID"=>$order['accountID'],
+                "serviceCode"=>$order['serviceCode'],
+                "serviceName"=>$order['serviceName'],
+                "otpCode"=>$order['otpCode'],
+                "loginIDs"=>$order['loginIDs'],
+                "amount"=>$order['amount'],
+                "cost_amount"=>$order['cost_amount'],
+                "no_of_orders"=>$order['no_of_orders'],
+                "order_type"=>$order['order_type'],
+                "type"=>$order['type'],
+                "broker_name"=>$order['broker_name'],
+                "country"=>$order['country'],
+                "expiration"=>$order['expiration'],
+                "expire_date"=>$order['expire_date'],
+                "activate_expire_date"=>$order['activate_expire_date'],
+                "status"=>$order['status'],
+                "date"=>$order['date']
+            ];
+            $this->quick_insert("orders", $data, "New order created");
+            $this->update("outstandingorders", ["outStatus"=>1], "ID = '".$order['ID']."'");
+        }
+    }
+
    
     function storeResult($data) {
         $filename = "results.db";
@@ -55,9 +126,10 @@ class validate_payment extends database {
     }
 }
 $vaildate = new validate_payment();
-if($vaildate->check_transaction()){
-    var_dump('YES');
-}else{
-    var_dump("No");
-}
+$vaildate->outstandingtrans();
+// if($vaildate->check_transaction()){
+//     var_dump('YES');
+// }else{
+//     var_dump("No");
+// }
 // 7630df8267191722771419
