@@ -4,6 +4,9 @@
 $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
 require_once "pages/profile/stage.php";
 ?>
+<div class='bg-danger text-white p-2 rounded mb-2'>
+    <p>We are currently experiencing some technical difficulties, but our team is working hard to resolve them. <br> We appreciate your patience and expect everything to be back to normal soon.</p>
+</div>
 <div class="col-12 d-sm-none d-block">
   <?= $u->show_balance($userID, showBtn: true); ?>
 </div>
