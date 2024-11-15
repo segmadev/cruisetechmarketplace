@@ -125,7 +125,7 @@ class users extends user
             $data['session_ID'] = "admin";
         } 
         
-        $transfer = $this->credit_debit($data['userID'], $data['amount'], $data['action_on'], $data['type'], $data['for'], $data['session_ID']);
+        $transfer = $this->credit_debit($data['userID'], $data['amount'], $data['action_on'], $data['type'], $data['for'] ?? "transfer_payment", $data['session_ID']);
         if($transfer) {
              $this->message("Done! You can reload page to see effect.", "success");
              $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), 

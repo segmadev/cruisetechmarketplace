@@ -38,6 +38,29 @@ class validate_payment extends database {
     }
 
     function outstandingtrans() {
+        $out = $this->getall("outstandingtransactions", "outStatus = ?", [4], fetch:"all");
+        if($out == "") { return $this->apiMessage("All done"); }
+        foreach($out as $o) {
+                $check = $this->getall("transactions", "forID = ? and transID != ? action_type = ?", [$o['forID'], "done", $o['action_type']], fetch: "all");
+                
+                if($check != "" && ctype_digit($o['forID']) && strlen(string: $o['forID']) === 30) {
+                    
+                    $i =0 ;
+                    foreach($check as $row) {
+                       if($i == 0) continue ;
+                        if($this->credit_debit($o['userID'], $row['amount'], "balance", "debit", "double", $o['forID'])){
+                            $this->update("transactions", ["transID"=>'done'], "ID = '".$row['ID']."'");
+                            $this->message("Done for ".$o['ID'], "success");
+                        }
+                    }
+                    return ;
+                }
+                $this->update("outstandingtransactions", ["outStatus"=>4], "ID = '".$o['ID']."'");
+                $this->message("Not dobule for ".$o['ID'], "success"); 
+        }
+    }
+
+    function outstandingtrans() {
         $out = $this->getall("outstandingtransactions", "outStatus = ?", [0], fetch:"all");
         if($out == "") { return $this->apiMessage("All done"); }
         foreach($out as $o) {
