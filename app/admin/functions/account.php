@@ -21,12 +21,14 @@ class accounts extends Account
         if (is_array($info) && $action == "insert") {
             
             $count = $this->add_login_info($info['ID']);
-            $this->message("Account Created Successfully and $count Login Details added", "success");
+            $this->message("Account Created Successfully and ".$count['count']." Login Details added", "success");
+            if(isset($count['message'])  && $count['message']!= "") echo $count['message'];
             $action = "new";
         }
         if (is_array($info) && $action == "update"){
             $count = $this->add_login_info($info['ID']);
-            $this->message("Account updated Successfully and $count Login Details added", "success");
+            $this->message("Account updated Successfully and ".$count['count']." Login Details added", "success");
+           if(isset($count['message'])  && $count['message']!= "") echo $count['message'];
             $action = "edit";
         }
         $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "$action account", "description" => "$action Account on ".htmlspecialchars($_POST['ID']), "action_for"=>"account", "action_for_ID"=>htmlspecialchars($_POST['ID']) ];
@@ -58,16 +60,22 @@ class accounts extends Account
         if(!$this->role->validate_action(["account"=>"addLogins"], true)) return ;
         $count = 0;
         if(!isset($_POST['login_details'])) return $count;
+        $notAdded = "";
         foreach ($_POST['login_details'] as $key => $value) {
-            if($value == "" || $value == " ") continue;
+            if($value == "" || $value == " ") {
+                $notAdded.= "Why?: Login Details is empty: <p>$value</p><hr>";
+                continue;}
             $value = $this->decodeBase64IfNeeded($value); // Decode Base64 if necessary
             $username = $_POST['username'][$key] ?? "";
             $preview_link = $_POST['preview_link'][$key] ?? "";
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
-            if($check > 0) continue;
+            if($check > 0) {
+                $notAdded.= "Why?: Login already exit: <p>$value</p><hr>";
+                continue;
+            }
             if($username != ""){
                 $check = $this->getall("logininfo", "accountID = ? and username = ?", [$accountID, $username], fetch: "");
-                if($check > 0) continue;
+                if($check > 0) { $notAdded.= "Why?: Username already exit: <p>$value</p><hr>"; continue;}
             }
             $this->quick_insert("logininfo", [
                 "accountID" => $accountID,
@@ -81,8 +89,11 @@ class accounts extends Account
             $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "login account", "description" => "Add $count login(s) Account in ".$accountID, "action_for"=>"account", "action_for_ID"=>$accountID];
             $this->new_activity($actInfo);
         }
+        if($notAdded != "") {
+            $notAdded = "<h5>This logins were not added: </h5> ".$notAdded;
+        }
         
-        return $count;
+        return ["count"=>$count, "message"=>$notAdded];
     }
 
     function update_login_info($ID, $value, $accountID, $username, $preview_link) {
