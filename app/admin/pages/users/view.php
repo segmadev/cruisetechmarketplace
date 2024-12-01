@@ -1,6 +1,7 @@
 <?php 
     $script[] = "modal";
-    $no_account_bought = $d->getall("orders", "userID = ?", [$userID], fetch: "")
+    $no_account_bought = $d->getall("orders", "userID = ?", [$userID], fetch: "");
+    $bankAcct = $d->getall("user_accounts", "userID = ?", [$userID]);
 ?>
 <div class="container-fluid">
     <div class="row">
@@ -43,11 +44,17 @@
         <div class="col-lg-4 d-flex align-items-strech card bg-light-success">
             <div class="card-body">
                 <div class="text-success bg-light-success card p-3 d-flex m-0"><b>Total Credit: <?= $d->money_format($u->total_transaction_type($userID, "credit")['total']) ?> </b></div>
-                <hr>
+                <!-- <hr> -->
                 <div class="text-danger card p-3 d-flex m-0 bg-light-danger"><b>Total Debit: <?= $d->money_format($u->total_transaction_type($userID, "debit")['total']) ?> </b></div>
-                <hr>
+                <!-- <hr> -->
                 <!-- index?p=orders&userID= //$userID;  -->
                 <a href="index?p=orders&userID=<?= $userID; ?>" class="text-primary card p-3 d-flex m-0 bg-light-primary"><b>No of orders: <br> <?= number_format($no_account_bought) ?> | View </b></a>
+                 <div class="text-light card p-3 d-flex m-0 bg-dark"><?php if(is_array($bankAcct)){ ?>
+                    <!-- <h5 class="text-light">Bank Details</h5> -->
+                    <p class='m-0 p-0  fs-6'><?= $bankAcct['account_number'] ?></p>
+                    <p class='m-0 p-0 '><?= $bankAcct['bank_name'] ?></p>
+                    <p class='m-0 p-0 '>Txt Ref: <?= $bankAcct['tx_ref'] ?></p>
+                    <?php }else{ echo "No bank Account Created yet."; } ?></div> 
             </div>
         </div>
        
