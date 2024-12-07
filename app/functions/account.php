@@ -64,21 +64,21 @@ class Account extends user
 
     ob_start();
 ?>
-    <tr>
-      <td>
+<tr>
+    <td>
         <a <?= $c->modal_attributes("modal?p=$page&action=view&$idInfo=$id", "Order Details") ?>
-          class="btn btn-sm btn-primary">View</a>
-      </td>
-      <td><?= $order['ID'] ?></td>
-      <td>
+            class="btn btn-sm btn-primary">View</a>
+    </td>
+    <td><?= $order['ID'] ?></td>
+    <td>
         <?= $order['order_type'] === "account"
           ? $this->display_account_name($order['accountID'])
           : "<h5>" . ($order['loginIDs'] ?? "unbooked") . "</h5>"; ?>
-      </td>
-      <td><?= $this->money_format($order['amount'], currency) ?></td>
-      <td><?= number_format($order['no_of_orders']) ?></td>
-      <td><?= $this->date_format($order['date']) ?></td>
-    </tr>
+    </td>
+    <td><?= $this->money_format($order['amount'], currency) ?></td>
+    <td><?= number_format($order['no_of_orders']) ?></td>
+    <td><?= $this->date_format($order['date']) ?></td>
+</tr>
 <?php
     return ob_get_clean();
   }
