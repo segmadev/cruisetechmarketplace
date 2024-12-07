@@ -19,7 +19,7 @@ class database
         $username = db_username;
         $password = db_password; //sJjJzBeJx2Qx
         try {
-            $this->db = new PDO("mysql:host=$servername;dbname=".db_name, $username, $password);
+            $this->db = new PDO("mysql:host=$servername;dbname=" . db_name, $username, $password);
             // set the PDO error mode to exception
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             //echo "Connected successfully";php
@@ -31,30 +31,32 @@ class database
         // $this->userID = htmlspecialchars($_SESSION['adminSession']);  
     }
 
-    function is_ofline_buyer($userID) {
+    function is_ofline_buyer($userID)
+    {
         $idlist = $this->get_settings("offline_buyers");
         // Split the $idlist by commas and whitespace
         $id_array = array_map('trim', explode(",", $idlist));
         // Check if the $userID is in the $id_array
         if (in_array($userID, $id_array)) {
-           return true;
+            return true;
         } else {
             return false;
         }
     }
 
-    function get_visitor_details() {
+    function get_visitor_details()
+    {
         // ip, browser, theme, country, postal_code, state, city
         $ip = "37.120.215.171";
         $ip = $_SERVER['REMOTE_ADDR'];
         if (isset($_COOKIE['visitor_details'])) {
             $data = unserialize($_COOKIE['visitor_details']);
-            if($data['ip_address'] == $ip) {
-                return $data;  
+            if ($data['ip_address'] == $ip) {
+                return $data;
             }
-        } 
+        }
         $deviceInfo = $_SERVER['HTTP_USER_AGENT'];
-        $data = ["ip_address"=>$ip, "device"=>$deviceInfo, "browser"=>"",  "theme"=>"light", "country"=>"", "postal_code"=>"", "state"=>"", "city"=>""];
+        $data = ["ip_address" => $ip, "device" => $deviceInfo, "browser" => "",  "theme" => "light", "country" => "", "postal_code" => "", "state" => "", "city" => ""];
         $apiUrl = "http://ip-api.com/json/{$ip}";
         $locationData = json_decode(file_get_contents($apiUrl));
         // var_dump($locationData);
@@ -63,26 +65,32 @@ class database
             $data['country'] = $locationData->country;
             $data['state'] = $locationData->regionName;
             $data['city'] = $locationData->city;
-        } 
-        if(isset($_COOKIE['browser_theme'])) {
+        }
+        if (isset($_COOKIE['browser_theme'])) {
             $data['theme'] = htmlspecialchars($_COOKIE['browser_theme']);
         }
-        setcookie("visitor_details",serialize($data), time()+12*60*60);
-    //    var_dump($data);
+        setcookie("visitor_details", serialize($data), time() + 12 * 60 * 60);
+        //    var_dump($data);
         return $data;
     }
 
-    function validate_admin() {
-        if(isset($_SESSION['adminSession'])) { return true; }
+    function validate_admin()
+    {
+        if (isset($_SESSION['adminSession'])) {
+            return true;
+        }
         return false;
     }
-    
-    function new_activity($data) {
-        if(isset($_SESSION['anonymous'])) {return null;}
+
+    function new_activity($data)
+    {
+        if (isset($_SESSION['anonymous'])) {
+            return null;
+        }
         // $data = 'userID', "date_time", "action_name", "link", "action_for", "action_for_ID";
-        if(is_array($data) && isset($data['userID'])) {
+        if (is_array($data) && isset($data['userID'])) {
             $info = [];
-            if($this->getall("users", "ID = ? and acct_type = ?", [$data['userID'], "bot"], fetch: "") > 0) {
+            if ($this->getall("users", "ID = ? and acct_type = ?", [$data['userID'], "bot"], fetch: "") > 0) {
                 return true;
             }
             $info['userID'] = $data['userID'];
@@ -90,29 +98,30 @@ class database
             // var_dump($this->get_visitor_details());
             $visitor_info = [];
             // if(!isset($_SESSION['adminSession'])) {
-                $visitor_info = $this->get_visitor_details();
+            $visitor_info = $this->get_visitor_details();
             // }
             $info = array_merge($info, $visitor_info, $data);
-            if(!$this->quick_insert("activities",  $info)){
+            if (!$this->quick_insert("activities",  $info)) {
                 return false;
             }
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-   function new_notification(array $data, $what = "quick") {
-        if(is_array($what != "quick")) {
-            if(!isset($_POST['time_set'])) {
+    function new_notification(array $data, $what = "quick")
+    {
+        if (is_array($what != "quick")) {
+            if (!isset($_POST['time_set'])) {
                 $_POST['time_set'] = time();
             }
             $info = $this->validate_form($data, 'notifications', "insert");
-            if($info) {
+            if ($info) {
                 return true;
             }
-        }else{
-            if($this->quick_insert("notifications",  $data)){
+        } else {
+            if ($this->quick_insert("notifications",  $data)) {
                 return true;
             }
         }
@@ -246,10 +255,10 @@ class database
 
     private function getmethod($q, $fetch)
     {
-        if($fetch == "details" || $fetch == "single" || $fetch == "s") {
+        if ($fetch == "details" || $fetch == "single" || $fetch == "s") {
             return $q->fetch(PDO::FETCH_ASSOC);
         }
-        if($fetch == "moredetails" || $fetch == "all" || $fetch == "a") {
+        if ($fetch == "moredetails" || $fetch == "all" || $fetch == "a") {
             return $q;
         }
         return $q->rowCount();
@@ -265,12 +274,12 @@ class database
         }
         $info = $this->get_table_para($data, $isCreate);
         $action = !$isCreate  ? "ALTER" : "CREATE";
-        $name = !$isCreate  ? $name." ADD" : $name;
+        $name = !$isCreate  ? $name . " ADD" : $name;
         $query = $this->db->prepare("$action  TABLE $name ($info)");
         try {
             $update = $query->execute();
         } catch (\Throwable $th) {
-            if(str_contains($th, "Column already exists")) {
+            if (str_contains($th, "Column already exists")) {
                 return true;
             }
             return false;
@@ -295,7 +304,7 @@ class database
             $type = "VARCHAR(250)";
             $default_value = "";
             $isNull = "NOT NULL";
-            if($key == "ID" && isset($data['input_type']) && $data['input_type'] == "number"){
+            if ($key == "ID" && isset($data['input_type']) && $data['input_type'] == "number") {
                 $isNull .= " AUTO_INCREMENT";
             }
             $primaryKey = "";
@@ -313,11 +322,10 @@ class database
 
             $info .= "$key $type $isNull $default_value,";
         }
-        if(!$isCreate) return rtrim($info, ',');
+        if (!$isCreate) return rtrim($info, ',');
         $info .= "`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,";
         if (isset($datas['ID'])) {
             $info  .= "PRIMARY KEY(ID),";
-            
         }
         return rtrim($info, ',');
     }
@@ -336,42 +344,49 @@ class database
         }
     }
 
-    function options_list($table, $key = "ID", $value = "name") {
+    function options_list($table, $key = "ID", $value = "name")
+    {
 
-        if(is_string($table)) $table = $this->getall("$table", fetch: "moredetails");
-        if($table->rowCount() > 0) {
-            foreach($table as $row) {
+        if (is_string($table)) $table = $this->getall("$table", fetch: "moredetails");
+        if ($table->rowCount() > 0) {
+            foreach ($table as $row) {
                 $data[$row[$key]] = $this->pass_value($value, $row);
             }
         }
         return $data ?? [];
     }
 
-    function pass_value($value, $row) {
-        if(is_array($value)) {
+    function pass_value($value, $row)
+    {
+        if (is_array($value)) {
             $no = 0;
             $count = count($value);
             $data = "";
-            foreach($value as $key => $val) {
-                $no++; 
-                if($no == $count){  $data .= $row[$val]; }else{ $data .= $row[$val]." - ";  }
+            foreach ($value as $key => $val) {
+                $no++;
+                if ($no == $count) {
+                    $data .= $row[$val];
+                } else {
+                    $data .= $row[$val] . " - ";
+                }
             }
-        }else{
+        } else {
             $data = $row[$value];
         }
         return $data;
     }
-    function isPasswordHash($string) {
+    function isPasswordHash($string)
+    {
         // Check if the length is consistent with bcrypt hashes
         if (strlen($string) === 60 && substr($string, 0, 4) === '$2y$') {
             return true;
         }
-        
+
         // Check if it is an Argon2 hash
         if (strpos($string, '$argon2i$') === 0 || strpos($string, '$argon2id$') === 0) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -396,7 +411,9 @@ class database
             }
             if ($this->check_if_required($data)) {
                 if (!isset($_POST[$key]) || empty($_POST[$key])) {
-                    if($showError) { echo $this->message(ucwords(str_replace("_", " ", $key)) . " is required", "error");}
+                    if ($showError) {
+                        echo $this->message(ucwords(str_replace("_", " ", $key)) . " is required", "error");
+                    }
                     $err = true;
                     continue;
                 }
@@ -405,22 +422,24 @@ class database
             if (isset(Regex[$key]) && Regex[$key]['value'] && !empty($_POST[$key])) {
                 if (!preg_match(Regex[$key]['value'], htmlspecialchars($_POST[$key]))) {
                     $err = true;
-                    if($showError) { echo $this->message(Regex[$key]["error_message"], "error"); }
+                    if ($showError) {
+                        echo $this->message(Regex[$key]["error_message"], "error");
+                    }
                     continue;
                 }
             }
 
             // mangedate and time here
-            if(isset($data['input_type']) && $data['input_type'] == "datetime-local" && isset($_POST[$key]) && !empty($_POST[$key])) {
+            if (isset($data['input_type']) && $data['input_type'] == "datetime-local" && isset($_POST[$key]) && !empty($_POST[$key])) {
                 $dateTime = new DateTime($_POST[$key]);
                 $_POST[$key] = $dateTime->format('Y-m-d H:i:s');
             }
 
-            if(isset($_POST[$key]) && is_array($_POST[$key])) {
+            if (isset($_POST[$key]) && is_array($_POST[$key])) {
                 $info[$key] = json_encode($_POST[$key]);
-            }elseif(isset($_POST[$key])) {
+            } elseif (isset($_POST[$key])) {
                 $info[$key] = htmlspecialchars($_POST[$key]);
-            }else {
+            } else {
                 $info[$key]  = "";
             }
             if (isset($data['unique'])) {
@@ -431,7 +450,9 @@ class database
         if (isset($datas["password"]) && isset($datas['confirm_password']) && !empty($data['password'])) {
             if ($_POST['password'] != $_POST['confirm_password']) {
                 $err = true;
-                if($showError) { echo $this->message("Password and confrim password do not match", "error"); }
+                if ($showError) {
+                    echo $this->message("Password and confrim password do not match", "error");
+                }
                 return null;
             }
         }
@@ -469,7 +490,7 @@ class database
                     if (isset($datas[$key]['file_name'])) {
                         $file_name = $datas[$key]['file_name'];
                     }
-                    if(isset($datas[$key]['formart'])) {
+                    if (isset($datas[$key]['formart'])) {
                         $vaild_formart = $datas[$key]['formart'];
                     }
                     $image = $this->process_image($file_name, $datas[$key]['path'], $key, valid_formats1: $vaild_formart ?? null);
@@ -485,47 +506,47 @@ class database
                 // var_dump($info);
             }
         }
-        
+
         // var_dump($info);
         if (!$err) {
-            if(isset($info['confirm_password'])) {
+            if (isset($info['confirm_password'])) {
                 unset($info['confirm_password']);
-               }
-               
-              if(!$this->database_action($action, $info, $what)) {
+            }
+
+            if (!$this->database_action($action, $info, $what)) {
                 return false;
-              }
+            }
             return $info;
         }
         return null;
     }
 
-    private function database_action($action, $data, $what) {
-        if(!is_array($data) || empty($what) || $action == null ) {
+    private function database_action($action, $data, $what)
+    {
+        if (!is_array($data) || empty($what) || $action == null) {
             return true;
         }
-        if(isset($data['password']) && !$this->isPasswordHash($data['password'])) {
+        if (isset($data['password']) && !$this->isPasswordHash($data['password'])) {
             $data['password'] = password_hash($data['password'],  PASSWORD_DEFAULT);
         }
         switch ($action) {
             case 'insert':
-                if(!$this->quick_insert($what, $data)) {
+                if (!$this->quick_insert($what, $data)) {
                     return false;
                 }
                 return true;
-               
-                case 'update':
-                    if(!isset($data['ID'])) {
-                        return false;
-                    }
-                    $id = $data['ID'];
-                   if(!$this->update($what, $data, "ID = '$id'")) {
-                        return false;
-                   }
-                   return true;
+
+            case 'update':
+                if (!isset($data['ID'])) {
+                    return false;
+                }
+                $id = $data['ID'];
+                if (!$this->update($what, $data, "ID = '$id'")) {
+                    return false;
+                }
+                return true;
             default:
                 return true;
-              
         }
     }
     function check_if_required($data)
@@ -569,14 +590,14 @@ class database
                     echo $this->message("Int: We have issues to validate your data. please reload the page and try again", "error");
                     return false;
                 }
-                
+
                 if ((int)array_search($key, array_keys($datas)) > (int)array_search($against, array_keys($datas))) {
-                    
+
                     $datacheck = [$info[$against], $info[$key]];
                     if ($idv != "") {
                         $datacheck = [$idv, $info[$against], $info[$key]];
                     }
-                    
+
                     $check = $this->getall($what, "$idc $against = ? and $key = ?", $datacheck, fetch: "");
                     // var_dump("$idc $against = ? and $key = ?"); exit();
                     // var_dump($check);
@@ -595,7 +616,7 @@ class database
             }
             if ($check > 0) {
                 $error = true;
-                echo $this->message("This exact ".$this->clean_str($what)." already exist", "error");
+                echo $this->message("This exact " . $this->clean_str($what) . " already exist", "error");
                 $check = null;
             }
         }
@@ -742,36 +763,39 @@ class database
         foreach (array_rand($seed, $no) as $k) $rand .= $seed[$k];
         return "3" . $rand;
     }
-    
-    function send_email($userID, $subject, $message, $notify = false) {
-            if(is_array($notify)) {
-                $data = [];
-                $data['userID'] = $userID;
-                $data['n_for'] = "users";
-                $data['title'] = $subject;
-                $data['description']  = $message;
-                $data['time_set'] = time();
-                $data['date_set'] = date("Y-m-d");
-                $data['url'] = $notify['url'];
-                $this->new_notification($data);
-            }
-            $smessage = $this->get_email_template("default")['template'];
-            $user =  $this->getall("users", "ID = ?", [$userID], "first_name, last_name, email");
-            if(!is_array($user)){ return false; }
-            // ${amount} ${reason} ${website_url} 
-            $smessage = $this->replace_word(['${first_name}'=>$user['first_name'], '${last_name}'=>$user['last_name'], '${message_here}'=>$message, '${website_url}'=>$this->get_settings("website_url")], $smessage);
-            $sendmessage = $this->smtpmailer($user['email'], $subject, $smessage);
-            if($sendmessage) { 
-                return true; 
-            }else{ return false; }
-    
-                
+
+    function send_email($userID, $subject, $message, $notify = false)
+    {
+        if (is_array($notify)) {
+            $data = [];
+            $data['userID'] = $userID;
+            $data['n_for'] = "users";
+            $data['title'] = $subject;
+            $data['description']  = $message;
+            $data['time_set'] = time();
+            $data['date_set'] = date("Y-m-d");
+            $data['url'] = $notify['url'];
+            $this->new_notification($data);
         }
+        $smessage = $this->get_email_template("default")['template'];
+        $user =  $this->getall("users", "ID = ?", [$userID], "first_name, last_name, email");
+        if (!is_array($user)) {
+            return false;
+        }
+        // ${amount} ${reason} ${website_url} 
+        $smessage = $this->replace_word(['${first_name}' => $user['first_name'], '${last_name}' => $user['last_name'], '${message_here}' => $message, '${website_url}' => $this->get_settings("website_url")], $smessage);
+        $sendmessage = $this->smtpmailer($user['email'], $subject, $smessage);
+        if ($sendmessage) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     function smtpmailer($to, $subject, $body, $name = "", $message = '', $smtpid = 1)
     {
         $body = htmlspecialchars_decode($body);
         // return $to;
-        require_once rootFile."/include/phpmailer/PHPMailerAutoload.php";
+        require_once rootFile . "/include/phpmailer/PHPMailerAutoload.php";
         // require_once "";
         $d = new database;
         $smtp = $d->getall("smtp_config", "ID = ?", ["$smtpid"]);
@@ -860,7 +884,7 @@ class database
         }
     }
 
-    function upload_canvas($img, $upload_dir="upload/")
+    function upload_canvas($img, $upload_dir = "upload/")
     {
         $img = str_replace('data:image/png;base64,', '', $img);
         $img = str_replace(' ', '+', $img);
@@ -869,7 +893,7 @@ class database
         $success = file_put_contents($file, $data);
         return $success;
     }
-     protected function proccess_single_image($key, $value, $datas)
+    protected function proccess_single_image($key, $value, $datas)
     {
         if (!$this->check_if_required($value)) {
 
@@ -924,7 +948,7 @@ class database
         if ($ok == 0) {
             http_response_code(400);
         }
-        return json_encode(["ok" => $ok, "info" => $info, "filename"=>$file_name]);
+        return json_encode(["ok" => $ok, "info" => $info, "filename" => $file_name]);
     }
     function chunk_upload($mainfilePath, $valid_formats1 = ["mp4", "mov"])
     {
@@ -934,12 +958,12 @@ class database
             return $this->verbose(0, "<small class='text-danger'>Failed to move uploaded file. Reload page and try again</small>");
         }
 
-        if((int)$_FILES["file"]["size"] * ((int)$_REQUEST["chunks"]- 1) > 209715200){
+        if ((int)$_FILES["file"]["size"] * ((int)$_REQUEST["chunks"] - 1) > 209715200) {
             return $this->verbose(0, "<small class='text-danger'>File too large. MAX OF: 200MB, compress the file and try again</small>");
         }
 
-       
-        
+
+
         // (C) UPLOAD DESTINATION - CHANGE FOLDER IF REQUIRED!
         // $filePath = __DIR__ . DIRECTORY_SEPARATOR . "uploads";
         if (!file_exists($filePath)) {
@@ -953,7 +977,7 @@ class database
         $ext = strtolower($fileInfo['extension']);
 
         if (!in_array($ext, $valid_formats1)) {
-            return $this->verbose(0, "<small class='text-danger'>Video file Not Support. We support: " . implode(" ", $valid_formats1)."</small>");
+            return $this->verbose(0, "<small class='text-danger'>Video file Not Support. We support: " . implode(" ", $valid_formats1) . "</small>");
         }
 
         $filePath = $filePath . DIRECTORY_SEPARATOR . $fileName;
@@ -980,7 +1004,7 @@ class database
 
         // (E) CHECK IF FILE HAS BEEN UPLOADED
         if (!$chunks || $chunk == $chunks - 1) {
-            $fileName = uniqid("video-").".".$ext;
+            $fileName = uniqid("video-") . "." . $ext;
             $thefilePath = $mainfilePath . DIRECTORY_SEPARATOR . $fileName;
             rename("{$filePath}.part", $thefilePath);
             return $this->verbose(1, "Upload OK", $fileName);
@@ -991,7 +1015,7 @@ class database
     {
         //file to place within the server
         // echo $name;
-        if($valid_formats1 == null) {
+        if ($valid_formats1 == null) {
             $valid_formats1 = ["JPG", "jpg", "png", "jpeg",  "svg"];
         }
         if ($_FILES["$name"]["name"] == "") {
@@ -1044,11 +1068,10 @@ class database
 
     function handleLinkInText($s)
     {
-     // Decode URL-encoded entities to prevent broken links
-     $s = htmlspecialchars_decode($s, ENT_QUOTES);
-     // Replace URLs in text with proper links
-     return preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\s<>])?)?)@', '<a href="$1" target="_blank">$1</a><br>', $s);
-    
+        // Decode URL-encoded entities to prevent broken links
+        $s = htmlspecialchars_decode($s, ENT_QUOTES);
+        // Replace URLs in text with proper links
+        return preg_replace('@(https?://([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\s<>])?)?)@', '<a href="$1" target="_blank">$1</a><br>', $s);
     }
     // addtion functions
 
@@ -1058,51 +1081,58 @@ class database
         if (!is_array($data)) {
             return "";
         }
-        if($this->isEncrypted($data['meta_value'])) {
+        if ($this->isEncrypted($data['meta_value'])) {
             $data['meta_value'] = $this->get_enypt_data($data['meta_value']);
         }
         return ($type == "all") ? $data : $data['meta_value'];
     }
 
-    protected function get_enypt_data($id) {
+    protected function get_enypt_data($id)
+    {
         $data = $this->getall("encrypted_data", "ID = ?", [$id]);
-        if(!is_array($data)) return false;
+        if (!is_array($data)) return false;
         return $this->decryptData($data['meta_value']);
     }
 
-    function isEncrypted($data) {
+    function isEncrypted($data)
+    {
         $explode = explode("-", $data);
-        if($explode[0] == "enyptdata") return true;
+        if ($explode[0] == "enyptdata") return true;
         return false;
     }
 
-    protected function enypt_unlink($id) {
-        if($this->delete("encrypted_data", "ID = ?", [$id])) return true;
+    protected function enypt_unlink($id)
+    {
+        if ($this->delete("encrypted_data", "ID = ?", [$id])) return true;
         return false;
     }
-    function enypt_and_save_data($data) {
-        if($data == null || $data == "") return false;
+    function enypt_and_save_data($data)
+    {
+        if ($data == null || $data == "") return false;
         $mainData = $data;
         $data = $this->encryptData($data);
-        if($data == false || $data == "") return false;
+        if ($data == false || $data == "") return false;
         $data = [
-            "ID"=>uniqid("enyptdata-"),
-            "meta_value"=>$data
+            "ID" => uniqid("enyptdata-"),
+            "meta_value" => $data
         ];
-        if($this->quick_insert("encrypted_data", $data)) {
+        if ($this->quick_insert("encrypted_data", $data)) {
             $data['data'] = $mainData;
             return $data;
         }
         return false;
     }
 
-    function create_settings(array $data, $what = "settings") {
-        if(!is_array($data))  {return null; }
+    function create_settings(array $data, $what = "settings")
+    {
+        if (!is_array($data)) {
+            return null;
+        }
         foreach ($data as $key => $value) {
-            if($this->getall($what, "meta_name = ?",  [$key], fetch: "") > 0) {
-                continue ;
+            if ($this->getall($what, "meta_name = ?",  [$key], fetch: "") > 0) {
+                continue;
             }
-            $this->quick_insert($what, ["meta_name"=>$key, "meta_value"=>$value]);
+            $this->quick_insert($what, ["meta_name" => $key, "meta_value" => $value]);
         }
     }
 
@@ -1126,7 +1156,8 @@ class database
 
 
 
-    function isJson($string) {
+    function isJson($string)
+    {
         // Decode the string and store the result
         try {
             json_decode($string);
@@ -1135,14 +1166,14 @@ class database
             return false;
         }
     }
-    
+
     function api_call($service_url, $posts = [], $header = [], $isRaw = false, $method = 'GET',)
     {
         $curl = curl_init($service_url);
 
         // If there are posts, assume a non-GET method
         if ($this->isJson(($posts)) || count($posts) > 0) {
-           $method = "POST";
+            $method = "POST";
         }
 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -1243,32 +1274,32 @@ class database
         return $options;
     }
 
-    function generate_withdrawal_user(string $date) {
+    function generate_withdrawal_user(string $date)
+    {
         $user = $this->getbotuser();
         // check if userID is not the withdrwal in the past two days
-        if($this->getall("withdraw", "userID = ? and date >= ?", [$user['ID'], date("Y-m-d", strtotime("-3 days", $date))], fetch: "") > 0){
-           return $this->generate_withdrawal_user($date);
+        if ($this->getall("withdraw", "userID = ? and date >= ?", [$user['ID'], date("Y-m-d", strtotime("-3 days", $date))], fetch: "") > 0) {
+            return $this->generate_withdrawal_user($date);
         }
         return $user;
     }
-    function getbotuser() {
-        if(rand(1, 2) == 2) {
+    function getbotuser()
+    {
+        if (rand(1, 2) == 2) {
             $user = $this->getall("users", "acct_type = ? and status =  ? ORDER BY RAND()", ["bot", "active"]);
-        }else { 
+        } else {
             $user = $this->getall("users", "profile_image != ? and acct_type = ? and status =  ? ORDER BY RAND()", ["", "bot", "active"]);
-        } 
+        }
         return $user;
-         
     }
     function money_format($amount, $currency = 'N')
     {
         $tamount = number_format((float)$amount, 2,);
         $parts = explode(".", $tamount);
-        if($parts[1] == "00"){
+        if ($parts[1] == "00") {
             $tamount = number_format((float)$amount);
         }
-        return $currency .' '. $tamount;
-
+        return $currency . ' ' . $tamount;
     }
 
     function date_format($date)
@@ -1277,10 +1308,11 @@ class database
         return date_format($date, "D, d M Y h:i:sa");
     }
 
-    function formatDate($date) {
+    function formatDate($date)
+    {
         // Sanitize the input to prevent XSS
         $date = htmlspecialchars($date);
-    
+
         // Check if the date is provided
         if ($date) {
             // Create a DateTime object from the date
@@ -1297,7 +1329,8 @@ class database
         }
     }
 
-    function datediffe($largeDate, $smallDate, $format = "h") {
+    function datediffe($largeDate, $smallDate, $format = "h")
+    {
         $date1 = $largeDate;
         $date2 = $smallDate;
 
@@ -1309,38 +1342,41 @@ class database
         $interval = $datetime1->diff($datetime2);
 
         // Convert the difference to total hours
-        if($format == "m") return ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
-        if($format == "s") return ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
+        if ($format == "m") return ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+        if ($format == "s") return ($interval->days * 24 * 3600) + ($interval->h * 3600) + ($interval->i * 60) + $interval->s;
         return ($interval->days * 24) + $interval->h + ($interval->i / 60) + ($interval->s / 3600);
-        
-        
     }
-    function cal_percentage(int | float $no, int | float $total) {
+    function cal_percentage(int | float $no, int | float $total)
+    {
         return round(($no * 100) / $total);
     }
 
-    function money_percentage($percentage, $amount){
+    function money_percentage($percentage, $amount)
+    {
         return round($amount * ($percentage / 100));
     }
 
-    function calculateProfitPercentage($buyingPrice, $sellingPrice) {
+    function calculateProfitPercentage($buyingPrice, $sellingPrice)
+    {
         $profitPercentage = (($sellingPrice - $buyingPrice) / $buyingPrice) * 100;
         return $profitPercentage;
     }
 
-    function calculateIncreasedValue($originalValue, $percentageIncrease) {
-         $percentageIncrease = $percentageIncrease / 100;
-          $hold = $originalValue * $percentageIncrease;
+    function calculateIncreasedValue($originalValue, $percentageIncrease)
+    {
+        $percentageIncrease = $percentageIncrease / 100;
+        $hold = $originalValue * $percentageIncrease;
         $increasedValue = $originalValue + $hold;
         return $hold;
     }
 
-    function loadpage($url, $isJson = false, $message = "Redirecting...") {
-       if(!$isJson) {
-           echo '<script>window.location.href = "'.$url.'";</script>';
-           return ;
-       }
-       return json_encode([
+    function loadpage($url, $isJson = false, $message = "Redirecting...")
+    {
+        if (!$isJson) {
+            echo '<script>window.location.href = "' . $url . '";</script>';
+            return;
+        }
+        return json_encode([
             "message" => ["Success", "$message", "success"],
             "function" => ["loadpage", "data" => [$url, "null"]],
         ]);
@@ -1348,9 +1384,9 @@ class database
 
     function ago($time)
     {
-       if($time == "") {
-        return "";
-       }
+        if ($time == "") {
+            return "";
+        }
         // $time = strtotime($time);
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60", "60", "24", "7", "4.35", "12", "10");
@@ -1364,7 +1400,7 @@ class database
         }
 
         $difference = round($difference);
-        if($periods[$j] == "second") {
+        if ($periods[$j] == "second") {
             return "Just now";
         }
 
@@ -1372,62 +1408,72 @@ class database
             $periods[$j] .= "s";
         }
 
-        
+
 
         $value =  "$difference $periods[$j] ago";
-        if($value == "1 second ago") {
+        if ($value == "1 second ago") {
             return "Just now";
-        }else{
-           return $value;
+        } else {
+            return $value;
         }
     }
 
     // short a text
 
-    function short_text($text, $maxCharacters = 30, $justText = false) {
-            $short = $text;
-            $id = "";
-            $data = "";
-            $function = "";
-            if(strlen($text) > $maxCharacters) {
-                $short = substr($text, 0, $maxCharacters)."...";
-                $isLong = true;
-                $id = uniqid();
-                $function = "<small><a href=\"javascript:void(0)\" onclick=\"showall('$id')\" class='text-gray'>more</a></small>";
-                $data = "data-fulltext='$text'";
-            } 
+    function short_text($text, $maxCharacters = 30, $justText = false)
+    {
+        $short = $text;
+        $id = "";
+        $data = "";
+        $function = "";
+        if (strlen($text) > $maxCharacters) {
+            $short = substr($text, 0, $maxCharacters) . "...";
+            $isLong = true;
+            $id = uniqid();
+            $function = "<small><a href=\"javascript:void(0)\" onclick=\"showall('$id')\" class='text-gray'>more</a></small>";
+            $data = "data-fulltext='$text'";
+        }
         $shortenedText = "<p class='m-0' id='$id' $data >$short $function</p>";
         return !$justText  ?  $shortenedText : $short;
     }
 
-    function short_no( $no, $maxno = 99) {
-        if($no == 0) { $no = ""; }
-        if($no > $maxno) { $no = "$maxno+"; }
+    function short_no($no, $maxno = 99)
+    {
+        if ($no == 0) {
+            $no = "";
+        }
+        if ($no > $maxno) {
+            $no = "$maxno+";
+        }
         return $no;
     }
 
-    function generateRandomDateTime($startDate = '2022-01-01 09:00:00', $endDate = null) {
-        if($endDate == null) { $endDate =  date('Y-m-d H:i:s');}
+    function generateRandomDateTime($startDate = '2022-01-01 09:00:00', $endDate = null)
+    {
+        if ($endDate == null) {
+            $endDate =  date('Y-m-d H:i:s');
+        }
         // '2022-01-01 09:00:00', date('Y-m-d H:i:s')
         $startTimestamp = strtotime($startDate);
         $endTimestamp = strtotime($endDate);
         $randomTimestamp = mt_rand($startTimestamp, $endTimestamp);
         $randomDateTime = date('Y-m-d H:i:s', $randomTimestamp);
-        
+
         return $randomDateTime;
     }
-    
 
-    function addMinutes($datetimeStr, $minutes) {
+
+    function addMinutes($datetimeStr, $minutes)
+    {
         // Create DateTime object from the input string
         $originalDatetime = new DateTime($datetimeStr);
-    
+
         // Add the specified number of minutes
         $newDatetime = $originalDatetime->modify("+$minutes minutes");
-    
+
         // Format the new datetime as desired
         $newDatetimeStr = $newDatetime->format('Y-m-d H:i:s');
-    
+
         return $newDatetimeStr;
     }
 
@@ -1460,7 +1506,7 @@ class database
                 # code...
                 break;
         }
-        
+
         $update = $this->update("users", $user, "ID = '$userID'");
         if (!$update) {
             $this->message("We have issue performing this task", "error");
@@ -1471,10 +1517,11 @@ class database
         return true;
     }
 
-    function removeRepeatedValuesFromBack($arr) {
+    function removeRepeatedValuesFromBack($arr)
+    {
         $result = [];
         $lastValue = null;
-    
+
         // Iterate through the array in reverse
         for ($i = count($arr) - 1; $i >= 0; $i--) {
             // If the current value is not equal to the last value, add it to the result
@@ -1483,14 +1530,15 @@ class database
                 $lastValue = $arr[$i]; // Update the last value
             }
         }
-    
+
         return $result;
     }
 
     // data encytion
-    function encryptData($data, $secretKey = null) {
-        if($secretKey == null && isset($_ENV['DATA_ENCRYPTION_KEY'])) $secretKey = $_ENV['DATA_ENCRYPTION_KEY'];
-        if($secretKey == null) return false;
+    function encryptData($data, $secretKey = null)
+    {
+        if ($secretKey == null && isset($_ENV['DATA_ENCRYPTION_KEY'])) $secretKey = $_ENV['DATA_ENCRYPTION_KEY'];
+        if ($secretKey == null) return false;
         $method = 'AES-256-CBC';
         $ivLength = openssl_cipher_iv_length($method);
         $iv = openssl_random_pseudo_bytes($ivLength);
@@ -1498,16 +1546,16 @@ class database
         return base64_encode($iv . $encryptedData);
     }
 
-    function decryptData($encryptedDataWithIv, $secretKey = null) {
-        if($secretKey == null && isset($_ENV['DATA_ENCRYPTION_KEY'])) $secretKey = $_ENV['DATA_ENCRYPTION_KEY'];
-        if($secretKey == null) return false;
+    function decryptData($encryptedDataWithIv, $secretKey = null)
+    {
+        if ($secretKey == null && isset($_ENV['DATA_ENCRYPTION_KEY'])) $secretKey = $_ENV['DATA_ENCRYPTION_KEY'];
+        if ($secretKey == null) return false;
         $method = 'AES-256-CBC';
         $ivLength = openssl_cipher_iv_length($method);
-    
         $ivWithCiphertext = base64_decode($encryptedDataWithIv);
         $iv = substr($ivWithCiphertext, 0, $ivLength);
         $encryptedData = substr($ivWithCiphertext, $ivLength);
-        
+
         return openssl_decrypt($encryptedData, $method, $secretKey, 0, $iv);
     }
 
@@ -1515,106 +1563,134 @@ class database
     // cookies handler
 
     // Function to set a cookie, can be used for both simple values and arrays
-function setCookieValue($name, $value, $expire = 86400, $path = "/", $domain = "", $secure = false, $httponly = false) {
-    if (is_array($value)) {
-        // Encode array to JSON if the value is an array
-        $value = json_encode($value);
-    }
-    try {
-        //code...
-        setcookie($name, $value, time() + $expire, $path, $domain, $secure, $httponly);
-    } catch (\Throwable $th) {
-        //throw $th;
-    }
-}
-
-// Function to retrieve a cookie value, ensures that arrays are returned as arrays
-function getCookieValue($name) {
-    if (isset($_COOKIE[$name])) {
-        $value = $_COOKIE[$name];
-        // Attempt to decode JSON
+    function setCookieValue($name, $value, $expire = 86400, $path = "/", $domain = "", $secure = false, $httponly = false)
+    {
+        if (is_array($value)) {
+            // Encode array to JSON if the value is an array
+            $value = json_encode($value);
+        }
         try {
-            $decodedValue = json_decode($value, true);
-            return $decodedValue;
+            //code...
+            setcookie($name, $value, time() + $expire, $path, $domain, $secure, $httponly);
         } catch (\Throwable $th) {
-            return $value;
+            //throw $th;
         }
     }
-   
-    return null; // Return null if the cookie does not exist
-}
 
-// Function to update an array stored in a cookie
-function updateArrayInCookie($cookieName, $newElement, $key = null, $expire = 86400, $path = "/", $domain = "", $secure = false, $httponly = false) {
-    // Retrieve the current array from the cookie
-    $currentArray = $this->getCookieValue($cookieName);
+    // Function to retrieve a cookie value, ensures that arrays are returned as arrays
+    function getCookieValue($name)
+    {
+        if (isset($_COOKIE[$name])) {
+            $value = $_COOKIE[$name];
+            // Attempt to decode JSON
+            try {
+                $decodedValue = json_decode($value, true);
+                return $decodedValue;
+            } catch (\Throwable $th) {
+                return $value;
+            }
+        }
 
-    if (!is_array($currentArray)) {
-        // If the cookie does not exist or is not an array, start with an empty array
-        $currentArray = [];
+        return null; // Return null if the cookie does not exist
     }
 
-    if ($key !== null && array_key_exists($key, $currentArray)) {
-        // If a key is provided and exists, update that element
-        $currentArray[$key] = $newElement;
-    } else {
-        // Otherwise, add the new element to the array
-        $currentArray[] = $newElement;
+    // Function to update an array stored in a cookie
+    function updateArrayInCookie($cookieName, $newElement, $key = null, $expire = 86400, $path = "/", $domain = "", $secure = false, $httponly = false)
+    {
+        // Retrieve the current array from the cookie
+        $currentArray = $this->getCookieValue($cookieName);
+
+        if (!is_array($currentArray)) {
+            // If the cookie does not exist or is not an array, start with an empty array
+            $currentArray = [];
+        }
+
+        if ($key !== null && array_key_exists($key, $currentArray)) {
+            // If a key is provided and exists, update that element
+            $currentArray[$key] = $newElement;
+        } else {
+            // Otherwise, add the new element to the array
+            $currentArray[] = $newElement;
+        }
+
+        // Store the updated array back in the cookie
+        $this->setCookieValue($cookieName, $currentArray, $expire, $path, $domain, $secure, $httponly);
     }
 
-    // Store the updated array back in the cookie
-    $this->setCookieValue($cookieName, $currentArray, $expire, $path, $domain, $secure, $httponly);
-}
+    // Function to delete a cookie
+    function deleteCookie($name, $path = "/", $domain = "")
+    {
+        setcookie($name, "", time() - 3600, $path, $domain);
+    }
 
-// Function to delete a cookie
-function deleteCookie($name, $path = "/", $domain = "") {
-    setcookie($name, "", time() - 3600, $path, $domain);
-}
+    // api functions
+    // api functions
 
-// api functions
-// api functions
+    function apiMessage($message, int $code = 400, $data = null)
+    {
+        // Send the HTTP response code
+        http_response_code($code);
+        //   ($code != 200 )  "errorCode"=>$errorCode ?? str_replace(" ", "", $message),
+        // Send the response as JSON
+        return json_encode([
+            "code" => $code,
+            "status" => ($code == 200 || $code == 201) ? "success" : "error",
+            "message" => $message,
+            "data" => $data,
+        ]);
+    }
 
-function apiMessage($message, int $code = 400, $data = null)
-{
-    header(':', true, $code);
-    return json_encode(["code" => $code, "message" => $message, "data" => $data], true);
-}
+    function handleJsonMessage($message)
+    {
+        try {
+            $message = json_decode($message, true);
+            if (isset($message['message'][2]) && $message['message'][2] == "error") {
+                return $this->apiMessage($message['message'][1], 400);
+            }
 
-/** 
- * Get header Authorization
- * */
-function getAuthorizationHeader()
-{
-    $headers = null;
-    if (isset($_SERVER['Authorization'])) {
-        $headers = trim($_SERVER["Authorization"]);
-    } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
-        $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
-    } elseif (function_exists('apache_request_headers')) {
-        $requestHeaders = apache_request_headers();
-        // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
-        $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
-        //print_r($requestHeaders);
-        if (isset($requestHeaders['Authorization'])) {
-            $headers = trim($requestHeaders['Authorization']);
+            if (isset($message['message'][2]) && $message['message'][2] == "success") {
+                return $this->apiMessage($message['message'][1], 200);
+            }
+            return $this->apiMessage("Something went wrong", 400);
+        } catch (\Throwable $th) {
+            return $this->apiMessage("Something went wrong $th", 400);
         }
     }
-    return $headers;
-}
 
-/**
- * get access token from header
- * */
-function getBearerToken()
-{
-    $headers = $this->getAuthorizationHeader();
-    // HEADER: Get the access token from the header
-    if (!empty($headers)) {
-        if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
-            return $matches[1];
+    /** 
+     * Get header Authorization
+     * */
+    function getAuthorizationHeader()
+    {
+        $headers = null;
+        if (isset($_SERVER['Authorization'])) {
+            $headers = trim($_SERVER["Authorization"]);
+        } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+            $headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+        } elseif (function_exists('apache_request_headers')) {
+            $requestHeaders = apache_request_headers();
+            // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+            //print_r($requestHeaders);
+            if (isset($requestHeaders['Authorization'])) {
+                $headers = trim($requestHeaders['Authorization']);
+            }
         }
+        return $headers;
     }
-    return null;
-}
 
+    /**
+     * get access token from header
+     * */
+    function getBearerToken()
+    {
+        $headers = $this->getAuthorizationHeader();
+        // HEADER: Get the access token from the header
+        if (!empty($headers)) {
+            if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
+                return $matches[1];
+            }
+        }
+        return null;
+    }
 }

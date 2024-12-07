@@ -7,7 +7,7 @@
 
   <li class="search-items-details col-lg-4 col-md-6 col-12 p-0 m-0"> 
     
-                        
+                        <!-- $key||$number_type||$countryCode||$network -->
                 <div action="" class="w-100 py-6 d-flex align-items-center p-2 shadow-sm m-0">
                 <form action="" id="foo" class="w-100">
                 <div id="custommessage"></div>

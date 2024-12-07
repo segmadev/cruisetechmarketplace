@@ -1,0 +1,1 @@
+ALTER TABLE `orders` ADD `order_where` VARCHAR(250) NOT NULL DEFAULT 'live' AFTER `status`;

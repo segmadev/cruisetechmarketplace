@@ -146,7 +146,6 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
       start = parseInt(start) + parseInt(limit);
 
       if(displayHere.querySelectorAll('[data-url]')) {
-        console.log("Works here")
         modalelements = displayHere.querySelectorAll('[data-url]');
         iniModal(modalelements);
       }else{
