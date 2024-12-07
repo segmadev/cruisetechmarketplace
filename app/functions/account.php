@@ -429,8 +429,10 @@ class Account extends user
   {
     $stick = "success";
     $status = "Active";
+    $soldAt = "";
     if ($login['sold_to'] != '') {
       $stick = "danger";
+      $soldAt = " <small><b>Sold At: </b>" . $login['sold_at'] . "</small>";
       $status = "Sold to <a href='index?p=users&action=view&id=" . $login['sold_to'] . "'>" . $this->get_name($login['sold_to']) . "</a>";
     }
     return "
@@ -451,6 +453,7 @@ class Account extends user
                           </div>
                           <hr>
                           <small><b>Added on: </b>" . $login['date'] . "</small>
+                          $soldAt
                         </div>
                     </div>
         ";
