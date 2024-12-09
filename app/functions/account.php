@@ -66,8 +66,9 @@ class Account extends user
 ?>
 <tr>
     <td>
-        <a <?= $c->modal_attributes("modal?p=$page&action=view&$idInfo=$id", "Order Details") ?>
-            class="btn btn-sm btn-primary">View</a>
+        <!-- <a <?= $c->modal_attributes("modal?p=$page&action=view&$idInfo=$id", "Order Details") ?>
+            class="btn btn-sm btn-primary">View</a> -->
+        <a target="_BLANK" href='<?= "index?p=$page&action=view&$idInfo=$id" ?>' class="btn btn-sm btn-primary">View</a>
     </td>
     <td><?= $order['ID'] ?></td>
     <td>
