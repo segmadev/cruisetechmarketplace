@@ -9,7 +9,7 @@ $cleanPath = rtrim($parsedUrl['path'], '/'); // Remove trailing slash if it exis
 define("ISAPI", true);
 // Define PATH without GET parameters
 define("PATH", str_replace("/app/api", "", $cleanPath));
-die(var_dump(PATH));
+// die(var_dump(PATH));
 // define("PATH", $cleanPath);
 // Parse the query string into $_GET if present
 if (isset($parsedUrl['query'])) {
