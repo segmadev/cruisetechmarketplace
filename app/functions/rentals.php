@@ -180,7 +180,7 @@ class rentals extends database
                 $service = (array)$service;
                 $service['id'] = base64_encode("$key||$number_type||$countryCode||$network||$brokerKey");
                 $service['cost'] = (!is_array($service['cost'] ?? $service['price'])) ?  $this->valuedPrice($number_type, $broker, $service['cost'] ?? $service['price']) : $service['cost'];
-                array_push($services_list, ["id" => $service['id'], "name" => $service['name'], "cost" => $service['cost']]);
+                array_push($services_list, ["id" => $service['id'], "name" => $service['name'], "cost" => round($service['cost'], 2)]);
             }
             return $services_list;
         }
