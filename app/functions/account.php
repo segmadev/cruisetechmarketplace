@@ -124,7 +124,7 @@ class Account extends user
     }
     return $this->getall("logininfo", "accountID = ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
   }
-  function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1, $category = "all")
+  function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1, $category = "all", $select = "*")
   {
 
     $where = "";
@@ -161,7 +161,7 @@ class Account extends user
       $where .= " and status = ?";
       $data[] = $status;
     }
-    return $this->getall("account", "id != ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
+    return $this->getall("account", "id != ? $where order by date DESC LIMIT $start, $limit", $data, select: $select, fetch: "moredetails");
   }
 
   function get_account($id, $status = "1")
@@ -198,9 +198,9 @@ class Account extends user
     $excludeClause = !empty($excludeIDs) ? "AND ID NOT IN (" . implode(',', $excludeIDs) . ")" : '';
 
     // Fetch logins from database
-    $whereClause = "accountID = ? and username != ? and preview_link != ? and sold_to = ? $excludeClause ORDER BY date DESC LIMIT $limit OFFSET $offset";
+    $whereClause = "accountID = ? and username != ? and preview_link != ? and sold_to = ? $excludeClause ORDER BY date ASC LIMIT $limit OFFSET $offset";
     $data = [$accountID, "", "", ""];
-    return $this->getall('logininfo', $whereClause, $data, 'ID, username, preview_link', 'moredetails');
+    return $this->getall('logininfo', $whereClause, $data, 'ID, accountID, username, preview_link', 'moredetails');
   }
 
   function buy_account_choice($userID, $accountID, array $choices)
@@ -230,15 +230,19 @@ class Account extends user
   function can_buy($userID, $catID)
   {
     $category = $this->getall("category", "ID = ?", [$catID]);
+    if (!is_array($category)) return false;
     if ($category['cat_type'] == 0 && !$this->is_ofline_buyer($userID)) {
       return false;
     }
     return true;
   }
 
-  function buy_account($userID, $accountID, $qty, array $logins = [])
+  function buy_account($userID, $accountID, $qty, array $logins = [], $isApi = false)
   {
     $account = $this->getall("account", "ID = ?", [$accountID]);
+    if (!is_array($account)) {
+      return $this->message("Account Not found.", "error", "json");
+    }
     $useCart = false;
     $qty = (int)$qty;
     if (isset($account['categoryID']) && !$this->can_buy($userID, $account['categoryID'])) {
@@ -253,7 +257,7 @@ class Account extends user
     if (count($logins) == 0) {
       $accountLeft = $this->get_num_of_login($accountID);
       if ($accountLeft < $qty) {
-        return $this->message("Account(s) not avilable or sold out. Have just $accountLeft Left.", "error");
+        return $this->message("Account(s) not avilable or sold out. Have just $accountLeft Left.", "error", "json");
       }
       // get all logins with accoutID based on qty
       $logins = $this->getall("logininfo", "accountID = ? and sold_to = ? LIMIT $qty", [$accountID, ""], fetch: "all");
@@ -265,12 +269,15 @@ class Account extends user
     if ($qty == 0) {
       return $this->message("You selected zero(0) account.", "error", "json");
     }
-
+    // die(var_dump($account));
     $costAmount = (float)$account['amount'] * (int)$qty;
     $discountData = $this->getUserStage($userID);
     $amount = ($this->is_ofline_buyer($userID)) ? $costAmount : $this->calculateDiscount($costAmount, $qty, $discountData['stage']);
     $orderID = uniqid("order-");
     // debit user account
+    $user = $this->getall("users", "ID =?", [$userID]);
+    if (!is_array($user)) return;
+    if ($user['balance'] < $amount) return $this->message("Insufficient balance", "error", "json");
     $debit = $this->credit_debit($userID, $amount, "balance", "debit", "orders", $orderID);
     if (!$debit) {
       return "";
@@ -294,6 +301,7 @@ class Account extends user
         }
       }
     }
+    // echo "GOT HERE";
     if ($faild > 0) {
       $refundAmount = ($amount / $qty) * (int)$faild;
       $this->credit_debit($userID, $refundAmount, "balance", "credit", "order-refund", $orderID);
@@ -307,6 +315,7 @@ class Account extends user
       "amount" => $amount,
       "cost_amount" => $costAmount,
       "no_of_orders" => ($qty - $faild),
+      "order_where" => ($isApi) ? "api" : "live"
     ];
     $this->quick_insert("orders", $order);
     $message =  ($qty - $faild) . " Account Purchased.";
@@ -322,6 +331,9 @@ class Account extends user
     if ($useCart) $return['function'] = ["emptyCartAndRedirect", "data" => [$urlLink, $time]];
     if (!$useCart) $return['function'] = ["loadpage", "data" => [$urlLink, 5000]];
     // if(($qty - $faild) > 0)  $return['function']['data'] = ["index?p=orders&action=view&id=$orderID", 9000];
+    if ($isApi) {
+      return $order;
+    }
     return json_encode($return);
   }
 

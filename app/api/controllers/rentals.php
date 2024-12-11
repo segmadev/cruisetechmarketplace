@@ -65,6 +65,7 @@ class ApiRentals extends rentals
         $_POST['type'] = $IDs[1];
         $_POST['countryCode'] = $IDs[2];
         $number = $this->newNumber($this->user->userID, true);
+        // die(var_dump($number));
         if (is_array($number) && isset($number['number'])) {
             return $this->apiMessage("Number booked", 200, $number);
         }

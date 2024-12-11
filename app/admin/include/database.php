@@ -691,6 +691,12 @@ class database
     }
     public function message($message, $type, $method = "default")
     {
+        // die(ISAPI);
+        // $isapi =  ? true : false;
+        if (defined('ISAPI') && ISAPI == true) {
+            $method = "json";
+        }
+
         if ($type == "error") {
             $type = "danger";
         } elseif ($type == "success") {

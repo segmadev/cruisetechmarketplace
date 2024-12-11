@@ -9,6 +9,10 @@ $routes = [
     "/rentals/close" => "rentals@close_rental",
     "/rentals/get" => "rentals@get_order|'yes'",
     "/account/categories" => "account@getCategories",
+    "/account/platforms" => "account@getPlatfroms",
+    "/account/fetch" => "account@fetchAccounts",
+    "/account/buy" => "account@buyAccount",
+    "/account/fetch/logins" => "account@getLogins",
     "/404" => "auth@page404",
     "/" => "auth@page404",
 ];

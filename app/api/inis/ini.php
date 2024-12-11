@@ -6,13 +6,10 @@ $iniPath = str_replace("/cruise/", "", $_SERVER['REQUEST_URI']);
 // Parse the URL to extract only the path
 $parsedUrl = parse_url($iniPath);
 $cleanPath = rtrim($parsedUrl['path'], '/'); // Remove trailing slash if it exists
-
+define("ISAPI", true);
 // Define PATH without GET parameters
 define("PATH", str_replace("app/api", "", $cleanPath));
 // define("PATH", $cleanPath);
-
-var_dump(PATH);
-exit();
 // Parse the query string into $_GET if present
 if (isset($parsedUrl['query'])) {
     parse_str($parsedUrl['query'], $_GET);
