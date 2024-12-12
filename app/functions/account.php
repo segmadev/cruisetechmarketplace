@@ -135,8 +135,8 @@ class Account extends user
       $account = $this->getall("account", "ID = ?", [htmlspecialchars($_GET['id'] ?? "")]);
       if (!is_array($account)) return "";
       $amount = (int)$account['amount'];
-      if (isset($amount['real_amount']) && ($amount['real_amount'] != "" || $amount['real_amount'] != null)) {
-        $amount = (int)$amount['real_amount'];
+      if (isset($account['real_amount']) && ($account['real_amount'] != "" || $account['real_amount'] != null)) {
+        $amount = (int)$account['real_amount'];
       }
       $number_sold = $this->getall("logininfo", "accountID = ? $where order by date DESC", $data, fetch: "");
       return ["report" => "<div class='card card-body fs-4 p-3'><p>Total Amount Sold: " . ($this->money_format($amount * $number_sold)) . "</p><p>No Sold: " . number_format($number_sold) . "</p></div>"];
