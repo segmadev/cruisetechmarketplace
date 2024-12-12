@@ -277,7 +277,7 @@ class Account extends user
     // debit user account
     $user = $this->getall("users", "ID =?", [$userID]);
     if (!is_array($user)) return;
-    if ($user['balance'] < $amount) return $this->message("Insufficient balance", "error", "json");
+    if ((int)$user['balance'] < $amount) return $this->message("Insufficient balance", "error", "json");
     $debit = $this->credit_debit($userID, $amount, "balance", "debit", "orders", $orderID);
     if (!$debit) {
       return "";
