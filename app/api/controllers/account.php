@@ -84,6 +84,7 @@ class ApiAccount extends account
         }
 
         $qty = $_POST['qty'] ?? 1;
+        $logins = [];
         if (isset($_POST['choices']) && $_POST['choices'] != "") {
             $logins = explode(',', htmlspecialchars($_POST['choices']));
         }
