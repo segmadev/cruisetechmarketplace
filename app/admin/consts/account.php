@@ -7,7 +7,7 @@ $account_from = [
     "title" => ["description" => "Name or title of the account"],
     "description" => ["id" => "richtext2", "global_class" => "col-md-12", "type" => "textarea", "title" => "Description (optional)", "is_required" => false, "description" => "Tell buyers more about the account"],
     "amount" => ["input_type" => "number", "description" => "What is the amount you selling the account for"],
-    "real_amount" => ["input_type" => "number", "description" => "If this is an offline account put the real price here"],
+    "real_amount" => ["is_required" => false, "input_type" => "number", "description" => "If this is an offline account put the real price here"],
     "Aditional_auth_info" => ["id" => "richtext", "global_class" => "col-md-12", "title" => "Aditional Authentication Information (optional)", "is_required" => false, "type" => "textarea", "description" => "Enter additional details about the account,<span class='text-danger'>This won't show until the user purchases the account.</span>"],
     "input_data" => $account
 ];
