@@ -1,13 +1,13 @@
 <?php
 $routes = [
     "/user/balance" => "user@getBalance",
+    "/user/order" => "user@get_order|'yes'",
     "/rentals/types" => "rentals@getTypes",
     "/rentals/countries" => "rentals@get_countries",
     "/rentals/services" => "rentals@get_countries|'services'",
     "/rentals/new" => "rentals@newNumberOrder",
     "/rentals/getcode" => "rentals@getCode",
     "/rentals/close" => "rentals@close_rental",
-    "/rentals/get" => "rentals@get_order|'yes'",
     "/account/categories" => "account@getCategories",
     "/account/platforms" => "account@getPlatfroms",
     "/account/fetch" => "account@fetchAccounts",

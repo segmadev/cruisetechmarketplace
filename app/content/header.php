@@ -163,6 +163,14 @@ require_once "include/ini-session.php";
                                 <span class="hide-menu">Transactions</span>
                             </a>
                         </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link" data-url="index?p=profile&action=api" aria-expanded="false">
+                                <span>
+                                    <i class="ti ti-key "></i>
+                                </span>
+                                <span class="hide-menu">API Key</span>
+                            </a>
+                        </li>
 
                         <!-- <li class="nav-small-cap">
               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
@@ -276,7 +284,7 @@ require_once "include/ini-session.php";
                     <a class="navbar-toggler p-0 border-0" href="index?p=profile" type="button" id="drop2">
                         <div class="nav-link nav-icon-hover" style="scale: 0.8">
                             <!-- <?php // $u->displayProfile($userID, $user_data['stage']['position'] ?? 0) 
-                    ?> -->
+                                    ?> -->
                             <img src="<?= $u->get_profile_icon_link($userID) ?>" class="rounded-circle" width="40"
                                 height="40" alt="">
                             <!-- <div class="notification bg-primary rounded-circle"></div> -->

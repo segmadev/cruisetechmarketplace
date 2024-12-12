@@ -17,10 +17,7 @@ class user extends content
     //     }
     // }
 
-    public function send_email_verify()
-    {
-
-    }
+    public function send_email_verify() {}
 
     public function create_vitual_account($userID)
     {
@@ -30,31 +27,53 @@ class user extends content
         }
         $end_point = "https://api.flutterwave.com/v3/virtual-account-numbers";
         $info = ["email" => $user['email'], "is_permanent" => false, "tx_ref" => "REF-" . $user['ID'], "phonenumber" => $user['phone_number'], "firstname" => $user['first_name'], "lastname" => $user['last_name'], "narration" => $user['first_name'] . " " . $user['last_name']];
-        $header = ["Content-Type: application/json",
-            "Authorization: Bearer ".$this->get_settings("flutterwave_secret_key")];
+        $header = [
+            "Content-Type: application/json",
+            "Authorization: Bearer " . $this->get_settings("flutterwave_secret_key")
+        ];
         $call_api = $this->api_call($end_point, $info, $header);
         var_dump($call_api);
     }
 
-    public function generate_bot_withdraw()
+    public function generate_api_key($userID)
     {
-        $no = rand(10, 15);
-        // write a condition to check number for the day b4 runnig
-        if ($this->getall("withdraw", "date >= ? and status = ?", [date("Y-m-d"), "bot"], fetch: "") >= 15) {
-            return;
+        if (!isset($_POST['password']) || $_POST['password'] == "") return $this->message("Enter your password", "error");
+        $user = $this->getall("users", "ID = ?", [$userID], "password");
+        if (!is_array($user)) return $this->message("Can not identify user", "error");
+        if (!password_verify(htmlspecialchars(trim($_POST['password'])), $user['password'])) return $this->message("Invaild Password", "error");
+        $keys = $this->generateUniqueIdAndKey(54);
+        if ($this->is_api_key($userID)) {
+            $update = $this->update("api_data", ["api_key" => $keys, "last_updated" => date("Y-m-d H:i:s")], "userID = '$userID'");
+        } else {
+            $update = $this->quick_insert("api_data", ["userID" => $userID, "api_key" => $keys, "last_updated" => date("Y-m-d H:i:s")]);
         }
-        for ($i = 0; $i < $no; $i++) {
-            $date = $this->generateRandomDateTime(date('Y-m-d H:i:s', strtotime('midnight')), date('Y-m-d H:i:s', strtotime('tomorrow') - 1));
-            $user = $this->generate_withdrawal_user(time());
-            $data = [];
-            $data['ID'] = uniqid();
-            $data['userID'] = $user['ID'];
-            $data['amount'] = rand(200, 800000);
-            $data['wallet'] = "64fe21832f8b4";
-            $data['status'] = "bot";
-            $data['date'] = $date;
-            $this->quick_insert("withdraw", $data);
+        if ($update) {
+            return  "<h5 class='m-3'>API KEY: $keys</h5>";
         }
+    }
+
+    public function is_api_key($userID)
+    {
+        if (is_array($this->getall("api_data", "userID = ?", [$userID]))) return true;
+        return false;
+    }
+
+    /**
+     * Generate a unique ID and a random key of a specified length.
+     *
+     * @param int $keyLength The length of the random key. Defaults to 16.
+     * @return array Associative array containing 'uniqueId' and 'randomKey'.
+     * @throws Exception If the length is not a positive even number.
+     */
+    function generateUniqueIdAndKey($keyLength = 16)
+    {
+        if ($keyLength <= 0 || $keyLength % 2 !== 0) {
+            throw new Exception("Key length must be a positive even number.");
+        }
+
+        // $uniqueId = uniqid('', true);                 // Generate a unique ID
+        $randomKey = bin2hex(random_bytes($keyLength / 2)); // Generate a random key of the specified length
+        return $randomKey;
     }
     public function get_all_emails()
     {
@@ -72,7 +91,9 @@ class user extends content
             return $this->profile_link_root . $user["profile_image"];
         }
 
-        if ($userID == null) {return $this->profile_link_root . "default.jpg";}
+        if ($userID == null) {
+            return $this->profile_link_root . "default.jpg";
+        }
 
         if (isset($user['gender']) && $user['gender'] != "" | null) {
             $gender = $user['gender'];
@@ -88,9 +109,13 @@ class user extends content
 
     public function change_password($data, $userID)
     {
-        if (!is_array($data)) {return null;}
+        if (!is_array($data)) {
+            return null;
+        }
         $info = $this->validate_form($data);
-        if (!is_array($info)) {return null;}
+        if (!is_array($info)) {
+            return null;
+        }
         $user = $this->getall("users", "ID = ?", [$userID], "password", "details");
         if (isset($user['password']) && password_verify($info['current_password'], $user['password'])) {
             $update = $this->update("users", ["password" => password_hash($info['password'], PASSWORD_DEFAULT)], "ID = '$userID'", "Password Changed.");
@@ -104,14 +129,17 @@ class user extends content
     }
 
     public function update_profile($data, $userID)
-    {   
-        
+    {
+
         $info = $this->validate_form($data);
         if (!is_array($info)) {
             return null;
         }
         $user = $this->getall("users", "ID = ?", [$userID], fetch: "details");
-        if (!is_array($user)) {$this->message("User ot found", "error");return null;}
+        if (!is_array($user)) {
+            $this->message("User ot found", "error");
+            return null;
+        }
         if ($user['email'] != $info['email']) {
             if ($this->getall("users", "email = ?", [$info['email']]) > 0) {
                 $this->message("User with email alrady exit", "error");
@@ -121,21 +149,27 @@ class user extends content
         }
         unlink($info['email']);
         // check phone number
-        if ($this->getall("users", "ID != ? and phone_number = ?", [$userID, $info['phone_number']]) > 0) {$this->message("User with phone number alrady exit", "error");return null;}
+        if ($this->getall("users", "ID != ? and phone_number = ?", [$userID, $info['phone_number']]) > 0) {
+            $this->message("User with phone number alrady exit", "error");
+            return null;
+        }
         if ($this->update("users", $info, "ID = '$userID'", "Profile updated")) {
             $actInfo = ["userID" => $userID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "Account Update", "description" => "Your account got updated."];
             $this->new_activity($actInfo);
         }
-
     }
 
     public function upload_kyc($data, $userID)
     {
         $_POST['kyc_status'] = "pending";
         $user = $this->validate_form($data);
-        if (!is_array($user)) {return false;}
+        if (!is_array($user)) {
+            return false;
+        }
         $update = $this->update("users", $user, "ID = '$userID'", "KYC submitted for verification. You can still upload a new ID within the verification period.");
-        if (!$update) {return null;}
+        if (!$update) {
+            return null;
+        }
         $actInfo = ["userID" => $userID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "KYC Upload", "description" => "Upload of ID for KYC verification."];
         $this->new_activity($actInfo);
     }
@@ -146,7 +180,9 @@ class user extends content
         ];
         $info = $this->validate_form($from);
         $update = $this->update("users", $info, "ID = '$userID'");
-        if (!$update) {return null;}
+        if (!$update) {
+            return null;
+        }
         $actInfo = ["userID" => $userID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "Change profile picture", "description" => "Profile picture changed."];
         $this->new_activity($actInfo);
         $return = [
@@ -155,15 +191,21 @@ class user extends content
         return json_encode($return);
     }
 
-   
+
 
     public function transfer_funds($data)
     {
-        if (!is_array($data)) {return null;}
+        if (!is_array($data)) {
+            return null;
+        }
         $info = $this->validate_form($data);
-        if (!is_array($info)) {return null;}
+        if (!is_array($info)) {
+            return null;
+        }
         $user = $this->getall("users", "ID = ?", [$info['userID']], "balance, trading_balance");
-        if (!is_array($user)) {return $this->message("User not found. Reload page and try again.", "error");}
+        if (!is_array($user)) {
+            return $this->message("User not found. Reload page and try again.", "error");
+        }
 
         switch ($info['move_from']) {
             case 'trading_account':
@@ -202,7 +244,6 @@ class user extends content
                     return false;
                 }
             }
-
         }
 
         if ((float) $info['amount'] > (float) $user[$from]) {
@@ -214,9 +255,11 @@ class user extends content
         $id = $info['userID'];
         // $update = $this->update("users", $update, "ID = '$id'");
 
-        $update = $this->credit_debit($info['userID'], $info['amount'], $from, "debit", for :"Transfer");
-        if (!$update) {return false;}
-        $update = $this->credit_debit($info['userID'], $info['amount'], $to, "credit", for :"Transfer");
+        $update = $this->credit_debit($info['userID'], $info['amount'], $from, "debit", for: "Transfer");
+        if (!$update) {
+            return false;
+        }
+        $update = $this->credit_debit($info['userID'], $info['amount'], $to, "credit", for: "Transfer");
         if ($update) {
             if ($from == "trading_balance") {
                 $this->last_from_trading_balance(date("Y-m-d"), $info['userID']);
@@ -266,9 +309,10 @@ class user extends content
         return false;
     }
 
-    public function getUserStage($userID) {
+    public function getUserStage($userID)
+    {
         $user = $this->getall("users", "ID = ?", [$userID]);
-        if(!is_array($user)) return $this->getStage(0);
+        if (!is_array($user)) return $this->getStage(0);
         return $this->getStage((int)$user['total_credit']);
     }
     // public function getStage($amount) {
@@ -316,8 +360,9 @@ class user extends content
         return $info;
     }
 
-    public function increaseUserTotalCredit($amount, $userID) {
-        $this->update("user", ["total_credit"=>$amount], "ID = '$userID'");
+    public function increaseUserTotalCredit($amount, $userID)
+    {
+        $this->update("user", ["total_credit" => $amount], "ID = '$userID'");
     }
 
     public function show_balance($data = null, $showBtn = true)
@@ -328,9 +373,9 @@ class user extends content
         if (is_array($data)) {
             $balance = $this->money_format($data['balance'], currency);
             $btnString = "<div class='card bg-primary p-2 text-white'><b>Balance: </b><p class='h2 text-white m-0' id='accountBalanceValue' data-load='deposit' data-displayId='accountBalanceValue' data-isreplace='true' data-path='passer?p=account&get_balance=yes'><b>$balance</b></p><p>";
-            if($showBtn) $btnString .= "<a href='index?p=deposit' class='btn btn-sm btn-light-success'>Deposit</a>";
+            if ($showBtn) $btnString .= "<a href='index?p=deposit' class='btn btn-sm btn-light-success'>Deposit</a>";
             $btnString .= "</p></div>";
-           return $btnString;
+            return $btnString;
         }
         return null;
     }
@@ -338,14 +383,17 @@ class user extends content
     public function new_wallet($data)
     {
         $wallet = $this->validate_form($data);
-        if (!is_array($wallet)) {return null;}
-
+        if (!is_array($wallet)) {
+            return null;
+        }
     }
 
     public function profile_picture_default($userID = null)
     {
         $profile_picture_link = $this->get_profile_icon_link($userID);
-        if (!file_exists(($profile_picture_link))) {return "";}
+        if (!file_exists(($profile_picture_link))) {
+            return "";
+        }
         return "<a class='nav-link pe-0' href='javascript:void(0)' id='drop1' data-bs-toggle='dropdown' aria-expanded='false'>
         <div class='d-flex align-items-center'>
           <div class='user-profile-img'>
@@ -359,7 +407,9 @@ class user extends content
     {
         $_POST['ID'] = uniqid();
         $info = $this->validate_form($data);
-        if (!is_array($info)) {return null;}
+        if (!is_array($info)) {
+            return null;
+        }
         $check = $this->getall("users", "email = ? or phone_number = ?", [$info['email'], $info['phone_number']]);
         if ($check > 0) {
             echo $this->message("User with email or phone number alrady exit.", "error");
@@ -375,7 +425,9 @@ class user extends content
     public function edituser($data, $userID = 0)
     {
         $info = $this->validate_form($data);
-        if (!is_array($info)) {return null;}
+        if (!is_array($info)) {
+            return null;
+        }
         $check = $this->getall("users", "ID != ? and email = ? and phone_number = ?", [$info['ID'], $info['email'], $info['phone_number']]);
         if ($check > 0) {
             echo $this->message("User with email or phone number alrady exit.", "error");
@@ -392,12 +444,8 @@ class user extends content
         if ($update) {
             echo $this->message("Account update successfully", "success");
         }
-
     }
-    public function get_profile()
-    {
-
-    }
+    public function get_profile() {}
 
     public function fetchusers($start = '0', $limit = 10, $id = null)
     {
@@ -405,7 +453,6 @@ class user extends content
             $data = $this->getall("users", "ID = ? LIMIT $start, $limit", data: [$id], fetch: "moredetails");
         } else {
             $data = $this->getall("users", "LIMIT $start, $limit", fetch: "moredetails");
-
         }
         if (is_array($data) || $data != "") {
             return $data;
@@ -480,15 +527,18 @@ class user extends content
             $_POST['user2'] = $row['ID'];
             $_POST['is_group'] = "yes";
             $this->create_chat($chat_from);
-
         }
     }
 
     public function insert_default_message($userID, $receiverID, $message = "", $is_group = "yes", $time = 0)
     {
-        if ($this->getall("message", "senderID = ? and receiverID = ?", [$userID, $receiverID], fetch: "") > 0) {return true;}
+        if ($this->getall("message", "senderID = ? and receiverID = ?", [$userID, $receiverID], fetch: "") > 0) {
+            return true;
+        }
         $chat = $this->getall("chat", "user1 = ? and user2 = ?", [$userID, $receiverID], "ID");
-        if (!is_array($chat)) {return false;}
+        if (!is_array($chat)) {
+            return false;
+        }
         $this->quick_insert("message", ["chatID" => $chat['ID'], "senderID" => $userID, "receiverID" => $receiverID, "message" => $message, "is_group" => "$is_group", "time_sent" => $time]);
     }
     public function create_chat($chat_from)
@@ -528,7 +578,6 @@ class user extends content
             if ($user2 == "admin") {
 
                 $this->insert_default_message("admin", $userID, $this->get_settings("default_support_welcome_message"), "no", time());
-
             }
             if ($r) {
                 $this->new_user_chat($userID, $user2, $chat_from);
@@ -536,14 +585,12 @@ class user extends content
         }
     }
 
-    public function get_all_chat_notification($userID)
-    {
-
-    }
+    public function get_all_chat_notification($userID) {}
 
     public function activate_referral($userID, $referralID)
     {
-        $data = ['ID' => ["input_type" => "number"],
+        $data = [
+            'ID' => ["input_type" => "number"],
             "userID" => [],
             "referralID" => [],
             "referral_code" => [],
@@ -560,11 +607,15 @@ class user extends content
         $_POST['status'] = "active";
         $data = $this->validate_form($data);
         // valiadte is the exact plan not active
-        if (!is_array($data)) {return false;}
-        if ($this->getall("referrals",
+        if (!is_array($data)) {
+            return false;
+        }
+        if ($this->getall(
+            "referrals",
             "userID = ? and referralID = ? and status = ?",
             [$data['userID'], $data['referralID'], "active"],
-            fetch: "") > 0) {
+            fetch: ""
+        ) > 0) {
             $this->message("This referral is currently active for you.", "error");
             return false;
         }
@@ -572,7 +623,6 @@ class user extends content
             return false;
         }
         return true;
-
     }
 
     public function get_ref_info($code)
@@ -587,9 +637,13 @@ class user extends content
         $info['no_allocated'] = $this->getall("referral_allocation", "referral_code = ? and status = ?", [$code, "allocated"], fetch: "");
         $info['no_pending'] = $this->getall("referral_allocation", "referral_code = ? and status = ?", [$code, "pending"], fetch: "");
         $refID = $this->getall("referrals", "referral_code = ?", [$code], "referralID");
-        if (!is_array($refID)) {return $info;}
+        if (!is_array($refID)) {
+            return $info;
+        }
         $ref_program = $this->getall("referral_programs", "ID = ?", [$refID['referralID']], "no_of_users");
-        if (!is_array($ref_program)) {return $info;}
+        if (!is_array($ref_program)) {
+            return $info;
+        }
         $info['no_of_users'] = $ref_program['no_of_users'];
         $info['percentage'] = $this->cal_percentage($info['no_allocated'], $ref_program['no_of_users']);
         return $info;
@@ -623,67 +677,70 @@ class user extends content
         return strtoupper($code);
     }
 
-    function displayProfile($userID, $stage = 0) {
+    function displayProfile($userID, $stage = 0)
+    {
         echo '
             <div class="profile linear-gradient-bage1 d-flex align-items-center justify-content-center rounded-circle m-2">
                             <div class="border border-3 border-white d-flex align-items-center justify-content-center rounded-circle overflow-hidden" style="width: 45px; height: 45px; z-index: 1" ;="">
-                            <img src="'.$this->get_profile_icon_link($userID).'" alt="" class="w-100 h-100">
+                            <img src="' . $this->get_profile_icon_link($userID) . '" alt="" class="w-100 h-100">
                             </div>
-                        '.$this->stagesBadge($stage).'
+                        ' . $this->stagesBadge($stage) . '
                         </div>';
     }
 
-    function getStage($amount) {
+    function getStage($amount)
+    {
         // Decode JSON string into an associative array
         $stages = json_decode($this->get_settings("discounts"), true);
         if (!$stages) {
             return [];
         }
-    
+
         // Sort the stages by totalCredit to ensure correct order
         usort($stages, fn($a, $b) => $a['totalCredit'] <=> $b['totalCredit']);
-    
+
         $currentStage = null;
         $nextStage = null;
         // Find the current and next stage based on the amount
         foreach ($stages as $index => $stage) {
             if ($amount >= $stage['totalCredit']) {
                 $currentStage = $stage;
-                $currentStage['position'] =  $index +1;
+                $currentStage['position'] =  $index + 1;
                 $nextStage = $stages[$index + 1] ?? null;
             }
         }
-    
+
         // If the user is in the last stage, return 100% progress
         if (!$nextStage) {
             return [
                 'percentage' => 100,
                 'amountRemaining' => 0,
-                'nextStage'=> $nextStage,
+                'nextStage' => $nextStage,
                 'stage' => $currentStage,
-                'isLastStage'=> true,
+                'isLastStage' => true,
             ];
         }
-    
+
         // Calculate the remaining amount to reach the next stage
         $amountRemaining = $nextStage['totalCredit'] - $amount;
-    
+
         // Calculate the progress percentage towards the next stage
         $progress = ($amount - $currentStage['totalCredit']) /
-                    ($nextStage['totalCredit'] - $currentStage['totalCredit']) * 100;
-    
+            ($nextStage['totalCredit'] - $currentStage['totalCredit']) * 100;
+
         return [
             'percentage' => round($progress, 2),
             'amountRemaining' => $amountRemaining,
             'stage' => $currentStage,
             'nextStage' => $nextStage['name'],
-            'isLastStage'=> false,
+            'isLastStage' => false,
         ];
     }
-    function stagesBadge($stage) {
+    function stagesBadge($stage)
+    {
         // $stage = 4;
         switch ($stage) {
-            case 1: 
+            case 1:
                 return '<div class="animated_badge animated_badge_1">
             <svg class="animated_badge_svg" width="75" height="100" viewBox="0 0 75 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 
@@ -735,7 +792,7 @@ class user extends content
                 </defs>
             </svg>
         </div>';
-        
+
             case 3:
                 return '
                 <div class="animated_badge animated_badge_2 hide">
@@ -777,9 +834,9 @@ class user extends content
             </svg>
         </div>';
                 # code...
-               
-                case 4:
-                    return ' <div class="animated_badge animated_badge_3 hide">
+
+            case 4:
+                return ' <div class="animated_badge animated_badge_3 hide">
             
             <svg class="animated_badge_svg" width="75" height="100" viewBox="0 0 75 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path class="badge_ribbon"
@@ -822,8 +879,8 @@ class user extends content
         </div>
     ';
 
-    case 5: 
-        return '  <div class="animated_badge animated_badge_4 hide">
+            case 5:
+                return '  <div class="animated_badge animated_badge_4 hide">
             
             <svg class="animated_badge_svg" width="75" height="98" viewBox="0 0 75 98" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path class="badge_ribbon right"
@@ -867,8 +924,8 @@ class user extends content
             </svg>
         </div>
     ';
-    case 6 : 
-        return ' <div class="animated_badge animated_badge_5 hide">
+            case 6:
+                return ' <div class="animated_badge animated_badge_5 hide">
            
             <svg class="animated_badge_svg" width="84" height="99" viewBox="0 0 84 99" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path class="badge_ribbon"

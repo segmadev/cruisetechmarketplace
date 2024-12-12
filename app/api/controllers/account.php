@@ -45,7 +45,7 @@ class ApiAccount extends account
             $_GET['s'] =  $_GET['search'];
         }
 
-        $accounts = $this->fetch_account((int)$start, $platform, $limit, 1, $category, "ID, platformID, categoryID, title, preview_link, description, amount");
+        $accounts = $this->fetch_account((int)$start, $platform, $limit, 1, $category, "ID, platformID, categoryID, title, preview_link, amount, description");
         if ($accounts != "") $acct = $accounts->fetchAll(PDO::FETCH_ASSOC);
         return $this->apiMessage("Account fetched", 200, $acct);
     }

@@ -230,11 +230,11 @@ class rentals extends database
                     // die(var_dump($service));
                     // $service['name'] = explode("/", $service['name']);
                     $service['cost'] = (!is_array($service['cost'] ?? $service['price'])) ?  $this->valuedPrice($number_type, $broker, $service['cost'] ?? $service['price']) : $service['cost'];
-                    if (isset($service['price'])) unset($service['cost']);
+                    // if (isset($service['price'])) unset($service['cost']);
                     if (in_array($key, $likeds)) {
-                        array_unshift($services_list, ["id" => $service['id'], "name" => $service['name'], "cost" => $service['cost']]);
+                        array_unshift($services_list, ["id" => $service['id'], "name" => $service['name'], "cost" => round($service['cost'] ?? $service['price'], 2)]);
                     } else {
-                        array_push($services_list, ["id" => $service['id'], "name" => $service['name'], "cost" => $service['cost']]);
+                        array_push($services_list, ["id" => $service['id'], "name" => $service['name'], "cost" => round($service['cost'] ?? $service['price'], 2)]);
                     }
                 }
             }

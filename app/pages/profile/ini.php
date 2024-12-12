@@ -1,4 +1,5 @@
 <?php
+$accepted_actions[] = "api";
 $change_password_from = [
     "current_password" => ["input_type" => "password", "global_class" => "w-100"],
     "password" => ["input_type" => "password", "global_class" => "w-100"],
