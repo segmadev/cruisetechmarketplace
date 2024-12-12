@@ -24,38 +24,43 @@ if (isset($_GET['get']) && $_GET['get'] == "accounts") {
             foreach ($data as $value) {
                 $body .= $a->display_account($value);
             }
-            $return = ["status"=>"ok", "data"=>"$body"];
+            $return = ["status" => "ok", "data" => "$body"];
             echo json_encode($return);
-            return ;
+            return;
             // echo $body;
         }
-        $return = ["status"=>"null", "data"=>""];
+        $return = ["status" => "null", "data" => ""];
         echo json_encode($return);
-        return ;
+        return;
     } catch (\Throwable $th) {
-        $return = ["status"=>"null", "data"=>""];
+        $return = ["status" => "null", "data" => ""];
         echo json_encode($return);
     }
 }
 
-if(isset($_GET['get']) && $_GET['get'] == 'logins') {
+if (isset($_GET['get']) && $_GET['get'] == 'logins') {
     try {
         $data = $a->fetch_login();
         $body = "";
-        if ($data->rowCount() > 0) {
+        if (is_array($data) && isset($data['report'])) {
+            $return = ["status" => "ok", "data" => $data['report']];
+            echo json_encode($return);
+            return;
+        }
+        if ($data != "" && $data->rowCount() > 0) {
             foreach ($data as $value) {
                 $body .= $a->display_login_details($value);
             }
-            $return = ["status"=>"ok", "data"=>"$body"];
+            $return = ["status" => "ok", "data" => "$body"];
             echo json_encode($return);
-            return ;
+            return;
             // echo $body;
         }
-        $return = ["status"=>"null", "data"=>""];
+        $return = ["status" => "null", "data" => ""];
         echo json_encode($return);
-        return ;
+        return;
     } catch (\Throwable $th) {
-        $return = ["status"=>"null", "data"=>""];
+        $return = ["status" => "null", "data" => ""];
         echo json_encode($return);
         // echo "An error occurred: ". $th->getMessage();
     }

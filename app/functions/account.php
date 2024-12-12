@@ -86,32 +86,32 @@ class Account extends user
 
   function fetch_login()
   {
+    // die(var_dump($_GET));
     $start = $_POST['start'] ?? 0;
     $limit = $_POST['limit'] ?? 10;
     // echo $start;
+
+    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "sold_report" && $start > 0) {
+      return;
+    }
     $s = isset($_GET['s']) ? htmlspecialchars($_GET['s']) : "";
 
     $where = "";
     $data = [htmlspecialchars($_GET['id'] ?? "")];
-    if (isset($_GET['s']) && $_GET['s'] != "") {
-      $s = htmlspecialchars($_GET['s']);
-      $where .= "and (login_details  LIKE CONCAT( '%',?,'%') or username  LIKE CONCAT( '%',?,'%')) ";
-      $data[] = $s;
-      $data[] = $s;
-    }
 
-    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "all") {
-      $where .= "or sold_to  LIKE CONCAT( '%',?,'%')";
-      $data[] = $s;
-    }
 
-    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "yes") {
-      $s = htmlspecialchars($_GET['s']);
+    // if (isset($_GET['is_sold']) && $_GET['is_sold'] == "all") {
+    //   $where .= "or sold_to  LIKE CONCAT( '%',?,'%')";
+    //   $data[] = $s;
+    // }
+
+    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "no") {
+      // $s = htmlspecialchars($_GET['s']);
       $where .= "and sold_to = ?";
       $data[] = "";
     }
-    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "no") {
-      $s = htmlspecialchars($_GET['s']);
+    if (isset($_GET['is_sold']) && ($_GET['is_sold'] == "yes" || $_GET['is_sold'] == "sold_report")) {
+      // $s = htmlspecialchars($_GET['s']);
       $where .= "and sold_to != ?";
       $data[] = "";
     }
@@ -121,6 +121,25 @@ class Account extends user
       $where .= "and date >= ? and date <= ?";
       $data[] = htmlspecialchars($this->formatDate($_GET['startDate']));
       $data[] = htmlspecialchars($this->formatDate($_GET['endDate'])) ?? date("Y-m-d H:i:s");
+    }
+
+    if (isset($_GET['s']) && $_GET['s'] != "") {
+      $s = htmlspecialchars($_GET['s']);
+      $where .= "and (login_details  LIKE CONCAT( '%',?,'%') or username  LIKE CONCAT( '%',?,'%')) ";
+      $data[] = $s;
+      $data[] = $s;
+    }
+    // if(isset())
+    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "sold_report") {
+      if ($start > 0) return;
+      $account = $this->getall("account", "ID = ?", [htmlspecialchars($_GET['id'] ?? "")]);
+      if (!is_array($account)) return "";
+      $amount = (int)$account['amount'];
+      if (isset($amount['real_amount']) && ($amount['real_amount'] != "" || $amount['real_amount'] != null)) {
+        $amount = (int)$amount['real_amount'];
+      }
+      $number_sold = $this->getall("logininfo", "accountID = ? $where order by date DESC", $data, fetch: "");
+      return ["report" => "<div class='card card-body fs-4 p-3'><p>Total Amount Sold: " . ($this->money_format($amount * $number_sold)) . "</p><p>No Sold: " . number_format($number_sold) . "</p></div>"];
     }
     return $this->getall("logininfo", "accountID = ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
   }
