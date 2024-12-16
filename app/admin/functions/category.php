@@ -1,6 +1,64 @@
 <?php
 class Category extends roles
 {
+
+    // Function to fetch data dynamically
+    public function fetchAccountsAndLogins($filterDate)
+    {
+        $query = "
+        WITH CategoryData AS (
+            SELECT 
+                ID AS categoryID
+            FROM 
+                category
+            WHERE 
+                cat_type = 0
+        ),
+        AccountData AS (
+            SELECT 
+                a.ID AS accountID,
+                a.amount,
+                a.real_amount,
+                COALESCE(NULLIF(a.real_amount, 0), a.amount) AS effective_amount
+            FROM 
+                account a
+            INNER JOIN 
+                CategoryData c ON a.categoryID = c.categoryID
+        ),
+        LoginInfoCount AS (
+            SELECT 
+                l.accountID,
+                COUNT(*) AS login_count
+            FROM 
+                logininfo l
+            INNER JOIN 
+                AccountData ad ON l.accountID = ad.accountID
+            WHERE 
+                DATE(l.sold_at) = :filterDate
+            GROUP BY 
+                l.accountID
+        )
+        SELECT 
+            ad.accountID,
+            ad.amount,
+            ad.real_amount,
+            ad.effective_amount,
+            lc.login_count,
+            (lc.login_count * ad.effective_amount) AS total
+        FROM 
+            AccountData ad
+        INNER JOIN 
+            LoginInfoCount lc ON ad.accountID = lc.accountID;
+        ";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':filterDate', $filterDate, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    
+    
     function manage_category($category_form, $action = "insert")
     {
         if($action == "insert") {

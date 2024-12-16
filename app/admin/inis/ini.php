@@ -5,7 +5,9 @@ require_once "include/side.php";
 require_once "../consts/main.php";
 require_once "../include/phpmailer/PHPMailerAutoload.php";
 require_once '../vendor/autoload.php';
+
 use Dotenv\Dotenv;
+
 $dotenv = Dotenv::createImmutable(rootFile);
 $dotenv->load();
 require_once "include/database.php";
@@ -13,7 +15,7 @@ require_once "functions/roles.php";
 $r = new roles;
 $d = new database;
 $admin = $d->getall("admins", "token = ?", [$adminToken]);
-if(!is_array($admin)) {
+if (!is_array($admin)) {
     $d->message("Unable to identify admin", "error");
     exit();
 }
@@ -46,10 +48,10 @@ $navs = [
         "links" => [
             "dashboard" => [
                 "list" => [
-                    "a" => "index", 
-                    "title" => "Dashboard", 
+                    "a" => "index",
+                    "title" => "Dashboard",
                 ],
-                    "icon" => "ti ti-home" // Main icon for Dashboard
+                "icon" => "ti ti-home" // Main icon for Dashboard
             ],
         ]
     ],
@@ -58,22 +60,22 @@ $navs = [
         "links" => [
             "account" => [
                 "new" => [
-                    "a" => "index?p=account&action=new", 
+                    "a" => "index?p=account&action=new",
                     "title" => "Publish Account"
                 ],
                 "list" => [
-                    "a" => "index?p=account&action=list", 
+                    "a" => "index?p=account&action=list",
                     "title" => "Manage Accounts"
                 ],
                 "icon" => "ti ti-layout-sidebar" // Main icon for Accounts
             ],
             "platform" => [
                 "new" => [
-                    "a" => "index?p=platform&action=new", 
+                    "a" => "index?p=platform&action=new",
                     "title" => "Create Platform"
                 ],
                 "list" => [
-                    "a" => "index?p=platform&action=list", 
+                    "a" => "index?p=platform&action=list",
                     "title" => "List of Platforms"
                 ],
                 "icon" => "ti ti-layout-grid" // Main icon for Platforms
@@ -81,22 +83,26 @@ $navs = [
 
             "category" => [
                 "new" => [
-                    "a" => "index?p=category&action=new", 
+                    "a" => "index?p=category&action=new",
                     "title" => "Create category"
                 ],
                 "list" => [
-                    "a" => "index?p=category&action=list", 
+                    "a" => "index?p=category&action=list",
                     "title" => "List of categories"
+                ],
+                "view" => [
+                    "a" => "index?p=category&action=view",
+                    "title" => "Offline Report"
                 ],
                 "icon" => "ti ti-layout-grid" // Main icon for Platforms
             ],
 
             "orders" => [
                 "list" => [
-                    "a" => "index?p=orders", 
-                    "title" => "Orders", 
+                    "a" => "index?p=orders",
+                    "title" => "Orders",
                 ],
-                    "icon" => "ti ti-list" // Main icon for Dashboard
+                "icon" => "ti ti-list" // Main icon for Dashboard
             ],
 
         ]
@@ -107,27 +113,27 @@ $navs = [
         "links" => [
             "users" => [
                 "new" => [
-                    "a" => "index?p=users&action=new", 
-                    "title" => "Create", 
-                    "icon" => "ti ti-user-plus" 
+                    "a" => "index?p=users&action=new",
+                    "title" => "Create",
+                    "icon" => "ti ti-user-plus"
                 ],
                 "list" => [
-                    "a" => "index?p=users", 
-                    "title" => "Manage Users", 
+                    "a" => "index?p=users",
+                    "title" => "Manage Users",
                 ],
                 "transactions" => [
-                    "a" => "index?p=users&action=transactions", 
-                    "title" => "Search Transactions",  
+                    "a" => "index?p=users&action=transactions",
+                    "title" => "Search Transactions",
                 ],
-                "icon" => "ti ti-money" 
+                "icon" => "ti ti-money"
             ],
 
             "deposits" => [
                 "list" => [
-                    "a" => "index?p=deposit", 
-                    "title" => "Payments", 
+                    "a" => "index?p=deposit",
+                    "title" => "Payments",
                 ],
-                "icon" => "ti ti-users" 
+                "icon" => "ti ti-users"
             ]
 
         ]
@@ -138,40 +144,40 @@ $navs = [
         "links" => [
             "admins" => [
                 "new" => [
-                    "a" => "index?p=admins&action=new", 
-                    "title" => "Add New Admin", 
+                    "a" => "index?p=admins&action=new",
+                    "title" => "Add New Admin",
                 ],
                 "list" => [
-                    "a" => "index?p=admins", 
-                    "title" => "Manage Admins", 
+                    "a" => "index?p=admins",
+                    "title" => "Manage Admins",
                 ],
-                "icon" => "ti ti-users" 
+                "icon" => "ti ti-users"
             ],
             "settings" => [
                 "list" => [
-                    "a" => "index?p=settings", 
-                    "title" => "Manage Settings", 
+                    "a" => "index?p=settings",
+                    "title" => "Manage Settings",
                 ],
-                "icon" => "ti ti-settings" 
+                "icon" => "ti ti-settings"
             ],
 
             "profile" => [
                 "edit" => [
-                    "a" => "index?p=profile&action=edit", 
-                    "title" => "Edit profile", 
+                    "a" => "index?p=profile&action=edit",
+                    "title" => "Edit profile",
                 ],
-                "icon" => "ti ti-fingerprint" 
+                "icon" => "ti ti-fingerprint"
             ],
             "roles" => [
                 "new" => [
-                    "a" => "index?p=roles&action=new", 
-                    "title" => "Create", 
+                    "a" => "index?p=roles&action=new",
+                    "title" => "Create",
                 ],
                 "list" => [
-                    "a" => "index?p=roles", 
-                    "title" => "Manage", 
+                    "a" => "index?p=roles",
+                    "title" => "Manage",
                 ],
-                "icon" => "ti ti-key" 
+                "icon" => "ti ti-key"
             ]
 
         ]
@@ -182,47 +188,47 @@ $navs = [
         "links" => [
             "content" => [
                 "home" => [
-                    "a" => "index?p=content&action=home", 
-                    "title" => "Home Page", 
+                    "a" => "index?p=content&action=home",
+                    "title" => "Home Page",
                 ],
-                
-                "icon" => "ti ti-home" 
+
+                "icon" => "ti ti-home"
             ],
             "features" => [
                 "new" => [
-                    "a" => "index?p=fetures&action=new", 
-                    "title" => "Add new feature", 
+                    "a" => "index?p=fetures&action=new",
+                    "title" => "Add new feature",
                 ],
                 "list" => [
-                    "a" => "index?p=fetures", 
-                    "title" => "Manage fetures", 
+                    "a" => "index?p=fetures",
+                    "title" => "Manage fetures",
                 ],
-                "icon" => "ti ti-components" 
+                "icon" => "ti ti-components"
             ],
 
             "how_it_works" => [
                 "new" => [
-                    "a" => "index?p=how_it_works&action=new", 
-                    "title" => "Add stage", 
+                    "a" => "index?p=how_it_works&action=new",
+                    "title" => "Add stage",
                 ],
                 "list" => [
-                    "a" => "index?p=how_it_works", 
-                    "title" => "Manage stages", 
+                    "a" => "index?p=how_it_works",
+                    "title" => "Manage stages",
                 ],
-                "icon" => "ti ti-table-filled" 
+                "icon" => "ti ti-table-filled"
             ],
 
             "testimonies" => [
                 "new" => [
-                    "a" => "index?p=testimonies&action=new", 
-                    "title" => "Add new testimony", 
+                    "a" => "index?p=testimonies&action=new",
+                    "title" => "Add new testimony",
                 ],
                 "list" => [
-                    "a" => "index?p=testimonies", 
-                    "title" => "Manage testimonies", 
+                    "a" => "index?p=testimonies",
+                    "title" => "Manage testimonies",
                 ],
-                "icon" => "ti ti-stars" 
-            ],   
+                "icon" => "ti ti-stars"
+            ],
         ]
     ],
 
@@ -231,13 +237,13 @@ $navs = [
         "links" => [
             "email_template" => [
                 "list" => [
-                    "a" => "index?p=email_template", 
-                    "title" => "Email Templates", 
+                    "a" => "index?p=email_template",
+                    "title" => "Email Templates",
                 ],
-                
-                "icon" => "ti ti-inbox" 
+
+                "icon" => "ti ti-inbox"
             ],
-           
+
         ]
     ],
 
