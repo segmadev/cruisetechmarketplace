@@ -2,31 +2,36 @@
 if (!class_exists('wallets')) {
     require_once "functions/wallets.php";
 }
-if(side == "admin") {
+if (side == "admin") {
     require_once '../vendor/autoload.php';
-}else{
+} else {
     require_once 'vendor/autoload.php';
 }
+
 use Flutterwave\Helper\Config;
 use Flutterwave\Flutterwave;
 use Flutterwave\Service\VirtualAccount;
+
 class deposit extends user
 {
 
-    function get_payments($userID, $start) {
+    function get_payments($userID, $start)
+    {
         return $this->getall("payment", "userID = ? order by date DESC LIMIT $start, 10", [$userID], fetch: "moredetails");
     }
-    function get_account_details($userID) {
+    function get_account_details($userID)
+    {
         $user = $this->getall("users", "ID =?", [$userID]);
         if (!is_array($user)) return null;
         $account = $this->getall("user_accounts", "userID = ?", [$userID]);
-        if(!is_array($account)) return null;
+        if (!is_array($account)) return null;
         return $account;
     }
 
-    function create_account_details(array $user) {
-        if($this->get_settings("bvn") == "") return false;
-        if($this->getall("user_accounts", "userID = ?", [$user['ID']], fetch: "") > 0) return false;
+    function create_account_details(array $user)
+    {
+        if ($this->get_settings("bvn") == "") return false;
+        if ($this->getall("user_accounts", "userID = ?", [$user['ID']], fetch: "") > 0) return false;
         $myConfig = Config::setUp(
             $this->get_settings("flutterwave_secret_key"),
             $this->get_settings("flutterwave_public_key"),
@@ -35,25 +40,25 @@ class deposit extends user
         );
         Flutterwave::bootstrap($myConfig);
         $service = new VirtualAccount(config: $myConfig);
-        $tx_ref = time().uniqid();
+        $tx_ref = time() . uniqid();
         $payload = [
             "email" => $user['email'],
-            "tx_ref"=>$tx_ref,
-            "bvn"=>$this->get_settings("bvn"),
-            "narration"=>$user['first_name'].' '.$user['last_name'],
+            "tx_ref" => $tx_ref,
+            "bvn" => $this->get_settings("bvn"),
+            "narration" => $user['first_name'] . ' ' . $user['last_name'],
             "is_permanent" => true
         ];
         $response = $service->create($payload);
-        if(!isset($response->status) || $response->status != "success" || !isset($response->data)) return false;
+        if (!isset($response->status) || $response->status != "success" || !isset($response->data)) return false;
         $data = (array)$response->data;
         $account = [
-            "userID"=>$user['ID'],
-            "tx_ref"=>$tx_ref,
-            "order_ref"=>$data['order_ref'],
-            "account_number"=>(int)$data['account_number'],
-            "bank_name"=>$data['bank_name'],
-            "note"=>$data['note'],
-            "expiry_date"=>$data['expiry_date'],
+            "userID" => $user['ID'],
+            "tx_ref" => $tx_ref,
+            "order_ref" => $data['order_ref'],
+            "account_number" => (int)$data['account_number'],
+            "bank_name" => $data['bank_name'],
+            "note" => $data['note'],
+            "expiry_date" => $data['expiry_date'],
         ];
         if ($this->quick_insert("user_accounts", $account)) {
             return $account;
@@ -158,43 +163,43 @@ class deposit extends user
         // check if txref is valid is own by userID
         $trans = $this->getall("payment", "userID = ? and tx_ref = ?", [$userID, $txref]);
         if (!is_array($trans)) return false;
-        if($trans['status'] == "successful") {
+        if ($trans['status'] == "successful") {
             // $this->message("Transaction amount already added to balance", "success");
             return false;
         }
 
-        if($trans['status'] != "" && $trans['status'] != "initiate" && $trans['status'] != "pending" && $trans['status'] != "successful" && $trans['status'] != "success") {
+        if ($trans['status'] != "" && $trans['status'] != "initiate" && $trans['status'] != "pending" && $trans['status'] != "successful" && $trans['status'] != "success") {
             $this->message("Faild Transaction.", "error");
             return false;
         }
         // verifyPayment 
         $pay = $this->verifyPayment($transID);
-        if(!$pay) {
+        if (!$pay) {
             $this->message("Error verifying payment", "error");
             return false;
         }
         // confrim if the amount match the amount
-        if($pay['status'] != "successful" && $pay['status'] != "success") {
+        if ($pay['status'] != "successful" && $pay['status'] != "success") {
             $this->message("Payment Faild please try again", "error");
-            $this->update("payment", ["transaction_id"=>$transID, "status"=>$pay['status']], "ID = '" . $trans['ID'] . "'");
+            $this->update("payment", ["transaction_id" => $transID, "status" => $pay['status']], "ID = '" . $trans['ID'] . "'");
             return false;
         }
 
         // check of txt_ref match 
         // check of userID match $pay['customer']['id']
         $pay = $pay['data'];
-        if($pay['tx_ref'] != $txref || $pay['meta']["consumer_id"] != $userID) {
-            $this->message("Payment Faild please try again. <br> Seems the payment do not belong to you. <br> if you think this is an error send an email to: ".$this->get_settings("support_email"), "error");
+        if ($pay['tx_ref'] != $txref || $pay['meta']["consumer_id"] != $userID) {
+            $this->message("Payment Faild please try again. <br> Seems the payment do not belong to you. <br> if you think this is an error send an email to: " . $this->get_settings("support_email"), "error");
             return false;
         }
         $amount = $pay['amount'];
-        if($this->credit_debit($userID, $amount, "balance",  "credit", "payment", $transID)) {
-           $this->update("payment", ["transaction_id"=>$transID, "amount"=>$amount, "status"=>$pay['status']], "ID = '" . $trans['ID'] . "'");
+        if ($this->credit_debit($userID, $amount, "balance",  "credit", "payment", $transID)) {
+            $this->update("payment", ["transaction_id" => $transID, "amount" => $amount, "status" => $pay['status']], "ID = '" . $trans['ID'] . "'");
             $this->message("Payment successfull", "success");
             return true;
-           // credit amount and update the payment status and amount
+            // credit amount and update the payment status and amount
         }
-        $this->message("Issue crediting your account. Please try again or contact us".$this->get_settings("support_email"), "error");
+        $this->message("Issue crediting your account. Please try again or contact us" . $this->get_settings("support_email"), "error");
         return true;
     }
 

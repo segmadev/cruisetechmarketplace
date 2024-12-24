@@ -1,9 +1,9 @@
-<?php 
+<?php
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 // if($_SERVER[‘HTTPS’] != "on") {
- $redirect= "https://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$redirect = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 // header("Location:$redirect");
 // }
 // if (!isset($_SESSION['userTK'])) {
@@ -11,28 +11,27 @@
 //     header("location: login?urlgoto=$redirect");
 // }
 
-    if(isset($_GET['logout']) && isset($_COOKIE['userTK'])) {
-       logout();
-       echo '<script>window.location.href = "login.php";</script>';
-       exit();
-    }
-    
-    if(isset($_COOKIE['userTK']) && $_COOKIE['userTK'] != ""){
-        $userToken = $_COOKIE['userTK'];
-        // exit();
+if (isset($_GET['logout']) && isset($_COOKIE['userTK'])) {
+    logout();
+    echo '<script>window.location.href = "login.php";</script>';
+    exit();
+}
 
-    }else{
-        // session_destroy();
-        $_SESSION['urlgoto'] = $redirect;
-        logout();
-        echo '<script>window.location.href = "login.php?urlgoto='.$redirect.'";</script>';
-        echo "<a href='login'>Click here to Login.</a>";
-        exit();
-    }
+if (isset($_COOKIE['userTK']) && $_COOKIE['userTK'] != "") {
+    $userToken = $_COOKIE['userTK'];
+    // exit();
 
-   function logout() {
+} else {
+    // session_destroy();
+    $_SESSION['urlgoto'] = $redirect;
+    logout();
+    echo '<script>window.location.href = "login.php?urlgoto=' . $redirect . '";</script>';
+    echo "<a href='login'>Click here to Login.</a>";
+    exit();
+}
+
+function logout()
+{
     unset($_COOKIE['userTK']);
     setcookie('userTK', null, time() - 3600, '/');
-   }
-?>
-
+}

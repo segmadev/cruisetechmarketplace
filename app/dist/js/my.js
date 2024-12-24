@@ -181,10 +181,16 @@ function runjax(event, $inputs, fd, action = "passer") {
         
         // Clear loading message
         customMessageElement.innerHTML = "";
+        // customMessageElement.innerHTML = response;
+        // alert(messageid);
+        // document.getElementById(messageid).innerHTML = response;
 
         if (testJSON(response)) {
+            // alert("It is here");
+            // customMessageElement.innerHTML = "It is here";
             proceessjson(response);
         } else {
+
             const previewResponse = response.substring(0, 30);
 
             if (previewResponse === "<div class='card card-primary'") {
@@ -274,19 +280,90 @@ function runjax(event, $inputs, fd, action = "passer") {
 
 // });
 
-// Bind to the submit event of our form
-
-
 function loadpage(url, holder) {
+    const delay = isNaN(parseInt(holder, 10)) ? 1000 : parseInt(holder, 10); // Default to 1000ms (1 second) if holder is NaN
+
     setTimeout(() => {
-        if (url.includes("https://") || url.includes("http://")) {
-            window.open(url, "_blank");
-            // window.open(url, "_blank");
-        } else {
-            window.location.replace(url);
+        try {
+            if (url.startsWith("https://") || url.startsWith("http://")) {
+                const newWindow = window.open(url, "_blank");
+                if (!newWindow || newWindow.closed || typeof newWindow.closed === "undefined") {
+                    closeBootstrapModals();
+                    showRedirectModal(url); // Show fallback if popup is blocked
+                }
+            } else {
+                window.location.replace(url);
+            }
+        } catch (error) {
+            console.error("An error occurred while loading the page:", error);
+            closeBootstrapModals();
+            showRedirectModal(url); // Show fallback on error
         }
-    }, parseInt(holder)); 
+    }, delay);
 }
+
+// Close any active Bootstrap modals
+function closeBootstrapModals() {
+    const openModal = document.querySelector(".modal.show");
+    if (openModal) {
+        const modalInstance = bootstrap.Modal.getInstance(openModal);
+        if (modalInstance) {
+            modalInstance.hide(); // Close the modal
+        }
+    }
+}
+
+// Function to display the modal for clickable redirect fallback
+function showRedirectModal(url) {
+    // Apply body blur
+    // document.body.style.filter = "blur(5px)";
+    // document.body.style.transition = "filter 0.3s ease";
+
+    // Create modal content
+    const modalHTML = `
+        <div class="modal fade" id="redirectModal" tabindex="-1" aria-labelledby="redirectModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="redirectModalLabel">Unable to Redirect Automatically</h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>Click the button below to proceed.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="window.open('${url}', '_blank'); closeRedirectModal();">Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Append modal to the body
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+
+    // Initialize and show the modal
+    const modalElement = document.getElementById('redirectModal');
+    const modalInstance = new bootstrap.Modal(modalElement);
+    modalInstance.show();
+
+    // Close the modal and remove blur when the modal is hidden
+    modalElement.addEventListener('hidden.bs.modal', () => {
+        document.body.style.filter = "none"; // Remove blur from the body
+        modalElement.remove(); // Remove the modal from the DOM
+    });
+}
+
+// Close the modal programmatically
+function closeRedirectModal() {
+    const modalElement = document.getElementById('redirectModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    if (modalInstance) {
+        modalInstance.hide();
+    }
+}
+
+
+
 function removediv(id, type="id"){
     divElement = document.querySelector(id);
     divElement.parentNode.removeChild(divElement);
@@ -743,6 +820,7 @@ function submitform(id = "foo2", messageid = "custommessage") {
         contentType: false,
         type: 'POST',
         success: function (response) {
+            // document.getElementById(messageid).innerHTML = response;
             if(testJSON(response)){
                 proceessjson(response);
                 document.getElementById(messageid).innerHTML = "";
