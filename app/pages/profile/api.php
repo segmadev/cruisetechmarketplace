@@ -5,6 +5,8 @@ $script[] = "sweetalert";
     <div class="card-header">
         <h3> <i class="ti ti-key"></i> Your API key</h3>
         <p>Note that you can only see your API Key onces. <br> But you can always generate a new key.</p>
+        <p> <a target="_blank" href="https://documenter.getpostman.com/view/16591249/2sAYHxm3sE">
+                Click here</a> to view API documentation</p>
     </div>
     <div class="card-body">
         <form action="" id="foo">
