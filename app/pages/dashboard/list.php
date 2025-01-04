@@ -155,32 +155,30 @@ require_once "pages/profile/stage.php";
     }
 }
 </style>
-<div class="overlay" id="imageOverlay">
+<!-- <div class="overlay" id="imageOverlay">
     <div class="overlay-content">
         <button class="close-btn" id="closeOverlay">&times;</button>
         <a href="index?p=profile&action=new">
             <img src="images/discount.png" alt="Overlay Image">
         </a>
     </div>
-</div>
+</div> -->
 
 <script>
-const overlay = document.getElementById('imageOverlay');
-const closeOverlayBtn = document.getElementById('closeOverlay');
+// const overlay = document.getElementById('imageOverlay');
+// const closeOverlayBtn = document.getElementById('closeOverlay');
 
-// Get overlay count from localStorage
-let overlayCount = localStorage.getItem('overlayCount') || 0;
+// let overlayCount = localStorage.getItem('overlayCount') || 0;
 
-// Show overlay if user has seen it less than twice
-if (overlayCount < 2) {
-    overlay.classList.add('active');
-    localStorage.setItem('overlayCount', ++overlayCount);
-}
+// if (overlayCount < 2) {
+//     overlay.classList.add('active');
+//     localStorage.setItem('overlayCount', ++overlayCount);
+// }
 
-// Close overlay
-closeOverlayBtn.addEventListener('click', () => {
-    overlay.classList.remove('active');
-});
+
+// closeOverlayBtn.addEventListener('click', () => {
+//     overlay.classList.remove('active');
+// });
 </script>
 
 <hr>
@@ -191,10 +189,10 @@ closeOverlayBtn.addEventListener('click', () => {
 // </div>";
 $categories = $d->getall("category", 'date != ? order by date ASC', [""], fetch: "all");
 if ($categories->rowCount() > 0) {
-  require_once "pages/dashboard/category_list.php";
-  foreach ($categories as $category) {
-    require "pages/dashboard/category.php";
-  }
+    require_once "pages/dashboard/category_list.php";
+    foreach ($categories as $category) {
+        require "pages/dashboard/category.php";
+    }
 }
 $category = ["ID" => "", "name" => "Others"];
 require "pages/dashboard/category.php";
