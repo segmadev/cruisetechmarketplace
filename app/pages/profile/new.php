@@ -23,10 +23,10 @@ require_once "pages/profile/stage.php";
         This Discount plans can be reviewed and adjust without notifying users.
     </p>
     <h2>Levels and Discounts</h2>
-    <div class="p-2 bg-light-success">
+    <!-- <div class="p-2 bg-light-success">
         🎄Exclusive Holiday Discount Boost across all levels!
         <b class="text-primary">until January 2,</b> enjoy increased discounts by 2% on all stages.🎄
-    </div>
+    </div> -->
     <p>
         Below is a table that shows the different levels, required Deposits, discounts, and the minimum number of
         accounts you need to order in one transaction to enjoy the discount.
@@ -54,23 +54,23 @@ require_once "pages/profile/stage.php";
             <?php
             $i = 1;
             foreach ($stages as $stage): ?>
-                <tr>
-                    <td class="title">
-                        <a href="javascript:void(0)"><?php echo $stage['name'];
+            <tr>
+                <td class="title">
+                    <a href="javascript:void(0)"><?php echo $stage['name'];
                                                         echo "<div style='zoom: 0.5'>" . $u->stagesBadge(stage: (int)$i) . "</div>";
                                                         $i++;
                                                         ?></a>
-                    </td>
-                    <td>
-                        <span class="tablesaw-cell-content"><?= $d->money_format($stage['totalCredit']); ?></span>
-                    </td>
-                    <td>
-                        <span class="tablesaw-cell-content"><?= $stage['discount']; ?>%</span>
-                    </td>
-                    <td>
-                        <span class="tablesaw-cell-content"><?= $stage['no_order']; ?></span>
-                    </td>
-                </tr>
+                </td>
+                <td>
+                    <span class="tablesaw-cell-content"><?= $d->money_format($stage['totalCredit']); ?></span>
+                </td>
+                <td>
+                    <span class="tablesaw-cell-content"><?= $stage['discount']; ?>%</span>
+                </td>
+                <td>
+                    <span class="tablesaw-cell-content"><?= $stage['no_order']; ?></span>
+                </td>
+            </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
