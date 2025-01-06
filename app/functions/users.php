@@ -372,7 +372,7 @@ class user extends content
         }
         if (is_array($data)) {
             $balance = $this->money_format($data['balance'], currency);
-            $btnString = "<div class='card bg-primary p-2 text-white'><b>Balance: </b><p class='h2 text-white m-0' id='accountBalanceValue' data-load='deposit' data-displayId='accountBalanceValue' data-isreplace='true' data-path='passer?p=account&get_balance=yes'><b>$balance</b></p><p>";
+            $btnString = "<div class='card bg-primary p-2 text-white'><b>Balance: </b><p class='h2 text-white m-0' id='accountBalanceValue' data-interval='10000000' data-load='deposit' data-displayId='accountBalanceValue' data-isreplace='true' data-path='passer?p=account&get_balance=yes'><b>$balance</b></p><p>";
             if ($showBtn) $btnString .= "<a href='index?p=deposit' class='btn btn-sm btn-light-success'>Deposit</a>";
             $btnString .= "</p></div>";
             return $btnString;

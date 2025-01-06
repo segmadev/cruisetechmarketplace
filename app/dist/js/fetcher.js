@@ -114,7 +114,7 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
   // const loadingMessage = "<p class='h4'><b>Loading Data</b></p>";
   const displayHere = document.getElementById(displayId);
   // if (displayHere.innerHTML === "") displayHere.innerHTML = loadingMessage;
-
+  // console.log(interval);
   const data = { page: what, what: what, start: start, limit: limit };
   console.log("Fetching data:", data);
 
@@ -163,11 +163,10 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
       }
       
 
-
       // Schedule the next fetch, but clear any previous timeout
       if (document.getElementById(displayId)) {
           const timeoutId = setTimeout(() => {
-              fetchData(what, displayId, limit, start, path, isReplace, interval, controller);
+              fetchData(what, displayId, limit, start, path, isReplace, parseInt(interval), controller);
           }, parseInt(interval));
 
           // Update the timeout ID for this fetch to allow canceling if needed
