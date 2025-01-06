@@ -33,5 +33,5 @@ if (isset($_COOKIE['userTK']) && $_COOKIE['userTK'] != "") {
 function logout()
 {
     unset($_COOKIE['userTK']);
-    setcookie('userTK', null, time() - 3600, '/');
+    setcookie('userTK', null, (int)(time() - 3600), '/');
 }
