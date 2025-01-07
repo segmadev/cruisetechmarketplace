@@ -16,7 +16,7 @@ if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_oflin
     </div>
     <?php if($accounts->rowCount() > 0) {?>
         <div class="card-body w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0"
-    id="accountList<?= $category['ID'] ?>" data-limit="2" data-load="account" data-displayId="accountList<?= $category['ID'] ?>" data-path="passer?p=account&category=<?= $category['ID'] ?>"
+    id="accountList<?= $category['ID'] ?>" data-limit="5" data-load="account" data-displayId="accountList<?= $category['ID'] ?>" data-path="passer?p=account&category=<?= $category['ID'] ?>"
     ></div>
     <?php }else{
         echo $c->empty_page("No account found for this category");
