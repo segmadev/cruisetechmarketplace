@@ -5,6 +5,7 @@
 <?php
 $script[] = "fetcher";
 $totalOrders = $d->getall("orders", "userID = ?", [$userID], fetch: "");
+// $totalOrders = $totalOrders['count'];
 require_once "pages/profile/stage.php";
 ?>
 
@@ -29,7 +30,7 @@ require_once "pages/profile/stage.php";
                             <div class="border-end pe-4 border-muted border-opacity-10">
                                 <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center" ><i
                                         class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
-                                    <?= $user['balance'] ?>
+                                    <?= $d->money_format($user['balance']) ?>
                                 </h3>
                                 <p class="mb-0 text-dark">Your Balance</p>
                                 <a data-url="index?p=deposit" class="btn btn-sm btn-dark">Deposit</a>

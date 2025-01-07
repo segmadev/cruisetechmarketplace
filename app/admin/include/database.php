@@ -136,6 +136,9 @@ class database
     // CODE: $members = $d->getall(from: 'members', where: "LIMTI 10" fetch: "moredetails");
     function getall($from, $where = "", array $data = [], $select = "*", $fetch = "details")
     {
+        if($fetch == "" && $select == "*") {
+            $select = "COUNT(*) as count";
+        }
         if (substr($where, 0, 5) == "LIMIT" || substr($where, 0, 5) == "limit" || $where == "") {
             $q = $this->db->prepare("SELECT $select FROM $from $where");
         } else {
@@ -144,6 +147,19 @@ class database
         $q->execute($data);
         return $this->getmethod($q, $fetch);
     }
+
+    public function getCount($table, $conditions, $params) {
+        // Prepare the SQL statement with COUNT(*)
+        $sql = "SELECT COUNT(*) AS count FROM {$table} WHERE {$conditions}";
+        // Prepare and execute the statement
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
+        // Fetch the result
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Return the count
+        return $result['count'];
+    }
+    
 
     // USEAGE
     // Insert single data
@@ -255,6 +271,12 @@ class database
 
     private function getmethod($q, $fetch)
     {
+
+        if($fetch == "") {
+            $data = $q->fetch(PDO::FETCH_ASSOC);
+            if(isset($data['count'])) return $data['count'];
+        }
+
         if ($fetch == "details" || $fetch == "single" || $fetch == "s") {
             return $q->fetch(PDO::FETCH_ASSOC);
         }
