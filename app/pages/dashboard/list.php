@@ -83,79 +83,79 @@ require_once "pages/profile/stage.php";
 </div>
 
 <style>
-    /* Overlay styles */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        visibility: hidden;
+/* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    background-image: url('https://media3.giphy.com/media/tIHktzgRi8yjIplFVI/200w.gif?cid=6c09b952kvnkv6klold9tyrajjdy2feaukdemmy6bn7u7dz4&ep=v1_stickers_search&rid=200w.gif&ct=s');
+}
+
+.overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.overlay-content {
+    position: relative;
+    /* background-color: #fff; */
+    padding: 20px;
+    border-radius: 10px;
+    /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); */
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    animation: pop-in 0.5s ease;
+}
+
+.overlay img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background-color: #d32f2f;
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0.5);
         opacity: 0;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-        background-image: url('https://media3.giphy.com/media/tIHktzgRi8yjIplFVI/200w.gif?cid=6c09b952kvnkv6klold9tyrajjdy2feaukdemmy6bn7u7dz4&ep=v1_stickers_search&rid=200w.gif&ct=s');
     }
 
-    .overlay.active {
-        visibility: visible;
+    100% {
+        transform: scale(1);
         opacity: 1;
     }
-
-    .overlay-content {
-        position: relative;
-        /* background-color: #fff; */
-        padding: 20px;
-        border-radius: 10px;
-        /* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); */
-        max-width: 90%;
-        max-height: 90%;
-        overflow: auto;
-        animation: pop-in 0.5s ease;
-    }
-
-    .overlay img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 10px;
-    }
-
-    .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #f44336;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    .close-btn:hover {
-        background-color: #d32f2f;
-    }
-
-    @keyframes pop-in {
-        0% {
-            transform: scale(0.5);
-            opacity: 0;
-        }
-
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
+}
 </style>
 <!-- <div class="overlay" id="imageOverlay">
     <div class="overlay-content">
@@ -167,20 +167,20 @@ require_once "pages/profile/stage.php";
 </div> -->
 
 <script>
-    // const overlay = document.getElementById('imageOverlay');
-    // const closeOverlayBtn = document.getElementById('closeOverlay');
+// const overlay = document.getElementById('imageOverlay');
+// const closeOverlayBtn = document.getElementById('closeOverlay');
 
-    // let overlayCount = localStorage.getItem('overlayCount') || 0;
+// let overlayCount = localStorage.getItem('overlayCount') || 0;
 
-    // if (overlayCount < 2) {
-    //     overlay.classList.add('active');
-    //     localStorage.setItem('overlayCount', ++overlayCount);
-    // }
+// if (overlayCount < 2) {
+//     overlay.classList.add('active');
+//     localStorage.setItem('overlayCount', ++overlayCount);
+// }
 
 
-    // closeOverlayBtn.addEventListener('click', () => {
-    //     overlay.classList.remove('active');
-    // });
+// closeOverlayBtn.addEventListener('click', () => {
+//     overlay.classList.remove('active');
+// });
 </script>
 
 <hr>

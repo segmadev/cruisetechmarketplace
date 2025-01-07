@@ -3,13 +3,16 @@
 if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_ofline_buyer($userID)) {
     $accounts = [];
 }else{
-    $accounts = $d->getall("account", "categoryID = ? order by date DESC LIMIT 10", [$category['ID']], fetch: "all");
+    $accounts = $d->getall("account", "categoryID = ? order by date DESC LIMIT 5", [$category['ID']], fetch: "all");
 }
 ?>
+
+<?php if("a" == "b"){ ?>
 <div class="card">
     <div class="card-header d-flex justify-content-between">
         <div class="title btn btn-primary text-white p-2 fs-3"><b><?= $category['name'] ?></b></div>
-        <div class="buttons"><a data-url="index?action=view&category=<?= $category['ID'] ?>" class="btn btn-sm btn-primary">View All</a></div>
+        <div class="buttons"><a data-url="index?action=view&category=<?= $category['ID'] ?>"
+                class="btn btn-sm btn-primary">View All</a></div>
     </div>
     <div class="card-body w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0">
         <?php 
@@ -25,3 +28,5 @@ if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_oflin
         ?>
     </div>
 </div>
+
+<?php } ?>
