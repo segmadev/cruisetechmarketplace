@@ -113,7 +113,7 @@ require_once "include/auth-ini.php"
   <script src="dist/js/sidebarmenu.js"></script>
 
   <script src="dist/js/custom.js"></script>
-  <script src="dist/js/my.js?n=2799"></script>
+  <script src="dist/js/my.js?n=998882799"></script>
 </body>
 
 <!-- Mirrored from demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/html/main/authentication-login2.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 14 Aug 2023 16:11:04 GMT -->
