@@ -58,8 +58,9 @@ if (isset($_POST['what'])) {
             break;
         case "account":
             $start = htmlspecialchars($_POST['start']) ?? 0;
+            $limit = htmlspecialchars($_POST['limit']) ?? 10;
 
-            $accounts = $a->fetch_account($start);
+            $accounts = $a->fetch_account($start, limit: $limit);
             if ($accounts->rowCount() > 0) {
                 $contentHtml = "";
                 foreach ($accounts as $account) {

@@ -147,7 +147,8 @@ class Account extends user
 {
     $where = "";
     $data = [];
-
+    $start = (int)$start;
+    $limit = (int)$limit;
     // Search query
     if (isset($_GET['s']) && $_GET['s'] != "") {
         $s = htmlspecialchars($_GET['s']);
