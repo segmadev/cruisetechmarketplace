@@ -387,7 +387,7 @@ class Account extends user
   }
   function display_account($account, $userID = null)
   {
-    $platform = $this->get_platform($account['platformID']);
+    // $platform = $this->get_platform($account['platformID']);
     return "<div class='col single-note-item all-category p-0 m-0' id='displayaccount-" . $account['ID'] . "'>
                 <div class='card noanimation card-body bg-light p-0 p-2 border-1 mb-1'>
                   " . $this->display_account_name($account) . "
