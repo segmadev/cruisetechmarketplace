@@ -88,6 +88,7 @@ require_once "include/auth-ini.php"; ?>
                         echo "<input type='hidden' value='$urlgoto' name='urlgoto'>";
                       }
                     ?>
+                    <div id="turnstile-container" class="cf-turnstile" data-sitekey="0x4AAAAAAA4u_JbMiNOABX-Y"></div>
 
                     <input type="hidden" name="signin">
                     <div class="d-flex align-items-center justify-content-between mb-4">
@@ -124,6 +125,7 @@ require_once "include/auth-ini.php"; ?>
     
     <!--  Import Js Files -->
     <script src="dist/libs/jquery/dist/jquery.min.js"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script src="dist/libs/simplebar/dist/simplebar.min.js"></script>
     <script src="dist/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!--  core files -->
@@ -133,7 +135,7 @@ require_once "include/auth-ini.php"; ?>
     <script src="dist/js/sidebarmenu.js"></script>
     
     <script src="dist/js/custom.js"></script>
-    <script src="dist/js/my.js?n=244"></script>
+    <script src="dist/js/my.js?n=2498884"></script>
   </body>
 
 <!-- Mirrored from demos.adminmart.com/premium/bootstrap/modernize-bootstrap/package/html/main/authentication-login2.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 14 Aug 2023 16:11:04 GMT -->

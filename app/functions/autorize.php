@@ -3,9 +3,24 @@ class autorize extends database
 {
     public function signup($data)
     {
+        $captchaToken = $_POST['cf-turnstile-response'] ?? '';
+        if (empty($captchaToken)) {
+            $this->message("Robot verification failed. Please try again.", "error");
+            return;
+        }
+    
+        // Verify the CAPTCHA with Cloudflare
+        $captchaResponse = $this->verify_captcha($captchaToken);
+        if (!$captchaResponse) {
+            $this->message("Robot verification failed. Please try again.", "error");
+        }    
         $_POST['ID'] = uniqid();
         $info = $this->validate_form($data);
         if (!is_array($info)) {
+            return null;
+        }
+        if($info['confrim_password'] != $info['password']) {
+            echo $this->message("Password and confirm password do not match", "error");
             return null;
         }
         if(!$this->isValidName($info['first_name'])) {
@@ -42,7 +57,7 @@ class autorize extends database
             session_start();
             // session_unset();
             $expiry = strtotime('+6 months'); // Calculate the expiry time for 3 months from now
-            session_set_cookie_params($expiry); // Set the session cookie expiry time
+            // session_set_cookie_params($expiry); // Set the session cookie expiry time
             // session_start();
 
             // $d->updateadmintoken($value['ID'], "users");
@@ -101,6 +116,21 @@ class autorize extends database
         $d = new database;
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
+
+         // CAPTCHA Verification
+    $captchaToken = $_POST['cf-turnstile-response'] ?? '';
+    if (empty($captchaToken)) {
+        $d->message("Robot verification failed. Please try again.", "error");
+        return;
+    }
+
+    // Verify the CAPTCHA with Cloudflare
+    $captchaResponse = $this->verify_captcha($captchaToken);
+    if (!$captchaResponse) {
+        $d->message("Robot verification failed. Please try again.", "error");
+        return;
+    }
+
         if (!empty($email) && !empty($password)) {
             $value = $d->getall("users", "email = ?", [$email]);
             if (is_array($value)) {
@@ -145,6 +175,34 @@ class autorize extends database
             $d->message("Make sure you enter your email and password", "error");
         }
     }
+
+
+    private function verify_captcha($captchaToken)
+{
+    $secretKey = $this->get_settings("cloudflare_key"); // Replace with your Cloudflare Secret Key
+    $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+
+    $data = [
+        'secret' => $secretKey,
+        'response' => $captchaToken,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] // Optional: Verify IP address
+    ];
+
+    // Send POST request to Cloudflare
+    $options = [
+        'http' => [
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data),
+        ],
+    ];
+
+    $context = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    $response = json_decode($result, true);
+
+    return $response['success'] ?? false;
+}
 
     private function set_token($userID)
     {

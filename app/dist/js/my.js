@@ -178,7 +178,7 @@ function runjax(event, $inputs, fd, action = "passer") {
     })
     .done((response) => {
         $inputs.prop("disabled", false);
-        
+        inicap();
         // Clear loading message
         customMessageElement.innerHTML = "";
         // customMessageElement.innerHTML = response;
@@ -203,6 +203,18 @@ function runjax(event, $inputs, fd, action = "passer") {
     .fail((jqXHR, textStatus, errorThrown) => {
         console.error("The following error occurred:", textStatus, errorThrown);
     });
+}
+
+function inicap() {
+    try {
+        const turnstileContainer = document.querySelector("#turnstile-container");
+        if (turnstileContainer) {
+            turnstile.reset(turnstileContainer); // Reset Turnstile CAPTCHA
+        } 
+    } catch (error) {
+        // do nothing
+    }
+    
 }
 
 

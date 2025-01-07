@@ -82,6 +82,7 @@ require_once "include/auth-ini.php"
                     <?php echo $c->create_form($user_form); ?>
                     <input type="hidden" name="signup">
                   </div>
+                  <div id="turnstile-container" class="cf-turnstile" data-sitekey="0x4AAAAAAA4u_JbMiNOABX-Y"></div>
                   
                   <div id="custommessage"></div>
                   <p><?= $c->terms_message(); ?> </p>
@@ -100,7 +101,9 @@ require_once "include/auth-ini.php"
   </div>
 
   <!--  Import Js Files -->
+
   <script src="dist/libs/jquery/dist/jquery.min.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="dist/libs/simplebar/dist/simplebar.min.js"></script>
   <script src="dist/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <!--  core files -->
