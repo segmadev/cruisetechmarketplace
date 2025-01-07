@@ -144,44 +144,57 @@ class Account extends user
     return $this->getall("logininfo", "accountID = ? $where order by date DESC LIMIT $start, $limit", $data, fetch: "moredetails");
   }
   function fetch_account($start = 0, $platform = "", $limit = 10, $status = 1, $category = "all", $select = "*")
-  {
-
+{
     $where = "";
-    $data = [""];
+    $data = [];
+
+    // Search query
     if (isset($_GET['s']) && $_GET['s'] != "") {
-      $s = htmlspecialchars($_GET['s']);
-      $where .= "and ID  LIKE CONCAT( '%',?,'%') or title  LIKE CONCAT( '%',?,'%') or description  LIKE CONCAT( '%',?,'%')";
-      $data[] = $s;
-      $data[] = $s;
-      $data[] = $s;
-    }
-    if ($platform == "" && isset($_GET['platform']) && $_GET['platform'] != "") {
-      $platform = htmlspecialchars($_GET['platform']);
-    }
-    if (isset($_GET['category']) && $_GET['category'] != "all") {
-      $category = htmlspecialchars($_GET['category']);
+        $s = htmlspecialchars($_GET['s']);
+        $where .= " AND (ID LIKE CONCAT('%', ?, '%') OR title LIKE CONCAT('%', ?, '%') OR description LIKE CONCAT('%', ?, '%'))";
+        $data = array_merge($data, [$s, $s, $s]);
     }
 
+    // Platform filter
+    if ($platform == "" && isset($_GET['platform']) && $_GET['platform'] != "") {
+        $platform = htmlspecialchars($_GET['platform']);
+    }
     if ($platform != "") {
-      $where .= " and platformID = ?";
-      $data[] = $platform;
+        $where .= " AND platformID = ?";
+        $data[] = $platform;
+    }
+
+    // Category filter
+    if (isset($_GET['category']) && $_GET['category'] != "all") {
+        $category = htmlspecialchars($_GET['category']);
     }
     if ($category != "all") {
-      $where .= " and categoryID = ?";
-      $data[] = $category;
+        $where .= " AND categoryID = ?";
+        $data[] = $category;
     }
 
-
+    // User filter
     if (isset($_GET['userID']) && $_GET['userID'] != "") {
-      $where .= " and sold_to = ?";
-      $data[] = htmlspecialchars($_GET['userID']);
+        $where .= " AND sold_to = ?";
+        $data[] = htmlspecialchars($_GET['userID']);
     }
+
+    // Status filter
     if ($status != "") {
-      $where .= " and status = ?";
-      $data[] = $status;
+        $where .= " AND status = ?";
+        $data[] = $status;
     }
-    return $this->getall("account", "id != ? $where order by date DESC LIMIT $start, $limit", $data, select: $select, fetch: "moredetails");
-  }
+
+    // Avoid duplicates with GROUP BY and proper ID check
+    return $this->getall(
+        "account",
+        "id IS NOT NULL $where GROUP BY id ORDER BY date DESC LIMIT $start, $limit",
+        $data,
+        select: $select,
+        fetch: "moredetails"
+    );
+}
+
 
   function get_account($id, $status = "1")
   {
