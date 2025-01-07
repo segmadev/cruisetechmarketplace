@@ -3,7 +3,7 @@
 if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_ofline_buyer($userID)) {
     $accounts = [];
 }else{
-    $accounts = $d->getall("account", "categoryID = ? order by date DESC LIMIT 4", [$category['ID']], fetch: "all");
+    $accounts = $d->getall("account", "categoryID = ? order by date DESC LIMIT 2", [$category['ID']], fetch: "all");
 }
 ?>
 
@@ -14,17 +14,24 @@ if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_oflin
         <div class="buttons"><a data-url="index?action=view&category=<?= $category['ID'] ?>"
                 class="btn btn-sm btn-primary">View All</a></div>
     </div>
-    <div class="card-body w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0">
-        <?php 
-            if($accounts->rowCount() > 0) {
-                require_once "functions/account.php";
-                $a = new account;
-                foreach($accounts as $account) {
-                    echo $a->display_account($account);
-                }
-            }else{
-                echo $c->empty_page("No account found for this category");
-            }
-        ?>
-    </div>
+    <?php if($accounts->rowCount() > 0) {?>
+        <div class="card-body w-100 row row-cols-1 row-cols-lg-3 row-cols-md-2 g-1 g-lg-3 m-0 p-0"
+    id="accountList<?= $category['ID'] ?>" data-limit="5" data-load="account" data-displayId="accountList<?= $category['ID'] ?>" data-path="passer?p=account&category=<?= $category['ID'] ?>"
+    ></div>
+    <?php }else{
+        echo $c->empty_page("No account found for this category");
+    } ?>
 </div>
+
+
+<?php 
+            // if($accounts->rowCount() > 0) {
+            //     require_once "functions/account.php";
+            //     $a = new account;
+            //     foreach($accounts as $account) {
+            //         echo $a->display_account($account);
+            //     }
+            // }else{
+            //     echo $c->empty_page("No account found for this category");
+            // }
+        ?>

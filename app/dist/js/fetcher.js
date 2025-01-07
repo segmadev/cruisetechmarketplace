@@ -113,6 +113,13 @@ function loadFetchData(loaddata) {
 function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isReplace="false", interval = 3000, controller) {
   // const loadingMessage = "<p class='h4'><b>Loading Data</b></p>";
   const displayHere = document.getElementById(displayId);
+  if(start == 0) {
+    const loadingMessage = `<div style='min-height: 100px;' class="loading-spinner-container" id='${displayId}loadingData'>
+            <div style='border: 4px solid rgba(0, 0, 0, 0.1); border-top: 4px solid #fa5a15; width: 40px; height: 40px;' class="spinner"></div>
+        </div>`;
+    if (displayHere.innerHTML === "") displayHere.innerHTML = loadingMessage;
+  }
+
   // if (displayHere.innerHTML === "") displayHere.innerHTML = loadingMessage;
   // console.log(interval);
   const data = { page: what, what: what, start: start, limit: limit };
@@ -126,6 +133,7 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
   });
 
   request.done(function (response) {
+    if(start == 0)  document.getElementById(displayId+"loadingData").style.display = "none";
       // Stop if the response is empty or invalid
       if (!response || response.trim() === "") {
           start = 0;
