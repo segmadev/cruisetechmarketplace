@@ -221,7 +221,8 @@ class Account extends user
 
   function get_num_of_login($accountID)
   {
-    return $this->getall("logininfo", "accountID = ? and sold_to = ?", [$accountID, ""], fetch: "");
+    $count = $this->getall("logininfo", "accountID = ? and sold_to = ?",  [$accountID, ""], select: "COUNT(*) AS count");
+    return $count['count'];
   }
 
   public function fetchLoginsByAccountID($accountID, $limit = 20, $offset = 0, $excludeIDs = [])
@@ -401,14 +402,15 @@ class Account extends user
   }
   function display_account($account, $userID = null)
   {
+    $account_count = $this->get_num_of_login($account['ID']);
     // $platform = $this->get_platform($account['platformID']);
     return "<div class='col single-note-item all-category p-0 m-0' id='displayaccount-" . $account['ID'] . "'>
                 <div class='card noanimation card-body bg-light p-0 p-2 border-1 mb-1'>
                   " . $this->display_account_name($account) . "
                   <div class='d-flex align-items-center justify-content-between p-0 m-0'>
-                  <div class='w-80 text-end'><small><b>" . $this->get_num_of_login($account['ID']) . " pcs available</b></small></div>
+                  <div class='w-80 text-end'><small><b>" . $account_count . " pcs available</b></small></div>
                   <div>   
-                  " . $this->account_btn($account, $userID) . "
+                  " . $this->account_btn($account, $userID, $account_count) . "
                   </div>
                   </div>
                   
@@ -417,8 +419,9 @@ class Account extends user
             ";
   }
 
-  function account_btn($account, $userID = null)
+  function account_btn($account, $userID = null, $account_count = null)
   {
+    $account_count = $account_count ?? $this->get_num_of_login($account['ID']);
     $accountID = $account['ID'];
     if ($this->validate_admin() && side == 'admin') {
       $btn =
@@ -443,7 +446,7 @@ class Account extends user
       }
       return $btn;
     }
-    if ($this->get_num_of_login($account['ID']) > 0) {
+    if ($account_count > 0) {
       return "
         <a 
                     href='index?p=account&action=details&id=" . $account['ID'] . "' 
