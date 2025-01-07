@@ -104,7 +104,7 @@ function loadFetchData(loaddata) {
   activeFetches.set(displayId, { controller, timeoutId: null });
 
   // Clear the content of the element with the determined `displayId`
-  document.querySelector("#" + displayId).innerHTML = "";
+  if(start == 0) document.querySelector("#" + displayId).innerHTML = "";
   // modalcontent(displayId);
   // Start fetching data
   fetchData(what, displayId, limit, start, path, isReplace, interval, controller);

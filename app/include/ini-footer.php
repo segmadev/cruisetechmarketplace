@@ -81,7 +81,7 @@ qrcodelist.forEach(element => {
 <script src="dist/js/divtopdf.js?n=442245"></script>
 <?php } ?>
 <?php if (in_array("fetcher", $script)) { ?>
-<script src="dist/js/fetcher.js?n=998775"></script>
+<script src="dist/js/fetcher.js?f=02e08"></script>
 <?php } ?>
 <!-- sweetalert -->
 <?php if (in_array("sweetalert", $script)) { ?>
