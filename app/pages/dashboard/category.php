@@ -3,7 +3,20 @@
 if(isset($category['cat_type']) && $category['cat_type'] == "0" && !$d->is_ofline_buyer($userID)) {
     $accounts = [];
 }else{
-    $accounts = $d->getall("account", "categoryID = ? order by date DESC LIMIT 4", [$category['ID']], fetch: "all");
+    $accounts = $d->getall(
+        "account", 
+        "categoryID = ? 
+         AND EXISTS (
+            SELECT 1 FROM logininfo 
+            WHERE logininfo.accountID = account.ID 
+            AND (logininfo.sold_to IS NULL OR logininfo.sold_to = '')
+         )
+         ORDER BY date DESC 
+         LIMIT 4", 
+        [$category['ID']], 
+        fetch: "all"
+    );
+    
 }
 ?>
 
