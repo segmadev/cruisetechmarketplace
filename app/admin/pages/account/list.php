@@ -9,7 +9,7 @@
     data-start="0"
     data-limit="100" 
     data-displayId="displayAccounts"
-    data-path="passer?get=accounts&s=<?= htmlspecialchars($_GET['s'] ?? "") ?>&platform=<?= htmlspecialchars($_GET['platform'] ?? "") ?>&userID=<?= htmlspecialchars($_GET['userID'] ?? "") ?>&category=<?= htmlspecialchars($_GET['category'] ?? "all") ?>">
+    data-path="passer?get=accounts&s=<?= htmlspecialchars($_GET['s'] ?? "") ?>&platform=<?= htmlspecialchars($_GET['platform'] ?? "") ?>&userID=<?= htmlspecialchars($_GET['userID'] ?? "") ?>&category=<?= htmlspecialchars($_GET['category'] ?? "all") ?>&type=all">
         <div class="card-title">
             <h1>Accounts Added</h1>
         </div>

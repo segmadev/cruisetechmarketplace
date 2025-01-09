@@ -188,11 +188,14 @@ class Account extends user
       }
   
       // Add condition to check logininfo table for matching accountID with sold_to NULL or empty
-      $where .= " AND EXISTS (
+      if(!isset($_GET['type'])) {
+        $where .= " AND EXISTS (
           SELECT 1 FROM logininfo 
           WHERE logininfo.accountID = account.ID 
           AND (logininfo.sold_to IS NULL OR logininfo.sold_to = '')
       )";
+      }
+      
   
       // Avoid duplicates with GROUP BY and proper ID check
       return $this->getall(
