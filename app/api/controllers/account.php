@@ -52,10 +52,6 @@ class ApiAccount extends account
 
     function getLogins()
     {
-        if (!isset($_GET['accountID']) || $_GET['accountID'] == "") {
-            return $this->apiMessage("Account ID not passed", 401);
-        }
-        $accountID = htmlspecialchars($_GET['accountID']);
         if (isset($_GET['ID'])) {
             $logins = $this->getall("logininfo", "ID = ? and (sold_to = ? or sold_to = ?)", [htmlspecialchars($_GET['ID']), "", $this->user->userID], "ID, accountID, login_details, username, preview_link, sold_to");
             if(!is_array($logins)) return $this->apiMessage("Login not found", 400);
@@ -65,6 +61,12 @@ class ApiAccount extends account
             if(isset($logins['sold_to'])) unset($logins['sold_to']);
             return $this->apiMessage("Login fetched", 200, $logins);
         }
+
+        if (!isset($_GET['accountID']) || $_GET['accountID'] == "") {
+            return $this->apiMessage("Account ID not passed", 401);
+        }
+        
+        $accountID = htmlspecialchars($_GET['accountID']);
         if (isset($_GET['username'])) {
             $logins = $this->getall("logininfo", "accountID = ? and username = ? and sold_to = ?", [$accountID, htmlspecialchars($_GET['username']), ""], "ID, accountID, username, preview_link");
             return $this->apiMessage("Logins fetched", 200, !is_array($logins) ? [] : $logins);
