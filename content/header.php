@@ -8,6 +8,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="web_author" content="Segma.dev">
+    <meta name="cryptomus" content="34c303fc" />
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,minimum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta property="og:locale" content="en_US">
