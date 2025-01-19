@@ -28,9 +28,7 @@ $tiktok_link = $d->get_settings('tiktok_link');
                     <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300"
                         href="https://documenter.getpostman.com/view/16591249/2sAYHxm3sE" target="_blank"
                         rel="noopener noreferrer">API documentation </a>
-                        <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300"
-                        href="mail:<?= $d->get_settings("contact_email") ?>" target="_blank"
-                        rel="noopener noreferrer"><?= $d->get_settings("contact_email") ?> </a>
+                        
                 </p>
             </div>
             <div>
@@ -95,6 +93,10 @@ $tiktok_link = $d->get_settings('tiktok_link');
                     </a>
                 <?php } ?>
             </div>
+
+            <a class="rounded-lg font-medium underline underline-offset-2 outline-none ring-zinc-500 transition duration-300 hover:text-neutral-700 hover:decoration-dashed focus:outline-none focus-visible:ring dark:ring-zinc-200 dark:hover:text-neutral-300"
+                        href="mail:<?= $d->get_settings("contact_email") ?>" target="_blank"
+                        rel="noopener noreferrer">Contact Email: <?= $d->get_settings("contact_email") ?> </a>
         </div>
         <script type="module">
             const e = new Date().getFullYear(),
