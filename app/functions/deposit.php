@@ -163,7 +163,7 @@ class deposit extends user
         // check if txref is valid is own by userID
         $trans = $this->getall("payment", "userID = ? and tx_ref = ?", [$userID, $txref]);
         if (!is_array($trans)) return false;
-        if ($trans['status'] == "successful") {
+        if ($trans['status'] == "successful" || $trans['status'] == "success") {
             // $this->message("Transaction amount already added to balance", "success");
             return false;
         }
@@ -174,6 +174,12 @@ class deposit extends user
         }
         // verifyPayment 
         $pay = $this->verifyPayment($transID);
+
+        if($this->getall("transactions", "userID = ? and forID = ?", [$user['ID'], $pay["flw_ref"]], fetch: "") > 0) {
+            // echo $this->apiMessage("Value assigned in the past", 401);
+            return false;
+        }
+
         // die(var_dump($pay));
         if (!$pay) {
             $this->message("Error verifying payment", "error");
