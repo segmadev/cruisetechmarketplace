@@ -160,8 +160,6 @@ class deposit extends user
 
     function validate_payment($txref, $transID, $userID)
     {
-        $pay = $this->verifyPayment($transID);
-        die(var_dump($pay));
         // check if txref is valid is own by userID
         $trans = $this->getall("payment", "userID = ? and tx_ref = ?", [$userID, $txref]);
         if (!is_array($trans)) return false;
@@ -175,14 +173,16 @@ class deposit extends user
             return false;
         }
         // verifyPayment 
-        // $pay = $this->verifyPayment($transID);
+        $pay = $this->verifyPayment($transID);
         // die(var_dump($pay));
         if (!$pay) {
             $this->message("Error verifying payment", "error");
             return false;
         }
+        // https://checkout.flutterwave.com/v3/hosted/pay/flwlnk-01jhz6czmmhhmw9kjybbghd18b
         // confrim if the amount match the amount
         if ($pay['status'] != "successful" && $pay['status'] != "success") {
+            if(isset($_GET['continue'])) return $this->loadpage($pay['pay_url']);
             $this->message("Payment Faild please try again", "error");
             $this->update("payment", ["transaction_id" => $transID, "status" => $pay['status']], "ID = '" . $trans['ID'] . "'");
             return false;
