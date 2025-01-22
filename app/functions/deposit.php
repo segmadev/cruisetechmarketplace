@@ -197,14 +197,14 @@ class deposit extends user
         $pay = $pay['data'];
 
         if($pay['payment_type']  == "bank_transfer") {
-            echo $this->message("This is a transfer", "error");
+            // echo $this->message("This is a transfer", "error");
             return false;
         }
         if($this->getall("transactions", "userID = ? and forID = ?", [$user['ID'], $pay["flw_ref"]], fetch: "") > 0) {
             // echo $this->apiMessage("Value assigned in the past", 401);
             return false;
         }
-        
+
         if ($pay['tx_ref'] != $txref || $pay['meta']["consumer_id"] != $userID) {
             $this->message("Payment Faild please try again. <br> Seems the payment do not belong to you. <br> if you think this is an error send an email to: " . $this->get_settings("support_email"), "error");
             return false;
