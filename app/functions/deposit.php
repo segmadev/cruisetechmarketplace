@@ -176,14 +176,7 @@ class deposit extends user
         }
         // verifyPayment 
         $pay = $this->verifyPayment($transID);
-        if($pay['payment_type']  == "bank_transfer") {
-            echo $this->message("This is a transfer", "error");
-            return false;
-        }
-        if($this->getall("transactions", "userID = ? and forID = ?", [$user['ID'], $pay["flw_ref"]], fetch: "") > 0) {
-            // echo $this->apiMessage("Value assigned in the past", 401);
-            return false;
-        }
+       
 
         // die(var_dump($pay));
         if (!$pay) {
@@ -202,6 +195,16 @@ class deposit extends user
         // check of txt_ref match 
         // check of userID match $pay['customer']['id']
         $pay = $pay['data'];
+
+        if($pay['payment_type']  == "bank_transfer") {
+            echo $this->message("This is a transfer", "error");
+            return false;
+        }
+        if($this->getall("transactions", "userID = ? and forID = ?", [$user['ID'], $pay["flw_ref"]], fetch: "") > 0) {
+            // echo $this->apiMessage("Value assigned in the past", 401);
+            return false;
+        }
+        
         if ($pay['tx_ref'] != $txref || $pay['meta']["consumer_id"] != $userID) {
             $this->message("Payment Faild please try again. <br> Seems the payment do not belong to you. <br> if you think this is an error send an email to: " . $this->get_settings("support_email"), "error");
             return false;
