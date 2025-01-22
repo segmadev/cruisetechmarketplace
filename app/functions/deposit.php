@@ -160,6 +160,8 @@ class deposit extends user
 
     function validate_payment($txref, $transID, $userID)
     {
+        $pay = $this->verifyPayment($transID);
+        die(var_dump($pay));
         // check if txref is valid is own by userID
         $trans = $this->getall("payment", "userID = ? and tx_ref = ?", [$userID, $txref]);
         if (!is_array($trans)) return false;
@@ -215,6 +217,12 @@ class deposit extends user
      
         $this->message("Issue crediting your account. Please try again or contact us" . $this->get_settings("support_email"), "error");
         return true;
+    }
+
+
+    function handle_double() {
+        $deposit = $this->getall("transactions", "forID = ", fetch: "ID");
+        if (!$deposit) return false;
     }
 
     function check_min_max_deposit($amount)
