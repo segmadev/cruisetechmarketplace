@@ -177,6 +177,7 @@ class deposit extends user
         // verifyPayment 
         $pay = $this->verifyPayment($transID);
         if($pay['payment_type']  == "bank_transfer") {
+            echo $this->message("This is a transfer", "error");
             return false;
         }
         if($this->getall("transactions", "userID = ? and forID = ?", [$user['ID'], $pay["flw_ref"]], fetch: "") > 0) {
