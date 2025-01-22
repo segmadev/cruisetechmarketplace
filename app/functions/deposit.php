@@ -227,8 +227,30 @@ class deposit extends user
 
 
     function handle_double() {
-        $deposit = $this->getall("transactions", "forID = ", fetch: "ID");
-        if (!$deposit) return false;
+        $trans = $this->getall("transactions", "ID != ? and forID is null and transID is null order by date desc", [""], fetch: "all");
+        var_dump($trans->rowCount());
+       $datas = [];
+        foreach($trans as $tran) {
+            $datas[$tran['userID']] = $tran['current_balance'];
+            $userID = $tran['userID'];
+            $amount = $tran['current_balance'];
+            
+
+        }
+        print($datas);
+    } 
+
+    function handleuserissue($userID, $amount) {
+        $users = $this->getall("users", "userID LIKE '$userID%' and balance = $amount LIMIT 50",[""]);
+        foreach($users as $user) {
+            $last_trans = $this->getall("transactions", "userID = ? order by date desc", [$user['ID']]);
+            $current_balance = $last_trans['current_balance'];
+            echo "<p> Balance: ".$user['balance']."</p>";
+            echo "<p> Current Balance: $current_balance</p>";
+            echo "<hr>";
+            $duserID = $user['ID'];
+            // $this->update("users", ["balance"=>$current_balance], "ID = '$duserID'");
+        }
     }
 
     function check_min_max_deposit($amount)

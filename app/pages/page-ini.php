@@ -1,5 +1,5 @@
 <?php
-die("We will be back");
+// die("We will be back");
 $action = "list";
 $accepted_actions = [ "details","new","generate", "access", "home", "prove", 'list', "view", "edit", "overview", "rejected", "transfer", "transactions"];
 if (isset($_GET['action'])) {
