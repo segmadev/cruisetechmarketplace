@@ -865,11 +865,13 @@ class database
                 return true;
             }
         } catch (phpmailerException $e) {
-
+            error_log("PHPMailer Error: " . $e->errorMessage(), 3);
             // echo $e->errorMessage(); //Pretty error messages from PHPMailer
             // $d->message("Error Sending message. You can try new SMTP", "error");
             return false;
         } catch (Exception $e) {
+            error_log($e, 3);
+
             // echo $e->getMessage(); //Boring error messages from anything else!
             // $d->message("Error Sending message. You can try new SMTP", "error");
             return false;
