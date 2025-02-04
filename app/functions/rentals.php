@@ -562,13 +562,15 @@ class rentals extends database
         if ($broker == "nonvoipusnumber") $result = $this->nonGetBalance();
         if ($broker == "anosim") $result = $this->anosimGetBalance();
         if (!is_array($result) || !isset($result['balance'])) return [];
-        var_dump($result);
-        die();
         $notifyBalance =  $this->get_settings("notify_low_balance_amount_$broker") ? $this->get_settings("notify_low_balance_amount_$broker") : $this->get_settings("notify_low_balance_amount");
         if ((float)$result['balance'] > (float)$notifyBalance) return [];
         $message = "You have a low balance on $broker Current balance is <b>" . $this->money_format($result['balance'], "USD") . "</b>";
         $smessage = $this->get_email_template("default")['template'];
         $smessage = $this->replace_word(['${first_name}' => "Admin", '${message_here}' => $message, '${website_url}' => $this->get_settings("website_url")], $smessage);
+        var_dump($notifyBalance);
+        var_dump($smessage);
+        var_dump($this->get_settings("notification_email"));
+        die();
         return $this->smtpmailer($this->get_settings("notification_email"), "Rental Low Balance on " . date("Y-m-d h:i:sa"), $smessage);
     }
     protected function requestCodeNumber($id)
