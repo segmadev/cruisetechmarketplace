@@ -4,5 +4,5 @@
     require_once "admin/include/database.php";
     require_once "functions/rentals.php";
     $r = new rentals;
-    $pendingNumbers = $r->KcAK9rvpLm2E(htmlspecialchars($_GET['broker'] ?? "daisysms"));
+    $pendingNumbers = $r->handleBalance(htmlspecialchars($_GET['broker'] ?? "daisysms"));
     echo json_encode($pendingNumbers);
