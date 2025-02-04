@@ -549,9 +549,10 @@ class rentals extends database
     {
         if ($this->get_settings("notification_email") == "" || (float)$this->get_settings("notify_low_balance_amount") <= 0) return [];
         if ($broker == "daisysms") {
-            die("Got here");
             $api_url = $this->base_url . "handler_api.php?api_key=" . $this->API_code . "&action=getBalance";
+            // var_dump($api_url);
             $result = $this->api_call($api_url, isRaw: true);
+            die(var_dump($result));
             $result = $this->handleRentailException($result);
             // var_dump($result);
         }
