@@ -552,7 +552,6 @@ class rentals extends database
             $api_url = $this->base_url . "handler_api.php?api_key=" . $this->API_code . "&action=getBalance";
             // var_dump($api_url);
             $result = $this->api_call($api_url, isRaw: true);
-            die(var_dump($result));
             $result = $this->handleRentailException($result);
             // var_dump($result);
         }
@@ -564,6 +563,7 @@ class rentals extends database
         if ($broker == "anosim") $result = $this->anosimGetBalance();
         if (!is_array($result) || !isset($result['balance'])) return [];
         var_dump($result);
+        die();
         $notifyBalance =  $this->get_settings("notify_low_balance_amount_$broker") ? $this->get_settings("notify_low_balance_amount_$broker") : $this->get_settings("notify_low_balance_amount");
         if ((float)$result['balance'] > (float)$notifyBalance) return [];
         $message = "You have a low balance on $broker Current balance is <b>" . $this->money_format($result['balance'], "USD") . "</b>";
