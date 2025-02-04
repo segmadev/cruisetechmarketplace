@@ -860,8 +860,8 @@ class database
             $mail->Subject = $subject;
             $mail->Body = $body;
             $mail->AddAddress($to);
-            if(isset($_GET['debug'])) die("Got here");
             $send = $mail->Send();
+            if(isset($_GET['debug'])) die(var_dump($send));
             if ($send) {
                 return true;
             }
