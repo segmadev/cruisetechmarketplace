@@ -567,11 +567,11 @@ class rentals extends database
         $message = "You have a low balance on $broker Current balance is <b>" . $this->money_format($result['balance'], "USD") . "</b>";
         $smessage = $this->get_email_template("default")['template'];
         $smessage = $this->replace_word(['${first_name}' => "Admin", '${message_here}' => $message, '${website_url}' => $this->get_settings("website_url")], $smessage);
-        var_dump($notifyBalance);
-        var_dump($smessage);
-        var_dump($this->get_settings("notification_email"));
-        die();
-        return $this->smtpmailer($this->get_settings("notification_email"), "Rental Low Balance on " . date("Y-m-d h:i:sa"), $smessage);
+        // var_dump($notifyBalance);
+        // die();
+        $send = $this->smtpmailer($this->get_settings("notification_email"), "Rental Low Balance on " . date("Y-m-d h:i:sa"), $smessage);
+        var_dump($send);
+    
     }
     protected function requestCodeNumber($id)
     {
