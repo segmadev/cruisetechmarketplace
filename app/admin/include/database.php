@@ -861,7 +861,11 @@ class database
             $mail->Body = $body;
             $mail->AddAddress($to);
             $send = $mail->Send();
-            if(isset($_GET['debug'])) die(var_dump($send));
+            if(isset($_GET['debug'])) {
+                var_dump($mail);
+                echo "<hr>";
+                die(var_dump($send));
+            }
             if ($send) {
                 return true;
             }
