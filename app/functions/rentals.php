@@ -925,7 +925,7 @@ class rentals extends database
     {
         $request = $this->anosimCallApi("balance",  method: "GET");
         $request = (array)$request;
-        if ($request[0]) $request = $request[0];
+        if (isset($request[0])) $request = $request[0];
         if (isset($request['accountBalanceInUSD'])) $request['balance'] = $request['accountBalanceInUSD'];
         return $request;
     }
