@@ -143,6 +143,10 @@ function fetchData(what, displayId, limit = 1, start = 0, path = "passer", isRep
       // Parse JSON response if possible
       if (checkJSON(response)) {
           const obj = JSON.parse(response);
+          if(obj['status'] == "null" && obj['data'] != "") {
+            document.getElementById(displayId).innerHTML = obj['data'];
+            return null;
+          }
           if (obj['status'] !== "ok") return null;
           response = obj['data'];
       }
