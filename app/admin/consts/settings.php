@@ -87,7 +87,7 @@
         "anosim_API"=>["input_type"=>"password", "title"=>"Anosim API Key", "is_required"=>false],
         "sms_bower_API"=>["input_type"=>"password", "title"=>"sms bower API API Key", "is_required"=>false],
         "sms_activation_API"=>["input_type"=>"password", "title"=>"sms activation service API API Key", "is_required"=>false],
-        "sms_activate_two_API"=>["input_type"=>"password", "title"=>"sms activare API Key", "is_required"=>false],
+        "sms_activate_two_API"=>["input_type"=>"password", "title"=>"sms activate API Key", "is_required"=>false],
         "nonvoipusnumber_email"=>["input_type"=>"password", "is_required"=>false],
         "nonvoipusnumber_password"=>["input_type"=>"password", "is_required"=>false],
         "added_value_amount_daisysms_short_term"=>["title"=>"Added Value Amount for dailysms (In NGN)", "description"=>"Amount to be added on the rental's API price. Value in <b class='text-danger'>NGN</b> "],
