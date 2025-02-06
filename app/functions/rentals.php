@@ -570,7 +570,7 @@ class rentals extends database
         // var_dump($notifyBalance);
         // die();
         $send = $this->smtpmailer($this->get_settings("notification_email"), "Rental Low Balance on " . date("Y-m-d h:i:sa"), $smessage);
-        var_dump($send);
+        // var_dump($send);
     
     }
     protected function requestCodeNumber($id)
@@ -703,7 +703,7 @@ class rentals extends database
     {
         // echo "added_value_amount_".$broker."_".$noType;
         $currency = null;
-        if ($broker == "sms_activate_two" || $broker == "sms_bower") $currency = "RUB";
+        if ($broker == "sms_bower") $currency = "RUB";
         return round($this->convertDollarToNGN((float)$amount, $currency) + (float)$this->get_settings("added_value_amount_" . $broker . "_" . $noType), 2);
     }
     function daisysmsService($id = null)
