@@ -40,7 +40,7 @@
                         </div>
                     </td>
                     <td class="d-flex gap-2"><?= $u->profile_picture_default($row['ID']) ?> <?= $row['first_name'] . ' ' . $row['last_name']; ?></td>
-                    <td><a href="mailto:<?= $row['email'] ?>" target="_blank"><?= $row['email'] ?></a></td>
+                    <td><a href="mailto:<?= htmlspecialchars_decode($row['email'] ) ?>" target="_blank"><?= htmlspecialchars_decode($row['email']) ?></a></td>
                     <td><a href="tel:<?= $row['phone_number'] ?>"><?= $row['phone_number'] ?></a></td>
                     <td><?= $d->money_format($row['balance'], currency) ?></td>
                     <td><?= $d->money_format($row['total_credit'], currency) ?></td>

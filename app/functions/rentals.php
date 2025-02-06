@@ -1059,6 +1059,7 @@ class rentals extends database
             $service = (array)$services[$service];
             return $service['name'];
         }
+        // var_dump($services);
         return $services;
     }
 

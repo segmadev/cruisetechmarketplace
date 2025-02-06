@@ -24,8 +24,9 @@ if(count($rental_services) == 0 || $rental_services == "") {
 
             if($network == 5 && !isset($service['name'])) {
                 $service['name'] = $r->smsActivateTwoGetServices($countryCode, $key);
-                    if($service['cost'] > 20 && $service['cost'] < 50)  $service['cost'] = $service['cost'] + 20; 
-                    if($service['cost'] > 50)  $service['cost'] = $service['cost'] + 50; 
+                // echo $service['name'] ." ".$service['cost']."<hr>";   
+                // if($service['cost'] > 20 && $service['cost'] < 50)  $service['cost'] = $service['cost'] + 20; 
+                //     if($service['cost'] > 50)  $service['cost'] = $service['cost'] + 50; 
             }
 
             if(in_array($key, $likeds)) {
