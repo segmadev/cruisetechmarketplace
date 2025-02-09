@@ -21,8 +21,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h5>Transcation.</h5>
-                <p>All Transcations Taken on this Account.</p>
+                <h5>Transaction.</h5>
+                <p>All Transactions Taken on this Account.</p>
             </div>
             <div class="card-body">
                 <?php 
