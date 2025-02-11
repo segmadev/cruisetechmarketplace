@@ -313,7 +313,7 @@ class rentals extends database
         if (!$this->quick_insert("orders", $order)) return $this->message("Unable to make order", "error", "json");
         if (!$this->credit_debit($userID, $valuedPrice, "balance", "debit", "orders", $order['ID'])) return $this->message("Error charging your account", "error", "json");
         $rentNumber = $this->rentNumber($serviceCode, $cost, $broker, $data['countryCode'] ?? null);
-        if (!is_array($rentNumber) || !isset($rentNumber['ID']) || !isset($rentNumber['ACCESS_NUMBER'])) {
+        if (!is_array($rentNumber) || !isset($rentNumber['ID']) || !isset($rentNumber['ACCESS_NUMBER']) || $rentNumber['ACCESS_NUMBER'] == "") {
             $this->credit_debit($userID, $valuedPrice, "balance", "credit", "orders-refrund", $order['ID']);
             $this->delete("orders", "ID = ?", [$orderID]);
             return $rentNumber;
