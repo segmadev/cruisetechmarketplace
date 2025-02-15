@@ -2,6 +2,7 @@
 $script[] = "modal";
 $script[] = "sweetalert";
 $script[] = "fetcher";
+$script[] = "account";
 require_once "../content/textarea.php";
 ?>
 <div class="card">
@@ -19,12 +20,19 @@ require_once "../content/textarea.php";
             </div>
             <input type="hidden" name="page" value="account">
             <input type="hidden" name="upadate_account" value="account">
-            <?php require_once "pages/account/logins.php"; ?>
+            
             <div id="custommessage"></div><br>
             <button type="submit" class="btn btn-primary">
                 Update Account
             </button>
         </form>
+    </div></div>
+        <div class="card card-body mt-4">
+            <?php require_once "pages/account/logins.php"; ?>
+           <div class="mt-2">
+           <input type="button" id="uploadbatch" value="Upload logins in batch" class="btn btn-dark">
+           </div>
+        </div>
         <hr>
         <h3>Logins Added</h3>
         <hr>
@@ -65,7 +73,9 @@ require_once "../content/textarea.php";
                                     <option value="yes">Sold</option>
                                     <option value="sold_report">Sold Report</option>
                                 </select>
-                                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                                <input type="checkbox" name="delete_logins" id="delete_logins" class="danger" /> <label class="text-danger" for="delete_logins">Delete logins</label>
+                                <button type="submit" id="fliterButton" class="btn btn-primary btn-sm">Filter</button>
+                                <button type="button" class="btn btn-warning btn-sm" onclick="exportLogins()">Export</button>
                             </div>
                         </div>
                     </form>
@@ -74,35 +84,8 @@ require_once "../content/textarea.php";
 
         </div>
 
-        <div class="note-has-grid row" data-limit="100" data-start="0"
+       <div class="card card-body">
+       <div class="note-has-grid row" data-limit="100" data-start="0"
             data-path="passer?p=account&id=<?= $id ?>&get=logins&type=active&action=edit" data-load='account'
             data-displayId="loadlogin" id="loadlogin"></div>
-    </div>
-</div>
-
-<script>
-document.getElementById('loadloginForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent form submission
-
-    const formData = new FormData(this); // Get form data
-    const loadloginDiv = document.getElementById('loadlogin'); // Target div
-    let currentDataPath = loadloginDiv.getAttribute('data-path'); // Get current data-path
-
-    // Convert current data-path to URLSearchParams for easy manipulation
-    const urlParams = new URLSearchParams(currentDataPath.split('?')[1]);
-
-    // Update URLSearchParams with form data, replacing any existing keys
-    formData.forEach((value, key) => {
-        if (value) { // Only add if there's a value
-            urlParams.set(key, value);
-        }
-    });
-
-    // Reconstruct data-path with updated parameters
-    const updatedDataPath = currentDataPath.split('?')[0] + '?' + urlParams.toString();
-    loadloginDiv.setAttribute('data-path', updatedDataPath);
-
-    // Optional: Call loadFetchData function to reload content if needed
-    loadFetchData(loadloginDiv);
-});
-</script>
+       </div>

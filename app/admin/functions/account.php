@@ -19,7 +19,6 @@ class accounts extends Account
        }
         $info = $this->validate_form($account_from, "account", $action);
         if (is_array($info) && $action == "insert") {
-            
             $count = $this->add_login_info($info['ID']);
             $this->message("Account Created Successfully and ".$count['count']." Login Details added", "success");
             if(isset($count['message'])  && $count['message']!= "") echo $count['message'];
@@ -56,45 +55,91 @@ class accounts extends Account
         return $value; // Return original value if not Base64
     }
 
-    function add_login_info($accountID) {
-        if(!$this->role->validate_action(["account"=>"addLogins"], true)) return ;
+
+    function add_login_info($accountID, $uploadType = "normal") {
+        if (!$this->role->validate_action(["account" => "addLogins"], true)) return;
+    
         $count = 0;
-        if(!isset($_POST['login_details'])) return $count;
-        $notAdded = "";
+        $failedLogins = []; // Store failed logins with reasons
+        $notAdded = ""; // Store message for normal mode
+        if (!isset($_POST['login_details']) && $uploadType == "normal") return ["count" => 0, "message" => "No logins provided"];
+        if (!isset($_POST['login_details']) && $uploadType == "batch")  return json_encode(["count" => 0, "failed_logins" => []]);
+    
         foreach ($_POST['login_details'] as $key => $value) {
-            if($value == "" || $value == " ") {
-                $notAdded.= "Why?: Login Details is empty: <p>$value</p><hr>";
-                continue;}
+            if (trim($value) === "") {
+                $reason = "Login details are empty";
+                if ($uploadType == "batch") {
+                    $failedLogins[] = ["index" => $key, "reason" => $reason];
+                } else {
+                    $notAdded .= "Why?: $reason <p>$value</p><hr>";
+                }
+                continue;
+            }
+    
             $value = $this->decodeBase64IfNeeded($value); // Decode Base64 if necessary
             $username = $_POST['username'][$key] ?? "";
             $preview_link = $_POST['preview_link'][$key] ?? "";
+    
+            // Check for duplicate login details
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
-            if($check > 0) {
-                $notAdded.= "Why?: Login already exit: <p>$value</p><hr>";
+            if ($check > 0) {
+                $reason = "Login details already exist";
+                if ($uploadType == "batch") {
+                    $failedLogins[] = ["index" => $key, "reason" => $reason];
+                } else {
+                    $notAdded .= "Why?: $reason <p>$value</p><hr>";
+                }
                 continue;
             }
-            if($username != ""){
+    
+            // Check for duplicate username
+            if ($username !== "") {
                 $check = $this->getall("logininfo", "accountID = ? and username = ?", [$accountID, $username], fetch: "");
-                if($check > 0) { $notAdded.= "Why?: Username already exit: <p>$value</p><hr>"; continue;}
+                if ($check > 0) {
+                    $reason = "Username already exists";
+                    if ($uploadType == "batch") {
+                        $failedLogins[] = ["index" => $key, "reason" => $reason];
+                    } else {
+                        $notAdded .= "Why?: $reason <p>$value</p><hr>";
+                    }
+                    continue;
+                }
             }
+    
+            // Insert new login
             $this->quick_insert("logininfo", [
                 "accountID" => $accountID,
                 "login_details" => $value,
-                "username"=>$username,
-                "preview_link"=>$preview_link,
+                "username" => $username,
+                "preview_link" => $preview_link,
             ]);
             $count++;
         }
-        if($count > 0) {
-            $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "login account", "description" => "Add $count login(s) Account in ".$accountID, "action_for"=>"account", "action_for_ID"=>$accountID];
-            $this->new_activity($actInfo);
+    
+        // Log action if any login was added
+        if ($count > 0) {
+            $actInfo = [
+                "userID" => adminID,
+                "date_time" => date("Y-m-d H:i:s"),
+                "action_name" => "login account",
+                "description" => "Added $count login(s) to account " . $accountID,
+                "action_for" => "account",
+                "action_for_ID" => $accountID
+            ];
+            // $this->new_activity($actInfo);
         }
-        if($notAdded != "") {
-            $notAdded = "<h5>This logins were not added: </h5> ".$notAdded;
+    
+        // **Return different responses based on the upload type**
+        if ($uploadType == "batch") {
+            return json_encode(["count" => $count, "failed_logins" => $failedLogins]);
+        } else {
+            if ($notAdded !== "") {
+                $notAdded = "<h5>These logins were not added:</h5> " . $notAdded;
+            }
+            return ["count" => $count, "message" => $notAdded];
         }
-        
-        return ["count"=>$count, "message"=>$notAdded];
     }
+    
 
     function update_login_info($ID, $value, $accountID, $username, $preview_link) {
         if(!$this->role->validate_action(["account"=>"edit_login"], true)) return ;
@@ -119,6 +164,15 @@ class accounts extends Account
         $this->new_activity($actInfo);
     }
 
+            /**
+         * Deletes login records based on provided filters.
+         */
+        function delete_logins($filters)
+        {
+            return $this->delete("logininfo", "accountID = ? {$filters['where']}", $filters['data']);
+        }
+
+
     function delete_login_details($id) {
         if(!$this->role->validate_action(["account"=>"deleteLogins"])) return ;
         if(!$this->validate_admin()) return ;
@@ -134,5 +188,13 @@ class accounts extends Account
         $actInfo = ["userID" => adminID, "date_time" => date("Y-m-d H:i:s"), "action_name" => "update login", "description" => "Delete login", "action_for"=>"logininfo", "action_for_ID"=>$id];
         $this->new_activity($actInfo);
         return json_encode($return);
+    }
+    function delete_logins_in_bulk() {
+        if(!$this->role->validate_action(["account"=>"deleteLogins"])) return "<p class='text-danger'>You can not perfrom this action.</p>";
+        $filters = $this->build_login_filters();
+        // If delete_logins is set, delete matching login records
+            if(!isset($_GET['is_sold']) || $_GET['is_sold'] != "no") return "<p class='text-danger'>You can not delete sold account. You can only delete when <span class='text-dark'><b>not sold</b></span> is selected</p>";
+            if($this->delete_logins($filters)) return "<p class='text-success'>Account Deleted </p>";
+            return "<p class='text-danger'>Something went wrong</p>";
     }
 }

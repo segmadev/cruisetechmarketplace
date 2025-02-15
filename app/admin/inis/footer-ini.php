@@ -12,8 +12,8 @@
     <script src="../dist/libs/owl.carousel/dist/owl.carousel.min.js"></script>
   <script src="../dist/js/dashboard3.js?n=11"></script>
 <?php } ?>
-<?php if (in_array("screenshot", $script)) { ?>
-  <script src="js/screenshot.js"></script>
+<?php if (in_array("account", $script)) { ?>
+  <script src="js/account.js?n=<?= rand(10, 100000); ?>"></script>
 <?php } ?>
 
 <?php if (in_array("wizard", $script)) { ?>

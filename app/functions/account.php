@@ -84,7 +84,86 @@ class Account extends user
     return ob_get_clean();
   }
 
-  function fetch_login()
+
+// new fetch start here
+function fetch_login()
+{
+    $filters = $this->build_login_filters();
+
+    // If sold_report is requested, generate a report
+    if (isset($_GET['is_sold']) && $_GET['is_sold'] == "sold_report") {
+        return $this->generate_sold_report($filters);
+    }
+    // var_dump($filters);
+    // Otherwise, fetch login records
+    return $this->getall(
+        "logininfo",
+        "accountID = ? {$filters['where']} ORDER BY date DESC LIMIT ".$filters['start']." , ".$filters['limit'],
+        $filters['data'], 
+        fetch: "moredetails"
+    );
+}
+
+/**
+ * Builds filters for fetching or deleting login records.
+ */
+function build_login_filters()
+{
+    $start = $_POST['start'] ?? 0;
+    $limit = $_POST['limit'] ?? 10;
+    $where = "";
+    $data = [htmlspecialchars($_GET['id'] ?? "")];
+
+    if (!empty($_GET['is_sold'])) {
+        if ($_GET['is_sold'] == "no") {
+            $where .= " AND (sold_to = ? OR sold_to IS NULL)";
+            $data[] = "";
+        } elseif ($_GET['is_sold'] == "yes" || $_GET['is_sold'] == "sold_report") {
+            $where .= " AND sold_to != ?";
+            $data[] = "";
+        }
+    }
+
+    if (!empty($_GET['startDate']) && !empty($_GET['endDate'])) {
+        $where .= " AND date >= ? AND date <= ?";
+        $data[] = htmlspecialchars($this->formatDate($_GET['startDate']));
+        $data[] = htmlspecialchars($this->formatDate($_GET['endDate'])) ?? date("Y-m-d H:i:s");
+    }
+
+    if (!empty($_GET['s'])) {
+        $s = htmlspecialchars($_GET['s']);
+        $where .= " AND (login_details LIKE CONCAT('%', ?, '%') OR username LIKE CONCAT('%', ?, '%'))";
+        $data[] = $s;
+        $data[] = $s;
+    }
+
+    return compact('where', 'data', 'start', 'limit');
+}
+
+
+/**
+ * Generates a sales report for sold logins.
+ */
+function generate_sold_report($filters)
+{
+    if ($filters['start'] > 0) return;
+
+    $account = $this->getall("account", "ID = ?", [htmlspecialchars($_GET['id'] ?? "")]);
+    if (!is_array($account)) return "";
+
+    $amount = (int)($account['real_amount'] ?? $account['amount']);
+    $number_sold = $this->getall("logininfo", "accountID = ? {$filters['where']} ORDER BY date DESC", $filters['data'], fetch: "");
+
+    return [
+        "report" => "<div class='card card-body fs-4 p-3'>
+                        <p>Total Amount Sold: " . $this->money_format($amount * $number_sold) . "</p>
+                        <p>No Sold: " . number_format($number_sold) . "</p>
+                     </div>"
+    ];
+}
+// new fetch ends here
+
+  function fetch_login_v1()
   {
     // die(var_dump($_GET));
     $start = $_POST['start'] ?? 0;
@@ -107,7 +186,7 @@ class Account extends user
 
     if (isset($_GET['is_sold']) && $_GET['is_sold'] == "no") {
       // $s = htmlspecialchars($_GET['s']);
-      $where .= "and sold_to = ?";
+      $where .= "and (sold_to = ? or sold_to IS NULL)";
       $data[] = "";
     }
     if (isset($_GET['is_sold']) && ($_GET['is_sold'] == "yes" || $_GET['is_sold'] == "sold_report")) {
@@ -192,7 +271,7 @@ class Account extends user
         $where .= " AND EXISTS (
           SELECT 1 FROM logininfo 
           WHERE logininfo.accountID = account.ID 
-          AND (logininfo.sold_to IS NULL OR logininfo.sold_to = '')
+          AND (logininfo.sold_to IS NULL OR logininfo.sold_to = '' OR logininfo.sold_to = '0')
       )";
       }
       
@@ -206,6 +285,8 @@ class Account extends user
           fetch: "moredetails"
       );
   }
+  
+
   
 
 
@@ -233,7 +314,7 @@ class Account extends user
 
   function get_num_of_login($accountID)
   {
-    $count = $this->getall("logininfo", "accountID = ? and sold_to = ?",  [$accountID, ""], select: "COUNT(*) AS count");
+    $count = $this->getall("logininfo", "accountID = ? and (sold_to = ? or sold_to IS NULL)",  [$accountID, ""], select: "COUNT(*) AS count");
     return $count['count'];
   }
 
@@ -244,7 +325,7 @@ class Account extends user
     $excludeClause = !empty($excludeIDs) ? "AND ID NOT IN (" . implode(',', $excludeIDs) . ")" : '';
 
     // Fetch logins from database
-    $whereClause = "accountID = ? and username != ? and preview_link != ? and sold_to = ? $excludeClause ORDER BY date ASC LIMIT $limit OFFSET $offset";
+    $whereClause = "accountID = ? and username != ? and preview_link != ? and (sold_to = ? OR sold_to IS NULL) $excludeClause ORDER BY date ASC LIMIT $limit OFFSET $offset";
     $data = [$accountID, "", "", ""];
     return $this->getall('logininfo', $whereClause, $data, 'ID, accountID, username, preview_link', 'moredetails');
   }

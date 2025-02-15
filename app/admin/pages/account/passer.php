@@ -1,4 +1,9 @@
+
 <?php
+if(isset($_POST['update_account'])) {
+    $accountID =  htmlspecialchars($_POST['accountID']);
+    echo $a->add_login_info($accountID, "batch");
+}
 if (isset($_POST['new_account'])) echo $a->manage_account($account_from);
 if (isset($_POST['upadate_account'])) echo $a->manage_account($account_from, "update");
 if (isset($_POST['delete_account'])) echo $a->delete_account(htmlspecialchars($_POST['ID'] ?? ""), $r);
@@ -18,6 +23,7 @@ if (isset($_GET['get']) && $_GET['get'] == "accounts") {
     $start = htmlspecialchars($_POST['start']);
     $limit = htmlspecialchars($_POST['limit']);
     try {
+        
         $data = $a->fetch_account(start: $start, limit: $limit, status: "");
         $body = "";
         if ($data->rowCount() > 0) {
@@ -39,7 +45,13 @@ if (isset($_GET['get']) && $_GET['get'] == "accounts") {
 }
 
 if (isset($_GET['get']) && $_GET['get'] == 'logins') {
+    // var_dump($_GET['delete_logins']);
     try {
+        if(isset($_GET['delete_logins']) && $_GET['delete_logins'] == "on" && $_GET['is_sold'] != "sold_report"){
+            $return = ["status" => "null", "data" => $a->delete_logins_in_bulk()];
+            echo json_encode($return);
+            return;
+        }
         $data = $a->fetch_login();
         $body = "";
         if (is_array($data) && isset($data['report'])) {
