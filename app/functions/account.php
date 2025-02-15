@@ -586,7 +586,7 @@ function generate_sold_report($filters)
                             <p class='note-date fs-2 text-$stick'>$status</p>
                             
                             <div class='note-content'>
-                                <p class='note-inner-content'> 
+                                <p class='note-inner-content login-data-details'> 
                                 " . $login['login_details'] . "
                                 </p>
                             </div>

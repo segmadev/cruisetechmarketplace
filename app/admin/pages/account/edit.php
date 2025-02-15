@@ -75,7 +75,7 @@ require_once "../content/textarea.php";
                                 </select>
                                 <input type="checkbox" name="delete_logins" id="delete_logins" class="danger" /> <label class="text-danger" for="delete_logins">Delete logins</label>
                                 <button type="submit" id="fliterButton" class="btn btn-primary btn-sm">Filter</button>
-                                <button type="button" class="btn btn-warning btn-sm" onclick="exportLogins()">Export</button>
+                                <button type="button" class="btn btn-warning btn-sm" id="exportBtn">Export</button>
                             </div>
                         </div>
                     </form>

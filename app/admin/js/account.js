@@ -167,8 +167,22 @@ function copyText(text) {
     });
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const exportBtn = document.getElementById("exportBtn");
+
+    exportBtn.addEventListener("click", function () {
+        exportLogins();
+    });
+});
+
 function exportLogins() {
-    const loginElements = document.querySelectorAll(".login-data");
+    const exportBtn = document.getElementById("exportBtn");
+
+    // Disable button and change text to "Exporting..."
+    exportBtn.disabled = true;
+    exportBtn.textContent = "Exporting...";
+
+    const loginElements = document.querySelectorAll(".login-data-details");
     let logins = [];
 
     loginElements.forEach(el => {
@@ -180,15 +194,14 @@ function exportLogins() {
 
     if (logins.length === 0) {
         alert("No logins found to export.");
+        resetExportState();
         return;
     }
 
-    if (!confirm("Are you sure you want to export all logins? Also make sure all logins are loaded and it's Filtered to what you want to download before export as it will only export the logins showing on the screen")) {
+    if (!confirm("Are you sure you want to export all logins? Make sure all logins are loaded and filtered before exporting.")) {
+        resetExportState();
         return;
     }
-
-    // Show loading spinner
-    document.getElementById("loading").style.display = "block";
 
     setTimeout(() => {
         // Get filename from name="title"
@@ -207,11 +220,16 @@ function exportLogins() {
         link.click();
         document.body.removeChild(link);
 
-        // Hide loading spinner
-        document.getElementById("loading").style.display = "none";
+        // Reset button
+        resetExportState();
     }, 1500); // Simulate loading delay
 }
 
+function resetExportState() {
+    const exportBtn = document.getElementById("exportBtn");
+    exportBtn.disabled = false;
+    exportBtn.textContent = "Export";
+}
 // sumit filter
 document.getElementById('loadloginForm').addEventListener('submit', function (e) {
     e.preventDefault(); // Prevent form submission
