@@ -237,7 +237,9 @@ class autorize extends database
         }
         $id = $data['ID'];
         $reset = mt_rand(000000, 99999);
-        $hashreset = password_hash($reset, PASSWORD_DEFAULT);
+        $hashreset = password_hash($reset, 
+    
+    );
         $where = "ID ='$id'";
         $update = $d->update("users", ["reset" => $hashreset], $where);
         if ($update) {
