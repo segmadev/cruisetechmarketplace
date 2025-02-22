@@ -14,3 +14,6 @@ app/.htaccess
 app/api/.htaccess
 app/extract.html
 app/validate_webhook.php
+app/admin/token.json
+app/admin/credentials.json
+app/admin/last_fetched_timestamp.txt

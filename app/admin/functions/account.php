@@ -83,7 +83,7 @@ class accounts extends Account
             // Check for duplicate login details
             $check = $this->getall("logininfo", "accountID = ? and login_details = ?", [$accountID, $value], fetch: "");
             if ($check > 0) {
-                $reason = "Login details already exist";
+                $reason = "Login details already exist ".$value;
                 if ($uploadType == "batch") {
                     $failedLogins[] = ["index" => $key, "reason" => $reason];
                 } else {

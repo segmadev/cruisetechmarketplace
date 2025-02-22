@@ -22,6 +22,9 @@ class users extends user
                 "action_for_ID"=>htmlspecialchars($user_id)];
     }
 
+   
+
+
     function total_transaction_type($userID, $type) {
         return $this->getall("transactions", "userID = ? and amount > ? and action_type = ?", [$userID, 0, $type], "SUM(amount) as total", );
     }

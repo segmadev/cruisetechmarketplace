@@ -8,6 +8,13 @@ if (isset($_POST['ini_payment'])) {
 if (isset($_GET['get_balance'])) {
     echo $d->money_format($user['balance']);
 }
+if(isset($_POST['manual_payment'])) {
+    echo $de->manualPayment($userID);
+}
+
+if(isset($_POST['awaitID'])) {
+    echo $de->removeAwait($userID);
+}
 if (isset($_GET['get_payments'])) {
     $payment = $de->get_payments($userID, htmlspecialchars($_POST['start'] ?? 0));
     if ($payment->rowCount() < 0) {

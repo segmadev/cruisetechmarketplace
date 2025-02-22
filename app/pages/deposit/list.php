@@ -15,7 +15,7 @@ if (!isset($_GET['new_account']) && $d->getall("user_accounts", "userID = ?", [$
             <div class="card w-100">
                 <div class="card-body bg-light p-3">
                     <?php echo $u->show_balance($userID, showBtn: false); ?>
-                    <div class="card card-body bg-light-success p-3">
+                    <div class="card card-body bg-light-primary p-3">
                         <h5 class="m-0">Bank Details</h5>
                         <small>Make payment here to automatically fund your account.</small>
                         <hr class="mt-2 mb-2">
@@ -29,6 +29,13 @@ if (!isset($_GET['new_account']) && $d->getall("user_accounts", "userID = ?", [$
                         }
                         ?>
                     </div>
+                    <?php if(isset($_GET['debug']) && $_GET['debug'] == "opay") {?>
+                    <div class="card card-body bg-light-success p-3">
+                        <h5>Fund with Opay.</h5>
+                        <small>Click Fund with opay button to see how you can fund using opay account.</small>
+                        <a href='?p=deposit&action=opay&debug=opay' class='btn btn-sm bg-success text-light mt-2'>+ Fund with Opay</a>
+                    </div>
+                    <?php } ?>
                     <div class="card card-body bg-light-danger p-3">
                         <h5>Other Payment Option</h5>
                         <small>Click the fund account button below to try other method of funding your account.</small>

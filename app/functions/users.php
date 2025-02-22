@@ -1,10 +1,9 @@
 <?php
-class user extends content
+class user extends database
 {
     public $userdata;
     public $userID;
     protected $profile_link_root = PATH . "assets/images/profile/";
-
     // public function __construct(String $userID = null, array $userdata = []){
     //     if($this->userID == null && isset($_SESSION['userID'])) {
     //         $this->userID = htmlspecialchars($_SESSION['userID']);
@@ -18,6 +17,52 @@ class user extends content
     // }
 
     public function send_email_verify() {}
+
+    function manualPayment($userID) {
+        if(!isset($_POST['session_ID']) || $_POST['session_ID'] == "") return $this->message("Session ID or Transaction ID not passed", "error", "json");
+        if($this->getall("awatingPayment", "userID = ?", [$userID], fetch: "") >= 3) return $this->message("You can't have more than three pending payment please wait for them to be resolved.", "error", "json");
+        $sessionID = htmlspecialchars($_POST['session_ID']);
+        if(!preg_match('/^\S{11,}$/', $sessionID)) return $this->message("Invaid Input", "error");
+        if($this->getall("awatingPayment", "sessionID = ?", [$sessionID], fetch: "") > 0) return $this->message("session already submited or invald", "error", 'json');
+        $this->quick_insert("awatingPayment", ["userID"=>$userID, "sessionID"=>$sessionID]);
+        $payment = $this->manualValueAssign($sessionID);
+        if(!$payment) return $this->message("Payment request submitted.", "success", "json");
+       return [
+            "message" => ["Sucess", $payment['amount']." allocated. Redirecting...", "success"],
+            "function" => ["loadpage", "data" => ["index?p=deposit&action=opay", "success"]],
+        ];
+    }
+
+    function removeAwait($userID) {
+        if(!isset($_POST['awaitID']) || $_POST['awaitID'] == "") return $this->message("No ID Passed", "error", "json");
+        $awaitID = htmlspecialchars($_POST['awaitID']);
+        if(!$this->delete("awatingPayment", "ID =? and userID = ?", [$awaitID, $userID])) return $this->message("Unable to remove this request. Refresh page and try again.", "error", "json");
+        $return = [
+            "message" => ["Sucess", "Payment request removed. Redirecting...", "success"],
+            "function" => ["loadpage", "data" => ["index?p=deposit&action=opay", "success"]],
+        ];
+        return json_encode($return);
+    }
+   protected function manualValueAssign($sessionID = null, $pay = null) {
+    if($sessionID == null and $pay == null) return false;
+    $pay = (is_array($pay)) ? $pay : $this->getall("opaypayment", "sessionID  = ? or transactionID = ?", [$sessionID, $sessionID]);
+    if(!is_array($pay)) return false;
+    $awaiting = $this->getall("awatingPayment", "sessionID = ? or sessionID = ?", [$pay['sessionID'], $pay['transactionID']]);
+    if(is_array($awaiting)) false;
+    if($pay['status'] != 0) {
+        if(!is_array($this->getall("transactions", "forID = ? or forID = ?", [$awaiting['userID'], $pay["sessionID"]]))) {
+            $this->credit_debit($awaiting['userID'], $pay['amount'],  for: "opaypayment", forID: $awaiting['sessionID']);
+        }
+    }
+    $this->dispose_payment($pay['ID'], $awaiting['ID']);  
+    return $pay;
+   }
+
+   function dispose_payment($payID, $awaitID = null) {
+    $this->update("opaypayment", ["status"=>0], "ID = '$payID'");
+    if($awaitID != null) $this->delete("awatingPayment", "ID = ?", [$awaitID]);
+    return true;
+}
 
     public function create_vitual_account($userID)
     {
