@@ -7,7 +7,7 @@
     <div class="card-body" 
     data-load="account"
     data-start="0"
-    data-limit="100" 
+    data-limit="10" 
     data-displayId="displayAccounts"
     data-path="passer?get=accounts&s=<?= htmlspecialchars($_GET['s'] ?? "") ?>&platform=<?= htmlspecialchars($_GET['platform'] ?? "") ?>&userID=<?= htmlspecialchars($_GET['userID'] ?? "") ?>&category=<?= htmlspecialchars($_GET['category'] ?? "all") ?>&type=all">
         <div class="card-title">
