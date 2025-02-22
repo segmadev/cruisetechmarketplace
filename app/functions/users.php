@@ -1,5 +1,5 @@
 <?php
-class user extends database
+class user extends content
 {
     public $userdata;
     public $userID;
