@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const accountID = new URLSearchParams(window.location.search).get("id");
     const uploadButton = $("#uploadbatch");
     const stopButton = $("<button id='stopUpload' class='btn btn-danger ms-2'>Stop Upload</button>").hide();
-    const alertBox = $("<div id='alertBox' class='mt-3'></div>"); // Bootstrap alert container
-    const progressContainer = $("<div id='progressContainer' class='mt-3' style='display:none;'></div>"); // Initially hidden
+    const alertBox = $("<div id='alertBox' class='mt-3'></div>");
+    const progressContainer = $("<div id='progressContainer' class='mt-3' style='display:none;'></div>");
 
-    uploadButton.after(stopButton).after(alertBox).after(progressContainer); // Append elements
+    uploadButton.after(stopButton).after(alertBox).after(progressContainer);
 
     let totalSuccess = 0;
     let totalFailed = 0;
@@ -19,30 +19,35 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Start Upload
+    // 🚀 Start Upload or Retry Failed Ones
     uploadButton.on("click", function () {
         if (!processing) {
-            totalSuccess = 0;
-            totalFailed = 0;
             stopProcessing = false;
-            totalLogins = $(".add-new").not(".failed").length; // Update total logins dynamically
-            uploadButton.prop("disabled", true);
-            stopButton.show();
-            progressContainer.show(); // Show progress details when upload starts
             processing = true;
+            stopButton.show();
+            uploadButton.prop("disabled", true);
+
+            // 🔄 Reset failed states when user retries
+            $(".add-new.failed").removeClass("failed bg-light-danger").css("border", "");
+            $(".add-new .text-danger").remove();
+
+            totalLogins = $(".add-new").length;
+            progressContainer.show();
             updateProgress();
             processLogins();
         }
     });
 
-    // Stop Upload
+    // ⏹️ Stop Upload
     stopButton.on("click", function () {
         stopProcessing = true;
+        processing = false;
         stopButton.hide();
         uploadButton.prop("disabled", false);
         showAlert("warning", "Upload process stopped by user.");
     });
 
+    // ⚡ Handle Batch Processing
     function processLogins() {
         if (stopProcessing) {
             processing = false;
@@ -62,12 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
         let totalLeft = $(".add-new").not(".failed").length;
 
         if (!logins.length) {
-            // All logins processed, show final message
+            // 🎉 All done, show summary
             processing = false;
             stopButton.hide();
             uploadButton.prop("disabled", false);
             updateProgress();
-            showAlert("success", `Upload Complete!<br>✅ Success: ${totalSuccess}<br>❌ Failed: ${totalFailed}<br>📌 Total Logins: ${totalLogins}`);
+            showAlert("success", `✅ Upload Complete!<br>✨ Success: ${totalSuccess}<br>❌ Failed: ${totalFailed}<br>📌 Total Logins: ${totalLogins}`);
             return;
         }
 
@@ -86,6 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sendBatchToServer(formData, logins, totalLeft);
     }
 
+    // 📡 Send Batch and Handle Response
     function sendBatchToServer(fd, logins, totalLeft) {
         $.ajax({
             url: "passer",
@@ -116,17 +122,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     setTimeout(processLogins, 1000);
 
                 } catch (error) {
-                    showAlert("danger", "Error processing server response.");
+                    showAlert("danger", "⚡ Error processing server response.");
                     setTimeout(processLogins, 1000);
                 }
             },
             error: function () {
-                showAlert("danger", "Upload failed. Continuing to the next batch...");
+                showAlert("danger", "⚠️ Upload failed. Retrying next batch...");
                 setTimeout(processLogins, 1000);
             }
         });
     }
 
+    // 📊 Update Progress Bar and Details
     function updateProgress(totalLeft = $(".add-new").not(".failed").length) {
         let progressPercent = totalLogins > 0 ? Math.round(((totalSuccess + totalFailed) / totalLogins) * 100) : 0;
 
@@ -147,6 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `);
     }
 
+    // 📝 Bootstrap Alert Message
     function showAlert(type, message) {
         alertBox.html(`
             <div class="alert alert-${type} alert-dismissible fade show" role="alert">

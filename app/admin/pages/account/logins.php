@@ -15,7 +15,7 @@ Login</b></button> <button type='button' id="copyButton" class="btn btn-outline-
 <script>
     let i = 1;
     function add_login() {
-        var template = `<div class="d-flex justify-content-between align-items-center w-100">
+        var template = `<div class="d-flex justify-content-between align-items-center w-100 loginsID-${i++}">
             <h6 class="login-number"><b>Login ${i++}</b></h6>
             <button type='button' class='btn btn-danger btn-sm remove-login'>Remove</button>
         </div> <?= $c->create_form($logininfo); ?>`;
