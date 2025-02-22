@@ -17,3 +17,4 @@ app/validate_webhook.php
 app/admin/token.json
 app/admin/credentials.json
 app/admin/last_fetched_timestamp.txt
+*.env
