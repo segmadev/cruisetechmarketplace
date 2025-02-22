@@ -325,7 +325,10 @@ private function extractDetailsFromHtml($html, $messageId) {
     function getSaveOpay() {
         $this->checkAndRefreshToken();
         $emails = $this->fetchAndListenForOpayEmails(5);
-        if(!$emails) return ;
+        if(!$emails){
+            $this->message("No message found", "error");
+            return ;}
+            $this->message("Some messges found", "success");
         foreach($emails as $email) {
             if($email['sessionID'] == "" && $email['transactionID'] == "") continue;
             if($this->getall("opaypayment", "sessionID = ? or transactionID = ?", [$email['sessionID'], $email['transactionID']], fetch: "") > 0) continue;
