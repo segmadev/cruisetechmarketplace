@@ -20,7 +20,7 @@ require_once "../content/textarea.php";
             </div>
             <input type="hidden" name="page" value="account">
             <input type="hidden" name="upadate_account" value="account">
-            
+            <?php require_once "pages/account/logins.php"; ?>
             <div id="custommessage"></div><br>
             <button type="submit" class="btn btn-primary">
                 Update Account
@@ -28,7 +28,6 @@ require_once "../content/textarea.php";
         </form>
     </div></div>
         <div class="card card-body mt-4">
-            <?php require_once "pages/account/logins.php"; ?>
            <div class="mt-2">
            <input type="button" id="uploadbatch" value="Upload logins in batch" class="btn btn-dark">
            </div>
