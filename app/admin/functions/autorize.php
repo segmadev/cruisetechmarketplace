@@ -89,7 +89,7 @@ class autorize extends database
             '${device}' => $log['device'],
             '${location}' => $userDetails['state']." ".$userDetails['country'],
         ], $smessage);
-            $this->smtpmailer($user['email'], "OTP Verification for Login Attempt on Your EKSUTH Account", $smessage);
+            $this->smtpmailer($user['email'], "OTP Verification for Login Attempt on Your Cruise tech log Account", $smessage);
             
         }
         $_SESSION['logTk'] = $token;

@@ -1,15 +1,13 @@
 <?php
-if (side == "admin") {
-    require_once '../vendor/autoload.php';
-} else {
-    require_once 'vendor/autoload.php';
-}
+$base_path = '';
+if (side == "admin") $base_path = '../';
+require_once $base_path.'vendor/autoload.php';
 
 use Flutterwave\Flutterwave;
 use Flutterwave\Helper\Config;
 use Flutterwave\Service\VirtualAccount;
 
-require_once 'functions/crypto.php';
+require_once $base_path.'functions/crypto.php';
 class deposit extends user
 {
     protected $crypto;
