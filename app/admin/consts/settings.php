@@ -62,7 +62,11 @@
         "exchange_rate_update_interval"=>["input_type"=>"number","atb"=>'step="0.0001"', "description"=>"value in minutes"],
         "fix_exchange_rate"=>["type"=>"select", "options"=>["yes"=>"Yes", "no"=>"No"]],
         "exchange_rate_API"=>["input_type"=>"password", "is_required"=>false, "description"=>"You can get your API key <a target='_BLANK' href='https://www.exchangerate-api.com'>here</a>"],
-        "input_data"=>array_merge(["exchange_rate_API"=>"--placeholder", "flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["offline_buyers"=>[], "min_deposit"=>[], "exchange_rate_update_interval"=>[], "max_deposit"=>[], "fix_exchange_rate"=>[], "exchange_rate"=>[]])),
+        
+        "cryptomus_ID"=>["input_type"=>"password", "is_required"=>false, "title"=>"cryptomus merchant ID"],
+        "cryptomus_api"=>["input_type"=>"password", "is_required"=>false, "title"=>"cryptomus API Key"],
+        "share_percentage_commission_on_crypto"=>["input_type"=>"number", "description"=>"Min 0 and max should be 100"],
+        "input_data"=>array_merge(["cryptomus_ID"=>"--placeholder", "cryptomus_api"=>"--placeholder", "exchange_rate_API"=>"--placeholder", "flutterwave_public_key"=>"--placeholder", "flutterwave_secret_key"=>"--placeholder", "flutterwave_encyption_key"=>"--placeholder", "bvn"=>"00000000000"], $s->getdata(["offline_buyers"=>[], "min_deposit"=>[], "exchange_rate_update_interval"=>[], "max_deposit"=>[], "fix_exchange_rate"=>[], "exchange_rate"=>[],  "share_percentage_commission_on_crypto"=>[]])),
     ];
 
     $term_and_policy_condition = [

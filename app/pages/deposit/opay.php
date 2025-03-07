@@ -1,11 +1,11 @@
 <?php
 $script[] ="sweetalert";
 $awaitingPayment = $d->getall("awatingpayment", "userID = ?",[$userID], fetch:"all");
+$accountNumber = $d->get_settings(("bank_account"));
 ?>
 <div class="row">
     <div class="col-sm-6 col-lg-4 col-12">
         <div class="card card-body bg-light-success">
-        
             <h5 class="text-danger">⚠️ Important Notice:</h5>
                 After successfully making the payment using the account details provided below, please copy the Session ID or Transaction ID from your receipt and submit it below for payment verification.
             <hr>
@@ -16,7 +16,7 @@ $awaitingPayment = $d->getall("awatingpayment", "userID = ?",[$userID], fetch:"a
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
             </form>
             <hr>
-             <h1><?= $d->get_settings(("bank_account")) ?></h1>
+             <h1><?= $accountNumber.$c->copy_text($accountNumber) ?></h1>
             <h5>Bank: <?= $d->get_settings(value: ("bank_name")) ?></h5>
             <p>Account Name: <?= $d->get_settings(("account_name")) ?></p>
             <?php echo $u->show_balance($userID, showBtn: true); ?>          

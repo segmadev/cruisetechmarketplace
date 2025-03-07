@@ -14,7 +14,18 @@ require_once "include/database.php";
 require_once "functions/roles.php";
 $r = new roles;
 $d = new database;
-$admin = $d->getall("admins", "token = ?", [$adminToken]);
+$user_log = $d->getall("user_logs", "token = ? and expiry_date >= ? and status = ?", [$adminToken, time(), 1]);
+if (!is_array($user_log)) {
+    $d->message("Unable to identify admin or login session expired", "error");
+    $d->loadpage("login2");
+    exit();
+}
+
+if($user_log['otp'] != "") {
+    $user = $d->getall("admins", "ID = ?", [$user_log['userID']], 'email');
+    $d->loadpage( "otp?em=".base64_encode($user['email']));
+}
+$admin = $d->getall("admins", "token = ?", [htmlspecialchars($adminSession)]);
 if (!is_array($admin)) {
     $d->message("Unable to identify admin", "error");
     exit();

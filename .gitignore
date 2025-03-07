@@ -13,6 +13,7 @@ textextractor
 app/.htaccess
 app/api/.htaccess
 app/extract.html
+app/payload.txt
 app/validate_webhook.php
 app/admin/token.json
 app/admin/credentials.json

@@ -22,3 +22,5 @@ if (isset($_GET['new_account'])) {
 
 }
 // $account_details = $de->get_account_details($userID);
+// $de->create_wallet_address($user);
+// die();

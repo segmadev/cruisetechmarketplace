@@ -31,6 +31,42 @@ class database
         // $this->userID = htmlspecialchars($_SESSION['adminSession']);  
     }
 
+    protected function verify_captcha()
+    {
+        $captchaToken = $_POST['cf-turnstile-response'] ?? '';
+        if (empty($captchaToken)) {
+            $this->message("Robot verification failed. Please try again.", "error");
+            return;
+        }
+       
+        $secretKey = $this->get_settings("cloudflare_key"); // Replace with your Cloudflare Secret Key
+        $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+    
+        $data = [
+            'secret' => $secretKey,
+            'response' => $captchaToken,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] // Optional: Verify IP address
+        ];
+    
+        // Send POST request to Cloudflare
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data),
+            ],
+        ];
+    
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $response = json_decode($result, true);
+        if(!$response['success']) {
+            $this->message("Robot verification failed. Please try again.", "error");
+            return false;
+        }
+       return true;
+    }
+    
     function is_ofline_buyer($userID)
     {
         $idlist = $this->get_settings("offline_buyers");
@@ -822,6 +858,15 @@ class database
     function smtpmailer($to, $subject, $body, $name = "", $message = '', $smtpid = 1)
     {
         $body = htmlspecialchars_decode($body);
+        if(isset($_ENV['mail_type']) && $_ENV['mail_type'] == "log") {
+            $maillog = fopen("maillog.log", "w");
+            $header = "<p>To: $to </p>";
+            $header .= "<h3>Subject: $subject </h3>";
+            $header .= "<p>name: $name </p>";
+            $body = $header.$body."<hr>";
+            fwrite($maillog, $body);
+            return true;
+        }
         // return $to;
         require_once rootFile . "/include/phpmailer/PHPMailerAutoload.php";
         // require_once "";

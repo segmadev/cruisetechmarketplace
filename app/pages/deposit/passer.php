@@ -8,6 +8,16 @@ if (isset($_POST['ini_payment'])) {
 if (isset($_GET['get_balance'])) {
     echo $d->money_format($user['balance']);
 }
+if (isset($_GET['get_wallet'])) {
+    $wallet = $de->create_wallet_address($user);
+    if(is_array($wallet)) echo $de->display_wallet($wallet);
+}
+
+
+
+
+
+
 if(isset($_POST['manual_payment'])) {
     echo $de->manualPayment($userID);
 }
@@ -16,7 +26,7 @@ if(isset($_POST['awaitID'])) {
     echo $de->removeAwait($userID);
 }
 if (isset($_GET['get_payments'])) {
-    $payment = $de->get_payments($userID, htmlspecialchars($_POST['start'] ?? 0));
+    $payment = $de->get_payments($userID, htmlspecialchars($_POST['start'] ?? 0), htmlspecialchars($_POST['limit'] ?? 0));
     if ($payment->rowCount() < 0) {
         $return = ["status" => "null", "data" => ""];
         echo json_encode($return);

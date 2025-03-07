@@ -30,5 +30,6 @@ return array(
     'Flutterwave\\' => array($vendorDir . '/flutterwavedev/flutterwave-v3/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
+    'Cryptomus\\Api\\' => array($vendorDir . '/cryptomus/api-php-sdk/src'),
     'Composer\\CaBundle\\' => array($vendorDir . '/composer/ca-bundle/src'),
 );

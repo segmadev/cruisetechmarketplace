@@ -69,6 +69,7 @@ class ComposerStaticInitf6e2b025dde3b4a2b9e7ca93bdfd3305
         ),
         'C' => 
         array (
+            'Cryptomus\\Api\\' => 14,
             'Composer\\CaBundle\\' => 18,
         ),
     );
@@ -170,6 +171,10 @@ class ComposerStaticInitf6e2b025dde3b4a2b9e7ca93bdfd3305
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+        ),
+        'Cryptomus\\Api\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cryptomus/api-php-sdk/src',
         ),
         'Composer\\CaBundle\\' => 
         array (

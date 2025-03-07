@@ -62,7 +62,7 @@ require_once "include/auth-ini.php"; ?>
         <div class="d-flex align-items-center justify-content-center w-100">
           <div class="row justify-content-center w-100">
             <div class="col-md-8 col-lg-6 col-xxl-3">
-              <div class="card mb-0 bg-light-success">
+              <div class="card mb-0 bg-light-light">
                 <div class="card-body">
                   <a href="../" class="text-nowrap logo-img text-center d-block mb-5 w-100">
                     <img src="<?= $dark_logo ?>" width="180" alt="">
@@ -73,6 +73,7 @@ require_once "include/auth-ini.php"; ?>
                     <span class="border-top w-100 position-absolute top-50 start-50 translate-middle"></span>
                   </div>
                   <form id="foo" action="auth">
+                   
                     <div class="mb-3">
                       <label for="exampleInputEmail1" class="form-label">Email</label>
                       <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
@@ -82,17 +83,23 @@ require_once "include/auth-ini.php"; ?>
                       <input type="password" name="password" class="form-control" id="exampleInputPassword1">
                     </div>
                     <input type="hidden" name="signin">
+                    <?php 
+                      if(isset($_GET['just_token_allow'])) {
+                          echo '<div id="turnstile-container" class="cf-turnstile" data-sitekey="0x4AAAAAAA4u_JbMiNOABX-Y"></div>';
+                          echo "<input type='hidden' name='just_token_allow' value='".$_GET['just_token_allow']."'/>";
+                      }
+                    ?>
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                      <div class="form-check">
+                      <!-- <div class="form-check">
                         <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
                         <label class="form-check-label text-dark" for="flexCheckChecked">
                           Remeber this Device
                         </label>
-                      </div>
+                      </div> -->
                       <!-- <a class="text-primary fw-medium" href="forget-password">Forgot Password ?</a> -->
                     </div>
                     <div id="custommessage"></div>
-                    <button type="submit"  class="btn btn-success w-100 py-8 mb-4 rounded-2">Sign In</button>
+                    <button type="submit"  class="btn btn-dark w-100 py-8 mb-4 rounded-2">Sign In</button>
                     <!-- <div class="d-flex align-items-center justify-content-center">
                       <p class="fs-4 mb-0 fw-medium">New to <?= $c->get_settings("company_name") ?>?</p>
                       <a class="text-primary fw-medium ms-2" href="register">Create an account</a>
@@ -108,6 +115,7 @@ require_once "include/auth-ini.php"; ?>
     
     <!--  Import Js Files -->
     <script src="../dist/libs/jquery/dist/jquery.min.js"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script src="../dist/libs/simplebar/dist/simplebar.min.js"></script>
     <script src="../dist/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!--  core files -->

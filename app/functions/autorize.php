@@ -3,14 +3,8 @@ class autorize extends database
 {
     public function signup($data)
     {
-        $captchaToken = $_POST['cf-turnstile-response'] ?? '';
-        if (empty($captchaToken)) {
-            $this->message("Robot verification failed. Please try again.", "error");
-            return;
-        }
-    
         // Verify the CAPTCHA with Cloudflare
-        $captchaResponse = $this->verify_captcha($captchaToken);
+        $captchaResponse = $this->verify_captcha();
         if (!$captchaResponse) {
             $this->message("Robot verification failed. Please try again.", "error");
         }    
@@ -116,16 +110,8 @@ class autorize extends database
         $d = new database;
         $email = htmlspecialchars($_POST['email']);
         $password = htmlspecialchars($_POST['password']);
-
-         // CAPTCHA Verification
-    $captchaToken = $_POST['cf-turnstile-response'] ?? '';
-    if (empty($captchaToken)) {
-        $d->message("Robot verification failed. Please try again.", "error");
-        return;
-    }
-
     // Verify the CAPTCHA with Cloudflare
-    $captchaResponse = $this->verify_captcha($captchaToken);
+    $captchaResponse = $this->verify_captcha();
     if (!$captchaResponse) {
         $d->message("Robot verification failed. Please try again.", "error");
         return;
@@ -176,33 +162,6 @@ class autorize extends database
         }
     }
 
-
-    private function verify_captcha($captchaToken)
-{
-    $secretKey = $this->get_settings("cloudflare_key"); // Replace with your Cloudflare Secret Key
-    $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-
-    $data = [
-        'secret' => $secretKey,
-        'response' => $captchaToken,
-        'remoteip' => $_SERVER['REMOTE_ADDR'] // Optional: Verify IP address
-    ];
-
-    // Send POST request to Cloudflare
-    $options = [
-        'http' => [
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($data),
-        ],
-    ];
-
-    $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    $response = json_decode($result, true);
-
-    return $response['success'] ?? false;
-}
 
     private function set_token($userID)
     {
