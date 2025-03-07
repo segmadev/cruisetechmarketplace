@@ -251,7 +251,7 @@ class deposit extends user
             // echo $this->message("This is a transfer", "error");
             return false;
         }
-        if ($this->getall("transactions", "userID = ? and forID = ?", [$user['ID'], $pay["flw_ref"]], fetch: "") > 0) {
+        if ($this->getall("transactions", "userID = ? and forID = ?", [$userID, $pay["flw_ref"]], fetch: "") > 0) {
             // echo $this->apiMessage("Value assigned in the past", 401);
             return false;
         }
