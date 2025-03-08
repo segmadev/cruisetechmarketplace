@@ -587,7 +587,7 @@ function generate_sold_report($filters)
                             
                             <div class='note-content'>
                                 <p class='note-inner-content login-data-details'> 
-                                " . $login['login_details'] . "
+                                " .htmlspecialchars_decode($login['login_details']). "
                                 </p>
                             </div>
                             <div class='d-flex gap-1'>

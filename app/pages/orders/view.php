@@ -34,7 +34,8 @@ if (!$order || $order == "") {
                 src="<?= $a->get_platfrom_img_url($account['platformID']) ?>" alt="">
         </div>
         <div class="ms-3">
-            <small>Order ID: <?= $account['ID'] ?></small>
+            <small>Order ID: <?= $order['ID'] ?></small>
+            <small>Account ID: <?= $account['ID'] ?></small>
             <h2 class="m-0"><?= $account['title'] ?></h2>
 
             <p class="h5 print-ignore">Amount: <?= $d->money_format($order['amount']) ?></p>
