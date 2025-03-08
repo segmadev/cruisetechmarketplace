@@ -59,29 +59,92 @@ class CryptomusService extends database {
         return $return['result'];
     }
 
-   /* Verify the authenticity of an incoming webhook from Cryptomus.
-    *
-    * Assumes Cryptomus sends a header "sign" computed as:
-    *     md5(base64_encode($rawPayload) . $this->apiKey)
-    *
-    * @return bool True if verified; false otherwise.
-    */
-   public function verifyWebhook() {
-       $headers = getallheaders();
-       if (!isset($headers['sign'])) {
-           error_log("Webhook verification failed: Missing 'sign' header.");
-           return false;
-       }
-       $receivedSign = $headers['sign'];
-       $rawPayload = file_get_contents("php://input");
-       $calculatedSign = md5(base64_encode($rawPayload) . $this->apiKey);
-       if (hash_equals($calculatedSign, $receivedSign)) {
-           return true;
-       } else {
-           error_log("Webhook verification failed: Calculated sign ($calculatedSign) does not match received sign ($receivedSign).");
-           return false;
-       }
-   }
+  
+    /**
+ * Verifies the authenticity of a Cryptomus webhook and logs debug information.
+ *
+ * This method:
+ * 1. Reads the raw JSON payload.
+ * 2. Logs the raw payload into payload.txt.
+ * 3. Extracts the "sign" field from the payload and removes it.
+ * 4. Re-encodes the remaining data (using JSON_UNESCAPED_UNICODE),
+ *    base64-encodes it, concatenates with your API key, and computes the MD5 hash.
+ * 5. Compares the computed hash with the received sign.
+ * 6. If $debugMode is true, prints errors and debug messages on screen.
+ *
+ * @return bool True if the webhook is verified; false otherwise.
+ */
+public function verifyWebhook($debugMode = false) {
+    // Set debug mode. Change to false to disable printing errors to the screen.
+    // Get the raw POST payload.
+    $rawPayload = file_get_contents("php://input");
+
+    // Log the raw payload.
+    file_put_contents("payload.txt", "Raw Payload:\n" . $rawPayload . "\n", FILE_APPEND);
+    if ($debugMode) {
+        echo "Raw Payload:\n" . htmlspecialchars($rawPayload) . "\n";
+    }
+
+    $data = json_decode($rawPayload, true);
+    if (!$data) {
+        $errorMsg = "Invalid JSON payload for webhook.";
+        error_log($errorMsg);
+        file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+        if ($debugMode) {
+            echo "Error: " . $errorMsg . "\n";
+        }
+        return false;
+    }
+    
+    if (!isset($data['sign'])) {
+        $errorMsg = "Missing 'sign' in webhook payload.";
+        error_log($errorMsg);
+        file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+        if ($debugMode) {
+            echo "Error: " . $errorMsg . "\n";
+        }
+        return false;
+    }
+    
+    // Extract and remove the 'sign' field.
+    $receivedSign = $data['sign'];
+    unset($data['sign']);
+    
+    // Re-encode the remaining data.
+    $encodedData = json_encode($data, JSON_UNESCAPED_UNICODE);
+    
+    // Compute the expected signature.
+    $calculatedSign = md5(base64_encode($encodedData) . $this->apiKey);
+    
+    // Log calculated and received signatures.
+    $debugInfo = "Calculated Sign: {$calculatedSign}\nReceived Sign: {$receivedSign}\n";
+    file_put_contents("payload.txt", $debugInfo, FILE_APPEND);
+    if ($debugMode) {
+        echo "Calculated Sign: " . $calculatedSign . "\n";
+        echo "Received Sign: " . $receivedSign . "\n";
+    }
+    
+    // Compare signatures.
+    if (!hash_equals($calculatedSign, $receivedSign)) {
+        $errorMsg = "Webhook signature verification failed. Calculated sign does not match received sign.";
+        error_log($errorMsg);
+        file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+        if ($debugMode) {
+            echo "Error: " . $errorMsg . "\n";
+        }
+        return false;
+    }
+    
+    $successMsg = "Webhook verified successfully.";
+    file_put_contents("payload.txt", $successMsg . "\n", FILE_APPEND);
+    if ($debugMode) {
+        echo $successMsg . "\n";
+    }
+    
+    return true;
+}
+
+
 
     /**
      * Convert a cryptocurrency amount to Nigerian Naira (NGN).

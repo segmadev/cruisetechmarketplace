@@ -382,91 +382,139 @@ class deposit extends user
      *
      * @return void Outputs a response and updates the user's balance.
      */
-    public function processWebhookTransaction()
-    {
+    public function processWebhookTransaction() {
+        // Set debug mode: true to print errors on screen, false to only log to file.
+        $debugMode = false;
+        // Read the raw POST payload.
         $rawPayload = file_get_contents("php://input");
-        $filePath   = 'payload.txt';
-        // Prepend a newline to the payload so it starts on a new line
-        $newContent = "\n" . $rawPayload;
-
-        if($rawPayload != "") {
-            // Append the new content to the file without replacing existing content
-            if (file_put_contents($filePath, $newContent, FILE_APPEND) !== false) {
-                echo "File updated successfully.";
-            } else {
-                echo "There was an error updating the file.";
-            }
+        file_put_contents("payload.txt", "Raw Payload:\n" . $rawPayload . "\n", FILE_APPEND);
+        if ($debugMode) {
+            echo "Raw Payload: " . htmlspecialchars($rawPayload) . "<br>";
         }
-       
+    
         // Verify webhook authenticity.
-        if (!$this->crypto->verifyWebhook()) {
+        if (!$this->crypto->verifyWebhook($debugMode)) {
+            $errorMsg = "Webhook verification failed.";
+            error_log($errorMsg);
+            file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+            if ($debugMode) {
+                echo "Error: " . $errorMsg . "<br>";
+            }
             http_response_code(400);
-            exit("Webhook verification failed.");
-
+            exit($errorMsg);
         }
-
-        // Read and decode the payload.
-        
+    
+        // Decode the payload.
         $data = json_decode($rawPayload, true);
         if (!$data) {
+            $errorMsg = "Invalid JSON payload.";
+            error_log($errorMsg);
+            file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+            if ($debugMode) {
+                echo "Error: " . $errorMsg . "<br>";
+            }
             http_response_code(400);
-            exit("Invalid JSON payload.");
+            exit($errorMsg);
         }
-
+    
         // Validate required fields.
-        if (!isset($data['order_id'], $data['amount'], $data['currency'], $data['status'], $data['txid'], $data['merchant_amount'], $data['commission'])) {
-            http_response_code(400);
-            exit("Missing required fields in payload.");
+        $requiredFields = ['order_id', 'amount', 'currency', 'status', 'txid', 'merchant_amount', 'commission'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $errorMsg = "Missing required field: " . $field;
+                error_log($errorMsg);
+                file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+                if ($debugMode) {
+                    echo "Error: " . $errorMsg . "<br>";
+                }
+                http_response_code(400);
+                exit($errorMsg);
+            }
         }
-
+    
         if ($data['status'] !== "paid") {
+            $errorMsg = "Transaction not paid.";
+            error_log($errorMsg);
+            file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+            if ($debugMode) {
+                echo "Error: " . $errorMsg . "<br>";
+            }
             http_response_code(400);
-            exit("Transaction not paid.");
+            exit($errorMsg);
         }
-
-        // Prevent duplicate processing using the txid.
+    
+        // Prevent duplicate processing using txid.
         $txid = $data['txid'];
         if ($this->getall("transactions", "forID = ?", [$txid], fetch: "") > 0) {
-            // Transaction already processed.
+            $errorMsg = "Value already assigned (duplicate txid).";
+            error_log($errorMsg);
+            file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+            if ($debugMode) {
+                echo "Error: " . $errorMsg . "<br>";
+            }
             http_response_code(400);
-            exit("Value already assigned.");
+            exit($errorMsg);
         }
-
+    
         // Extract user id from order_id (assumes format "WALLET_{userId}_{timestamp}").
         $parts = explode('_', $data['order_id']);
         if (count($parts) < 3) {
+            $errorMsg = "Invalid order_id format.";
+            error_log($errorMsg);
+            file_put_contents("payload.txt", "Error: " . $errorMsg . "\n", FILE_APPEND);
+            if ($debugMode) {
+                echo "Error: " . $errorMsg . "<br>";
+            }
             http_response_code(400);
-            exit("Invalid order_id format.");
+            exit($errorMsg);
         }
         // Use GET parameter if provided, otherwise extract from order_id.
         $userId = htmlspecialchars($_GET['userID'] ?? $parts[1]);
-
+    
         // Retrieve amounts from the payload.
-        $merchantAmount = floatval($data['merchant_amount']); // The net amount credited by Cryptomus.
-        $commission = floatval($data['commission']); // The commission taken by Cryptomus.
-
-        // Define the commission sharing percentage:
+        $merchantAmount = floatval($data['merchant_amount']); // Net amount credited by Cryptomus.
+        $commission     = floatval($data['commission']);        // Commission taken by Cryptomus.
+    
+        // Get the commission sharing percentage from settings.
         // This variable represents the percentage of the commission the owner is willing to share with the user.
-        // If its value is above 100 or below 0, it will be treated as 0 (no sharing).
-        $sharePercentageCommissionOnCrypto = $this->get_settings("share_percentage_commission_on_crypto"); // Adjust this value as needed.
+        $sharePercentageCommissionOnCrypto = $this->get_settings("share_percentage_commission_on_crypto"); // e.g. 50 means owner shares 50% of commission.
+        // If the value is above 100 or below 0, treat it as 0.
         if ($sharePercentageCommissionOnCrypto > 100 || $sharePercentageCommissionOnCrypto < 0) {
             $sharePercentageCommissionOnCrypto = 0;
         }
-
+    
         // Calculate the user's commission refund.
-        // For example, if commission is 0.06 and owner shares 50%, then user gets 0.06 * 0.50 = 0.03 extra.
+        // This is the percentage of the commission that the owner shares with the user.
         $userCommissionRefund = $commission * ($sharePercentageCommissionOnCrypto / 100);
-
-        // The effective crypto amount credited to the user.
+    
+        // Calculate the effective crypto amount credited to the user.
         $userCryptoCredit = $merchantAmount + $userCommissionRefund;
-
+    
         // Convert the effective crypto amount to NGN.
         $nairaAmount = $this->crypto->convertCryptoToNaira($userCryptoCredit, strtoupper($data['currency']));
+        $nairaAmount = round($nairaAmount, 2);
+        file_put_contents("payload.txt", "User Crypto Credit: {$userCryptoCredit}\nConverted to NGN: {$nairaAmount}\n", FILE_APPEND);
+        if ($debugMode) {
+            echo "User Crypto Credit: " . $userCryptoCredit . "<br>";
+            echo "Converted to NGN: " . $nairaAmount . "<br>";
+        }
 
+        $crypto_paymnent = [
+            'txid'            => $data['txid'] ?? null,
+            'status'          => $data['status'] ?? null,
+            'from_wallet'     => $data['from'] ?? null,
+            'amount'          => $data['amount'] ?? null,
+            'amount_after_commission' => $userCryptoCredit ?? null,
+            'naira_amount'    => $nairaAmount, // Already rounded to 2 decimal places.
+            'commission_fee'  => $commission ?? null,
+            'exchange_rate'   =>  $this->get_settings("exchange_rate"),
+            'payment_type' => $data['type']
+        ];
+        if($this->getall("crypto_payment", "txid = ?", [$crypto_paymnent['txid']], fetch: "") == 0) $this->quick_insert("crypto_payment", $crypto_paymnent);
         // Update the user's balance in the database.
-        $this->credit_debit($userId, $nairaAmount, for :"crypto", forID: $txid);
+        $this->credit_debit($userId, $nairaAmount, for:"crypto", forID:$txid);
     }
-
+    
     /**
      * Generate wallet details HTML in a styled Bootstrap card.
      *
