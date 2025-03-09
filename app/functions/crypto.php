@@ -19,7 +19,7 @@ class CryptomusService extends database {
             'order_id'   => $orderId,
             'currency'   => strtoupper($currency),
             // For USDT, use 'tron' as network per documentation; for BTC, use 'bitcoin'
-            'network'    => (strtoupper($currency) === 'USDT') ? 'tron' : 'bitcoin',
+            'network'    => (strtoupper($currency) === 'USDT') ? 'bsc' : 'bitcoin',
             // Optional: include a callback URL to receive webhook notifications.
             'url_callback' => 'https://cruisetechlogs.com/app/crypto_validate?order_id='.$orderId
         ];
@@ -46,6 +46,7 @@ class CryptomusService extends database {
             false,
             'POST'
         );
+        // var_dump($response);
 
         
         // Check response.
