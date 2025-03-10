@@ -3,6 +3,7 @@ define("PATH", "");
 require '../vendor/autoload.php';
 require_once '../consts/main.php';
 require_once 'include/database.php';
+require_once '../content/content.php';
 require_once '../functions/users.php';
 use Google\Client;
 use Google\Service\Gmail;
@@ -180,6 +181,7 @@ public function fetchAndListenForOpayEmails($maxResults = 10) {
                     echo "✅ Access token refreshed successfully.\n";
                 } else {
                     echo "❌ Error refreshing token: " . $newToken['error_description'] . "\n";
+                    // $this->authenticate();
                 }
             } else {
                 echo "⚠️ No refresh token available. Please re-authenticate.\n";
@@ -329,6 +331,7 @@ private function extractDetailsFromHtml($html, $messageId) {
             $this->message("No message found", "error");
             return ;}
             $this->message("Some messges found", "success");
+            var_dump($emails);
         foreach($emails as $email) {
             if($email['sessionID'] == "" && $email['transactionID'] == "") continue;
             if($this->getall("opaypayment", "sessionID = ? or transactionID = ?", [$email['sessionID'], $email['transactionID']], fetch: "") > 0) continue;

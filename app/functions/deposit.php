@@ -533,7 +533,7 @@ class deposit extends user
             <h5>Pay with crypto</h5>
             <small class="mb-0 text-muted">Please scan the QR code below or copy the wallet address to proceed with your transaction.</small>
           <h6 class="text-muted">Wallet Address</h6>
-          <p class="fs-4 text-dark"><?php echo htmlspecialchars($wallet['address']) . $this->copy_text($wallet['address']) ?></p>
+          <p class="fs-4 text-dark"><?php echo $wallet['address'] . $this->copy_text($wallet['address']) ?></p>
         </div>
         <!-- Network and Currency -->
         <div class="row mb-4">
